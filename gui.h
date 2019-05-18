@@ -1,9 +1,9 @@
 /**
  *******************************************************************************
- * @file       app.h
+ * @file       CoGui.h
  * @version    V0.0.1   
- * @date       2019.5.18
- * @brief      This is a file for GUI engine's app.	
+ * @date       2019.5.15
+ * @brief      This is a file for GUI engine.	
  *******************************************************************************
  * @copy
  *
@@ -12,18 +12,11 @@
  */ 
 
 /*---------------------------- Include ---------------------------------------*/
-#include "app.h"
+#include <coocox.h>
+#include <CoOS.h>
+#include <OsKernelHeap.h>
 
-P_GuiApp CreateApp(U8 *name)
-{
-    P_GuiApp *app;
 
-    /* create application */
-    app = GuiMalloc(sizeof(GuiApp));
-    if (app == CoNULL)
-        return CoNULL;
-
-    //app->mq = CoCreateQueue
-
-    //app->name = 
-}
+/*---------------------------- Function Define -------------------------------*/
+void *GuiMalloc(U32 size);
+void GuiFree(void* memBuf);

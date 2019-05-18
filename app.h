@@ -13,7 +13,7 @@
 
 /*---------------------------- Include ---------------------------------------*/
 #include <CoOS.h>
-#include "cogui.h"
+#include "gui.h"
 
 typedef struct coguiApp
 {
@@ -25,13 +25,16 @@ typedef struct coguiApp
     /* Task id */
     P_OSTCB tid;
     /* Message queue */
-    P_QCB   mq
+    P_QCB   mq;
 
-    void    *userDate
+    void    *userDate;
 }GuiApp,*P_GuiApp;
 
 /*---------------------------- Function declare ------------------------------*/
 P_GuiApp CreateApp(U8 *name);
+void DeleteApp(P_GuiApp *app);
 
-void RunApp (P_GuiApp *app);
+void RunApp(P_GuiApp *app);
 void ExitApp(P_GuiApp *app);
+void CloseApp(P_GuiApp *app);
+void SleepApp(P_GuiApp *app, S32 sec);
