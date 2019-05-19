@@ -1,6 +1,6 @@
 /**
  *******************************************************************************
- * @file       app.h
+ * @file       GuiApp.h
  * @version    V0.0.1   
  * @date       2019.5.18
  * @brief      This is a file for GUI engine's app.	
@@ -13,9 +13,9 @@
 
 /*---------------------------- Include ---------------------------------------*/
 #include <CoOS.h>
-#include "gui.h"
+#include <OsTime.h>
 
-typedef struct coguiApp
+typedef struct App
 {
     U8      id;
     U8      *name;
