@@ -12,7 +12,9 @@
  */ 
 
 /*---------------------------- Include ---------------------------------------*/
-#include "app.h"
+#include "GuiServer.h"
+#include "GuiApp.h"
+#include "GuiEvent.h"
 
 /*---------------------------- Variable declare ------------------------------*/
 P_GuiApp serverApp = Co_NULL;
@@ -20,6 +22,53 @@ P_GuiApp serverApp = Co_NULL;
 
 void SHandlerMonitorAdd();
 void SHandlerMonitorRemove();
-void SHandlerMouseBtn();
+
+void SHandlerMouseBtn(struct eventMouse)
+{
+    /* the topwin contains current mouse */
+    P_TopWin win    = RT_NULL;
+}
+
 void SHandlerMouseMotion();
-void SHandlerMouseKbd();
+void SHandlerKbd();
+
+/**
+ *******************************************************************************
+ * @brief      Start the server	 
+ * @param[in]  parameter    some add on parameter
+ * @param[out] None
+ * @retval     None			 
+ *
+ * @par Description
+ * @details    This function is called to start the server
+ *******************************************************************************
+ */
+void ServerEntry(void *parameter)
+{
+    serverApp = AppCreate("cogui");
+    if(serverApp == RT_NULL)
+    {
+        return;
+    }
+
+    RunApp(serverApp);
+
+    DeleteApp(serverApp);
+    serverApp = Co_NULL;
+}
+
+/**
+ *******************************************************************************
+ * @brief      Get server ptr 
+ * @param[in]  None
+ * @param[out] None
+ * @retval     serverApp    Current server ptr			 
+ *
+ * @par Description
+ * @details    This function is called to get server ptr
+ *******************************************************************************
+ */
+P_GuiApp GetServer()
+{
+    return serverApp;
+}

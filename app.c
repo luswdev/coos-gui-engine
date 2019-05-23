@@ -53,8 +53,6 @@ P_GuiApp CreateApp(U8 *name)
 
     app->tid = tid;
 
-
-
     /* create message queue */
     //app->mq = CoCreateQueue
 
@@ -98,8 +96,17 @@ void _InitApp(P_GuiApp *app)
  */
 void DeleteApp(P_GuiApp app)
 {
-    /* delete message queue */
-    //
+    P_GuiApp serverApp;
+
+    if(app == Co_NULL || app->tid == Co_NULL || app->mq == Co_NULL)
+    {
+        return;
+    }
+
+    GuiFree(app->name);
+    app->name = Co_NULL
+
+    serverApp = GetServer();
 
 
     GuiFree(app);
@@ -195,4 +202,13 @@ void SleepApp(P_GuiApp *app, U32 sleepTick)
         return;
 
     InsertDelayList(app->tid, sleepTick);
+}
+
+P_GuiApp AppSelf()
+{
+    P_GuiApp app;
+    OS_TID self;
+
+    self = CoGetCurTaskID();
+    app  =  
 }

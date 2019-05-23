@@ -10,8 +10,58 @@
  * 
  *******************************************************************************
  */ 
+/*---------------------------- Include ---------------------------------------*/
+#include "GuiSystem.h"
+#include "GuiApp.h"
+#include "kbdDef.h"
+#include "GuiWindow.h"
 
-typedef struct event
+#define _GUI_EVENT_ELEMENT                  \
+    /* the event sender */                  \
+    P_GuiApp sender;                        \
+                                            \
+    P_GuiWin *win                           \
+                                            \
+    /* mailbox to acknowledge request */    \
+    void* ack;                              \
+
+#define GUI_EVENT_INIT(e)   \
+{                           \
+    e->sender =                         \
+}                           \
+
+struct eventMouse
 {
+    _GUI_EVENT_ELEMENT
 
-}GuiEvent,*P_GuiEvent;
+    U16 x, y;
+    U16 button;
+
+    /* id of session(from up to down) */
+    U32 id;
+
+    /* window activate count */
+    U32 winActiCnt;
+};
+
+#define GUI_MOUSE_BUTTON_LEFT         0x01
+#define GUI_MOUSE_BUTTON_RIGHT        0x02
+#define GUI_MOUSE_BUTTON_MIDDLE       0x03
+#define GUI_MOUSE_BUTTON_WHEELUP      0x04
+#define GUI_MOUSE_BUTTON_WHEELDOWN    0x08
+
+#define GUI_MOUSE_BUTTON_DOWN         0x10
+#define GUI_MOUSE_BUTTON_UP           0x20
+
+struct eventKbd
+{
+    _GUI_EVENT_ELEMENT
+
+    /* window activate count */
+    U32 winActiCnt;
+
+    U16 type;         /* key up or down */
+    U16 key;          /* current key */
+    U16 mod;          /* current key modifiers */
+    U16 asciiCode;    /* character */
+}
