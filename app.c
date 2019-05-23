@@ -30,12 +30,31 @@
 P_GuiApp CreateApp(U8 *name)
 {
     P_GuiApp *app;
+    OS_TID tid = CoGetCurTaskID();
+
+    if(taskID == 0)                     /* Is idle task?                      */
+    {											 
+        return E_PROTECTED_TASK;        /* Yes,error return                   */
+    }
+
+    if(title == Co_NULL)
+    {
+        return E_TITLE_NULL;
+    }
 
     /* create application */
     app = GuiMalloc(sizeof(GuiApp));
     if (app == Co_NULL)
+    {
         return Co_NULL;
+    }
     
+    _InitApp(app);
+
+    app->tid = tid;
+
+
+
     /* create message queue */
     //app->mq = CoCreateQueue
 
@@ -43,6 +62,27 @@ P_GuiApp CreateApp(U8 *name)
     //app->name = 
 
     return app;
+}
+
+/**
+ *******************************************************************************
+ * @brief      Initial a app	 
+ * @param[in]  app     App ptr		
+ * @param[out] None
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to initial a app.
+ *******************************************************************************
+ */
+void _InitApp(P_GuiApp *app)
+{
+    app->name       = Co_NULL;
+    app->refCnt     = 0;
+    app->tid        = 0;
+    app->mq         = Co_NULL;
+    app->winCnt     = 0;
+    app->winActiCnt = 0;
 }
 
 /**

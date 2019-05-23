@@ -23,15 +23,20 @@ typedef struct App
     U16     refCnt;
 
     /* Task id */
-    P_OSTCB tid;
+    OS_TID tid;
     /* Message queue */
     P_QCB   mq;
+
+    U32     winCnt;
+    /* window activate count */
+    U32     winActiCnt;
 
     void    *userDate;
 }GuiApp,*P_GuiApp;
 
 /*---------------------------- Function declare ------------------------------*/
 P_GuiApp CreateApp(U8 *name);
+void _InitApp(P_GuiApp *app);
 void DeleteApp(P_GuiApp *app);
 
 void RunApp(P_GuiApp *app);

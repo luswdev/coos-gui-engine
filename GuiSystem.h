@@ -16,6 +16,9 @@
 #include <CoOS.h>
 #include <OsKernelHeap.h>
 
+/*---------------------------- Error Codes   ---------------------------------*/
+#define E_TITLE_NULL          (StatusType)22	
+
 
 /*---------------------------- Function Define -------------------------------*/
 void *GuiMalloc(U32 size);
