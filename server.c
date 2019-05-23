@@ -15,6 +15,7 @@
 #include "GuiServer.h"
 #include "GuiApp.h"
 #include "GuiEvent.h"
+#include "GuiMouse.h"
 
 /*---------------------------- Variable declare ------------------------------*/
 P_GuiApp serverApp = Co_NULL;
@@ -23,10 +24,15 @@ P_GuiApp serverApp = Co_NULL;
 void SHandlerMonitorAdd();
 void SHandlerMonitorRemove();
 
-void SHandlerMouseBtn(struct eventMouse)
+void SHandlerMouseBtn(struct eventMouse event)
 {
     /* the topwin contains current mouse */
     P_TopWin win    = RT_NULL;
+
+    GUI_EVENT_INIT(event);
+
+    /* set cursor position */
+    MouseSetPos(event->x, event->y);
 }
 
 void SHandlerMouseMotion();
