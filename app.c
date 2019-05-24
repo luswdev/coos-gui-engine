@@ -14,6 +14,7 @@
 /*---------------------------- Include ---------------------------------------*/
 #include "GuiApp.h"
 #include "GuiSystem.h"
+#include "GuiEvent.h"
 
 /**
  *******************************************************************************
@@ -112,6 +113,21 @@ void DeleteApp(P_GuiApp app)
     GuiFree(app);
 }
 
+void _appEventLoop(P_GuiApp app)
+{
+    StatusType result;
+    U16 currentRef;
+    struct GuiEvent *event;
+
+    currentRef = ++app->refCnt;
+    while (currentRef <= app->refCnt)
+    {
+        
+    }
+    
+
+}
+
 /**
  *******************************************************************************
  * @brief      Run a app	 
@@ -123,21 +139,21 @@ void DeleteApp(P_GuiApp app)
  * @details    This function is called to run a app.
  *******************************************************************************
  */
-void RunApp(P_GuiApp *app)
+void RunApp(P_GuiApp app)
 {
     /* check whether app is exist */
     if (app == Co_NULL)
         return;
 
     /* check whether app's task is exist */
-    if (app->tid == Co_NULL)
+    if (app->tid == 0)
         return;
 
     /* check whether app's user data is exist */
-    if (app->userData == 0)
+    if (TCBTbl[app->tid].userData == 0)
         return;
 
-    // run app here.
+    _appEventLoop(app);
 }
 
 /**
@@ -209,6 +225,9 @@ P_GuiApp AppSelf()
     P_GuiApp app;
     OS_TID self;
 
+
     self = CoGetCurTaskID();
-    app  =  
+    app  = (P_GuiApp)TCBTbl[self].userData;
+
+    return app;
 }

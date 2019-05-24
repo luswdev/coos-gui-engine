@@ -29,7 +29,7 @@ void SHandlerMouseBtn(struct eventMouse event)
     /* the topwin contains current mouse */
     P_TopWin win    = RT_NULL;
 
-    GUI_EVENT_INIT(event);
+    GUI_EVENT_INIT(event, RTGUI_EVENT_MOUSE_BUTTON);
 
     /* set cursor position */
     MouseSetPos(event->x, event->y);
@@ -37,6 +37,7 @@ void SHandlerMouseBtn(struct eventMouse event)
 
 void SHandlerMouseMotion();
 void SHandlerKbd();
+StatusType SEventHandler();
 
 /**
  *******************************************************************************

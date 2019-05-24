@@ -16,14 +16,29 @@
 #include "kbdDef.h"
 #include "GuiWindow.h"
 
+enum eventType
+{
+    /* mouse and keyboard event */
+    RTGUI_EVENT_MOUSE_MOTION,          /* mouse motion          */
+    RTGUI_EVENT_MOUSE_BUTTON,          /* mouse button info     */
+    RTGUI_EVENT_KBD,                   /* keyboard info         */
+
+};
+
+struct GuiEvent {
+    /* the event type */
+    enum eventType type;
+
+    /* the event sender */
+    P_GuiApp sender;
+
+    /* mailbox to acknowledge request */
+    void* ack;
+};
+
 #define _GUI_EVENT_ELEMENT                  \
-    /* the event sender */                  \
-    P_GuiApp sender;                        \
-                                            \
+    struct GuiEvent parent;                 \
     P_GuiWin *win                           \
-                                            \
-    /* mailbox to acknowledge request */    \
-    void* ack;                              \
 
 #define GUI_EVENT_INIT(e)   \
 {                           \

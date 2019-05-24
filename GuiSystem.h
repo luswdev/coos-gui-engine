@@ -19,6 +19,13 @@
 /*---------------------------- Error Codes   ---------------------------------*/
 #define E_TITLE_NULL          (StatusType)22	
 
+/*---------------------------- structure -------------------------------------*/
+typedef struct listNode
+{
+    struct listNode *prev;
+    struct listNode *next;
+}CoList,*P_CoList;
+
 
 /*---------------------------- Function Define -------------------------------*/
 void *GuiMalloc(U32 size);
