@@ -30,3 +30,5 @@ typedef struct listNode
 /*---------------------------- Function Define -------------------------------*/
 void *GuiMalloc(U32 size);
 void GuiFree(void* memBuf);
+
+StatusType GuiSend(P_GuiApp app, struct GuiEvent event);

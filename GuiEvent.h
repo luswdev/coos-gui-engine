@@ -33,17 +33,19 @@ struct GuiEvent {
     P_GuiApp sender;
 
     /* mailbox to acknowledge request */
-    void* ack;
+    OS_EventID* ack;
 };
 
 #define _GUI_EVENT_ELEMENT                  \
     struct GuiEvent parent;                 \
-    P_GuiWin *win                           \
+    P_GuiWin *win;                          \
 
-#define GUI_EVENT_INIT(e)   \
-{                           \
-    e->sender =                         \
-}                           \
+#define GUI_EVENT_INIT(e,t)     \
+{                               \
+    (e)->type   = (t);          \
+    (e)->sender = AppSelf();    \ 
+    (e)->ack    = Co_NULL;      \ 
+}                               \
 
 struct eventMouse
 {

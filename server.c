@@ -33,6 +33,18 @@ void SHandlerMouseBtn(struct eventMouse event)
 
     /* set cursor position */
     MouseSetPos(event->x, event->y);
+
+    win = GetTopWin(event->x, event->y);
+    if(win == Co_NULL)
+    {
+        return;
+    }
+
+    event->win = win->wid;
+
+    while(GuiSend(event->app, event) != E_OK){
+        CoTickDelay(50);
+    }
 }
 
 void SHandlerMouseMotion();

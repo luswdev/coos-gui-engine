@@ -31,3 +31,16 @@ void GuiFree(void* memBuf)
 
     CoKfree(memBuf);
 }
+
+StatusType GuiSend(P_GuiApp app, struct GuiEvent event)
+{
+    StatusType result;
+
+    if(app==Co_NULL || event==Co_NULL || size == 0){
+        return;
+    }
+
+    result = CoPostMail(app->mq, event);
+
+    return result;
+}
