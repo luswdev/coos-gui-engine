@@ -27,5 +27,23 @@ P_TopWin _getTopwinFromTree(P_CoList list, S32 x, S32 y)
 
 P_TopWin GetTopWin(S32 x, S32 y)
 {
-    return _getTopwinFromTree(_guiTopwinList, x, y);
+    return _getTopwinFromTree(&_guiTopwinList, x, y);
+}
+
+P_TopWin _getTopwinFocusFromList(P_CoList list)
+{
+    P_CoList node;
+
+    if(list == Co_NULL){
+        return;
+    }
+
+    for(node=list->next; node != list; node=node->next){
+
+    }
+}
+
+P_TopWin GetTopWinFocus()
+{
+    return _getTopwinFocusFromList(&_guiTopwinList);
 }

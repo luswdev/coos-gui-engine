@@ -14,3 +14,6 @@
 /*---------------------------- Include ---------------------------------------*/
 #include "GuiSystem.h"
 #include "GuiServer.h"
+
+P_TopWin GetTopWin(S32 x, S32 y);
+P_TopWin GetTopWinFocus();

@@ -22,3 +22,4 @@ struct guiCursor
 }
 
 void MouseSetPos(S32 x, S32 y);
+void MouseMoveTo(S32 x, S32 y);

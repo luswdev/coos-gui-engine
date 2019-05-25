@@ -25,3 +25,8 @@ void MouseSetPos(S32 x, S32 y)
     _cursor->cx = x;
     _cursor->cy = y;
 }
+
+void MouseMoveTo(S32 x,S32 y)
+{
+    
+}
