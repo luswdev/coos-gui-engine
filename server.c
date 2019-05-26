@@ -150,7 +150,7 @@ StatusType SEventHandler(struct GuiEvent *event)
         break;
 
     default:
-        break;
+        return Co_FALSE;
     }
 
     return Co_TRUE;

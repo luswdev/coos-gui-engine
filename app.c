@@ -19,6 +19,27 @@
 
 /**
  *******************************************************************************
+ * @brief      Initial a app	 
+ * @param[in]  app     App ptr		
+ * @param[out] None
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to initial a app.
+ *******************************************************************************
+ */
+void _InitApp(P_GuiApp app)
+{
+    app->name       = Co_NULL;
+    app->refCnt     = 0;
+    app->tid        = 0;
+    app->mq         = Co_NULL;
+    app->winCnt     = 0;
+    app->winActiCnt = 0;
+}
+
+/**
+ *******************************************************************************
  * @brief      Create a app	 
  * @param[in]  name     App title name		
  * @param[out] None
@@ -34,14 +55,14 @@ P_GuiApp CreateApp(U8 *name)
     P_GuiApp app;
     P_GuiApp srvApp;
     OS_TID tid = CoGetCurTaskID();
-    struct eventApp event;
+    struct eventApp *event;
 
     if(taskID == 0){                     /* Is idle task?                      */   											 
-        return E_PROTECTED_TASK;        /* Yes,error return                   */
+        return Co_NULL;                 /* Yes,error return                   */
     }
 
     if(title == Co_NULL){    
-        return E_TITLE_NULL;
+        return Co_NULL;
     }
 
     /* create application */
@@ -69,34 +90,13 @@ P_GuiApp CreateApp(U8 *name)
     GUI_EVENT_INIT(&event, GUI_EVENT_APP_CREATE);
     event.app = app;
 
-    if(GuiSendSync(srvApp, (struct GuiEvent *)event) == E_OK){
+    if(GuiSend(srvApp, (struct GuiEvent)&event) == E_OK){
         OSTCB[tid].userData = app;
         return app;
     }
 
     GuiFree(app);    
     return RT_NULL;
-}
-
-/**
- *******************************************************************************
- * @brief      Initial a app	 
- * @param[in]  app     App ptr		
- * @param[out] None
- * @retval     None		 
- *
- * @par Description
- * @details    This function is called to initial a app.
- *******************************************************************************
- */
-void _InitApp(P_GuiApp app)
-{
-    app->name       = Co_NULL;
-    app->refCnt     = 0;
-    app->tid        = 0;
-    app->mq         = Co_NULL;
-    app->winCnt     = 0;
-    app->winActiCnt = 0;
 }
 
 /**
@@ -113,6 +113,7 @@ void _InitApp(P_GuiApp app)
 void DeleteApp(P_GuiApp app)
 {
     P_GuiApp serverApp;
+    struct eventApp event;
 
     if(app == Co_NULL || app->tid == Co_NULL || app->mq == Co_NULL)
     {
@@ -125,7 +126,12 @@ void DeleteApp(P_GuiApp app)
     TCBTbl[app->tid].userData=0;
 
     serverApp = GetServer();
+    GUI_EVENT_INIT(&event, GUI_EVENT_APP_DESTROY);
+    event.app = app;
 
+    if(GuiSend(srvApp, (struct GuiEvent)&event) != E_OK){
+        return;
+    }
 
     GuiFree(app);
 }

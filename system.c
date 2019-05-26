@@ -17,6 +17,17 @@
 
 
 /*---------------------------- Function Declare ------------------------------*/
+/**
+ *******************************************************************************
+ * @brief      allocate memory	 
+ * @param[in]  size     How many memory	should allocate?
+ * @param[out] None
+ * @retval     None			 
+ *
+ * @par Description
+ * @details    This function is called to allocate memory.
+ *******************************************************************************
+ */
 void *GuiMalloc(U32 size)
 {
     void *ptr;
@@ -26,19 +37,41 @@ void *GuiMalloc(U32 size)
     return ptr;
 }
 
-
+/**
+ *******************************************************************************
+ * @brief      free memory	 
+ * @param[in]  memBuf     Where should free?
+ * @param[out] None
+ * @retval     None			 
+ *
+ * @par Description
+ * @details    This function is called to free memory.
+ *******************************************************************************
+ */
 void GuiFree(void* memBuf)
 {
-
     CoKfree(memBuf);
 }
 
-StatusType GuiSend(P_GuiApp app, struct GuiEvent event)
+/**
+ *******************************************************************************
+ * @brief      send a event to app	 
+ * @param[in]  app      Where to send.
+ * @param[in]  event    Which to send.
+ * @param[out] E_ERROR  Bad.
+ * @param[out] E_OK     Good.
+ * @retval     None			 
+ *
+ * @par Description
+ * @details    This function is called to send a event to app.
+ *******************************************************************************
+ */
+StatusType GuiSend(P_GuiApp app, struct GuiEvent *event)
 {
     StatusType result;
 
     if(app==Co_NULL || event==Co_NULL || size == 0){
-        return;
+        return E_ERROR;
     }
 
     result = CoPostMail(app->mq, event);
@@ -46,15 +79,18 @@ StatusType GuiSend(P_GuiApp app, struct GuiEvent event)
     return result;
 }
 
-StatusType GuiSendSync(P_GuiApp app, struct GuiEvent event)
-{
-    StatusType result;
-
-    
-
-    return result;
-}
-
+/**
+ *******************************************************************************
+ * @brief      recive a event	 
+ * @param[in]  app      Where to recive.
+ * @param[in]  result   to put the result
+ * @param[out] event    The recive event
+ * @retval     None			 
+ *
+ * @par Description
+ * @details    This function is called to recive a event.
+ *******************************************************************************
+ */
 struct GuiEvent * GuiRecv(OS_EventID mq, StatusType *result)
 {
     struct GuiEvent * event;
@@ -68,5 +104,5 @@ struct GuiEvent * GuiRecv(OS_EventID mq, StatusType *result)
 
     event = CoAcceptMail(mq, result);
 
-    return result
+    return event
 }

@@ -16,6 +16,7 @@
 #include <OsTime.h>
 #include <OsTask.h>
 
+/*---------------------------- structure -------------------------------------*/
 typedef struct App
 {
     U8      id;
@@ -33,7 +34,7 @@ typedef struct App
     U32     winActiCnt;
 
     /* the event handler */
-    StatusType handler(struct GuiEvent *event);
+    StatusType (*handler)(struct GuiEvent *event);
 
     void    *userDate;
 }GuiApp,*P_GuiApp;

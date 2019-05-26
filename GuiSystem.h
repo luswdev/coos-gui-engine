@@ -28,6 +28,23 @@ typedef struct listNode
     struct listNode *next;
 }CoList,*P_CoList;
 
+typedef struct rect
+{
+    S16 x1, x2, y1, y2;
+
+}GuiRect,*P_GuiRect;
+
+typedef struct region
+{
+    GuiRect extent;
+
+    U32 size;
+    U32 nubRects;
+
+}GuiRegion,*P_GuiRegion;
+
+typedef StatusType (*EventHandlerPtr)(struct GuiWidget *widget, struct GuiEvent *event);
+
 extern OSTCB    TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
 
 /*---------------------------- Function Define -------------------------------*/

@@ -25,3 +25,16 @@ typedef struct topwin
     P_GuiApp *app;
 
 }TopWin,*P_TopWin;
+
+
+/*---------------------------- Function Define -------------------------------*/
+void SHandlerMonitorAdd();
+void SHandlerMonitorRemove();
+void SHandlerMouseBtn(struct eventMouse *event);
+void SHandlerMouseMotion(struct eventMouse *event);
+void SHandlerKbd(struct eventKbd *event);
+
+StatusType SEventHandler(struct GuiEvent *event);
+
+void ServerEntry(void *parameter);
+P_GuiApp GetServer();

@@ -29,6 +29,7 @@ enum eventType
     GUI_EVENT_KBD,                   /* keyboard info         */
 };
 
+/*---------------------------- structure -------------------------------------*/
 struct GuiEvent {
     /* the event type */
     enum eventType type;
