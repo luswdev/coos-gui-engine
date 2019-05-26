@@ -175,11 +175,15 @@ void ServerEntry(void *parameter)
         return;
     }
 
+    serverApp->handler = SEventHandler;
+
     RunApp(serverApp);
 
     DeleteApp(serverApp);
     serverApp = Co_NULL;
 }
+
+
 
 /**
  *******************************************************************************

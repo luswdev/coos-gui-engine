@@ -26,11 +26,14 @@ typedef struct App
     /* Task id */
     OS_TID tid;
     /* Message queue */
-    P_QCB   mq;
+    OS_EventID   mq;
 
     U32     winCnt;
     /* window activate count */
     U32     winActiCnt;
+
+    /* the event handler */
+    StatusType handler(struct GuiEvent *event);
 
     void    *userDate;
 }GuiApp,*P_GuiApp;

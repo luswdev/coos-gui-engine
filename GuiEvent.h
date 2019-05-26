@@ -18,11 +18,15 @@
 
 enum eventType
 {
-    /* mouse and keyboard event */
-    RTGUI_EVENT_MOUSE_MOTION,          /* mouse motion          */
-    RTGUI_EVENT_MOUSE_BUTTON,          /* mouse button info     */
-    RTGUI_EVENT_KBD,                   /* keyboard info         */
+    /* applications event */
+    GUI_EVENT_APP_CREATE,            /* create an application */
+    GUI_EVENT_APP_DESTROY,           /* destroy an application */
+    GUI_EVENT_APP_ACTIVATE,          /* activate an application */
 
+    /* mouse and keyboard event */
+    GUI_EVENT_MOUSE_MOTION,          /* mouse motion          */
+    GUI_EVENT_MOUSE_BUTTON,          /* mouse button info     */
+    GUI_EVENT_KBD,                   /* keyboard info         */
 };
 
 struct GuiEvent {
@@ -46,6 +50,13 @@ struct GuiEvent {
     (e)->sender = AppSelf();    \ 
     (e)->ack    = Co_NULL;      \ 
 }                               \
+
+struct eventApp
+{
+    struct GuiEvent parent; 
+
+    P_GuiApp app;
+}
 
 struct eventMouse
 {

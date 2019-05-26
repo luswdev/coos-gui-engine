@@ -13,6 +13,7 @@
 
 /*---------------------------- Include ---------------------------------------*/
 #include "GuiSystem.h"
+#include "GuiApp.h"
 
 
 /*---------------------------- Function Declare ------------------------------*/
@@ -43,4 +44,29 @@ StatusType GuiSend(P_GuiApp app, struct GuiEvent event)
     result = CoPostMail(app->mq, event);
 
     return result;
+}
+
+StatusType GuiSendSync(P_GuiApp app, struct GuiEvent event)
+{
+    StatusType result;
+
+    
+
+    return result;
+}
+
+struct GuiEvent * GuiRecv(OS_EventID mq, StatusType *result)
+{
+    struct GuiEvent * event;
+    P_GuiApp app;
+
+    app = TCBTbl[CoGetCurTaskID()].userData;
+
+    if(app==Co_NULL){
+        return E_ERROR;
+    }
+
+    event = CoAcceptMail(mq, result);
+
+    return result
 }

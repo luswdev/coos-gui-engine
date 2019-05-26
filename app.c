@@ -15,6 +15,7 @@
 #include "GuiApp.h"
 #include "GuiSystem.h"
 #include "GuiEvent.h"
+#include "GuiServer.h"
 
 /**
  *******************************************************************************
@@ -30,23 +31,22 @@
  */
 P_GuiApp CreateApp(U8 *name)
 {
-    P_GuiApp *app;
+    P_GuiApp app;
+    P_GuiApp srvApp;
     OS_TID tid = CoGetCurTaskID();
+    struct eventApp event;
 
-    if(taskID == 0)                     /* Is idle task?                      */
-    {											 
+    if(taskID == 0){                     /* Is idle task?                      */   											 
         return E_PROTECTED_TASK;        /* Yes,error return                   */
     }
 
-    if(title == Co_NULL)
-    {
+    if(title == Co_NULL){    
         return E_TITLE_NULL;
     }
 
     /* create application */
     app = GuiMalloc(sizeof(GuiApp));
-    if (app == Co_NULL)
-    {
+    if (app == Co_NULL){    
         return Co_NULL;
     }
     
@@ -54,13 +54,28 @@ P_GuiApp CreateApp(U8 *name)
 
     app->tid = tid;
 
-    /* create message queue */
-    //app->mq = CoCreateQueue
-
     /* set application title */
-    //app->name = 
+    app->name = title;
 
-    return app;
+    /* create message queue */
+    app->mq = CoCreateMbox(0)  /* FIFO */
+
+    srvApp = GetServer();
+    if(srvApp==Co_NULL){
+        OSTCB[tid].userData = app;
+        return app;
+    }
+
+    GUI_EVENT_INIT(&event, GUI_EVENT_APP_CREATE);
+    event.app = app;
+
+    if(GuiSendSync(srvApp, (struct GuiEvent *)event) == E_OK){
+        OSTCB[tid].userData = app;
+        return app;
+    }
+
+    GuiFree(app);    
+    return RT_NULL;
 }
 
 /**
@@ -74,7 +89,7 @@ P_GuiApp CreateApp(U8 *name)
  * @details    This function is called to initial a app.
  *******************************************************************************
  */
-void _InitApp(P_GuiApp *app)
+void _InitApp(P_GuiApp app)
 {
     app->name       = Co_NULL;
     app->refCnt     = 0;
@@ -106,6 +121,8 @@ void DeleteApp(P_GuiApp app)
 
     GuiFree(app->name);
     app->name = Co_NULL
+    CoDelMbox(app->mq, OPT_DEL_ANYWAY);
+    TCBTbl[app->tid].userData=0;
 
     serverApp = GetServer();
 
@@ -113,6 +130,17 @@ void DeleteApp(P_GuiApp app)
     GuiFree(app);
 }
 
+/**
+ *******************************************************************************
+ * @brief      Run a app loop
+ * @param[in]  app   App ptr should run		
+ * @param[out] None
+ * @retval     None			 
+ *
+ * @par Description
+ * @details    This function is called to run a app loop.
+ *******************************************************************************
+ */
 void _appEventLoop(P_GuiApp app)
 {
     StatusType result;
@@ -122,10 +150,11 @@ void _appEventLoop(P_GuiApp app)
     currentRef = ++app->refCnt;
     while (currentRef <= app->refCnt)
     {
-        
+        event = GuiRecv(app->mq, &result);
+        if(result==E_OK){
+            app->handler(event);
+        }
     }
-    
-
 }
 
 /**
@@ -167,7 +196,7 @@ void RunApp(P_GuiApp app)
  * @details    This function is called to exit a app.
  *******************************************************************************
  */
-void ExitApp(P_GuiApp *app)
+void ExitApp(P_GuiApp app)
 {
     if (app->refCnt == 0)
         return;
