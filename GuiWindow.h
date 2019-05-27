@@ -5,15 +5,15 @@
  * @date       2019.5.23
  * @brief      Some system function for GUI engine's event.	
  *******************************************************************************
- * @copy
- *
- * 
- *******************************************************************************
  */ 
-/*---------------------------- Include ---------------------------------------*/
-#include "GuiSystem.h"
+
+#ifndef _GUI_WINDOW_H
+#define _GUI_WINDOW_H
 
 typedef struct Window
 {
+    P_GuiWidget foucsWidget;
     
 }GuiWin,*P_GuiWin;
+
+#endif /* _GUI_WINDOW_H */

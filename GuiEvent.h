@@ -5,16 +5,13 @@
  * @date       2019.5.19
  * @brief      Some system function for GUI engine's event.	
  *******************************************************************************
- * @copy
- *
- * 
- *******************************************************************************
  */ 
+
+#ifndef _GUI_EVENT_H
+#define _GUI_EVENT_H
+
 /*---------------------------- Include ---------------------------------------*/
-#include "GuiSystem.h"
-#include "GuiApp.h"
-#include "kbdDef.h"
-#include "GuiWindow.h"
+#include "cogui.h"
 
 enum eventType
 {
@@ -22,6 +19,18 @@ enum eventType
     GUI_EVENT_APP_CREATE,            /* create an application */
     GUI_EVENT_APP_DESTROY,           /* destroy an application */
     GUI_EVENT_APP_ACTIVATE,          /* activate an application */
+
+    /* window event */
+    GUI_EVENT_WIN_CREATE,            /* create a window       */
+    GUI_EVENT_WIN_DESTROY,           /* destroy a window      */
+    GUI_EVENT_WIN_SHOW,              /* show a window         */
+    GUI_EVENT_WIN_HIDE,              /* hide a window         */
+    GUI_EVENT_WIN_ACTIVATE,          /* activate a window     */
+    GUI_EVENT_WIN_DEACTIVATE,        /* deactivate a window   */
+    GUI_EVENT_WIN_CLOSE,             /* close a window        */
+    GUI_EVENT_WIN_MOVE,              /* move a window         */
+    GUI_EVENT_WIN_RESIZE,            /* resize a window       */
+    GUI_EVENT_WIN_UPDATE_END,        /* update done for window */
 
     /* mouse and keyboard event */
     GUI_EVENT_MOUSE_MOTION,          /* mouse motion          */
@@ -94,3 +103,5 @@ struct eventKbd
     U16 mod;          /* current key modifiers */
     U16 asciiCode;    /* character */
 }
+
+#endif /* _GUI_EVENT_H */

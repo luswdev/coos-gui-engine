@@ -5,17 +5,10 @@
  * @date       2019.5.19
  * @brief      The server for gui engine.	
  *******************************************************************************
- * @copy
- *
- * 
- *******************************************************************************
  */ 
 
 /*---------------------------- Include ---------------------------------------*/
-#include "GuiServer.h"
-#include "GuiApp.h"
-#include "GuiEvent.h"
-#include "GuiMouse.h"
+#include "cogui.h"
 
 /*---------------------------- Variable declare ------------------------------*/
 P_GuiApp serverApp = Co_NULL;

@@ -5,11 +5,10 @@
  * @date       2019.5.15
  * @brief      This is a file for GUI engine.	
  *******************************************************************************
- * @copy
- *
- * 
- *******************************************************************************
  */ 
+
+#ifndef _GUI_SYSTEM_H
+#define _GUI_SYSTEM_H
 
 /*---------------------------- Include ---------------------------------------*/
 #include <coocox.h>
@@ -45,6 +44,24 @@ typedef struct region
 
 typedef StatusType (*EventHandlerPtr)(struct GuiWidget *widget, struct GuiEvent *event);
 
+/**
+ * Border style
+ */
+enum GUI_BORDER_STYLE
+{
+    GUI_BORDER_NONE = 0,
+    GUI_BORDER_SIMPLE,
+    GUI_BORDER_RAISE,
+    GUI_BORDER_SUNKEN,
+    GUI_BORDER_BOX,
+    GUI_BORDER_STATIC,
+    GUI_BORDER_EXTRA,
+    GUI_BORDER_UP,
+    GUI_BORDER_DOWN
+};
+#define GUI_BORDER_DEFAULT_WIDTH  2
+#define GUI_WIDGET_DEFAULT_MARGIN 3
+
 extern OSTCB    TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
 
 /*---------------------------- Function Define -------------------------------*/
@@ -54,3 +71,5 @@ void GuiFree(void* memBuf);
 StatusType GuiSend(P_GuiApp app, struct GuiEvent event);
 StatusType GuiSendSync(P_GuiApp app, struct GuiEvent event);
 StatusType GuiRecv(struct GuiEvent event);
+
+#endif /* _GUI_SYSTEM_H */

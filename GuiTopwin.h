@@ -5,15 +5,12 @@
  * @date       2019.5.24
  * @brief      The top window management for gui engine.	
  *******************************************************************************
- * @copy
- *
- * 
- *******************************************************************************
  */ 
 
-/*---------------------------- Include ---------------------------------------*/
-#include "GuiSystem.h"
-#include "GuiServer.h"
+#ifndef _GUI_TOPWIN_H
+#define _GUI_TOPWIN_H
 
 P_TopWin GetTopWin(S32 x, S32 y);
 P_TopWin GetTopWinFocus();
+
+#endif /* _GUI_TOPWIN_H */

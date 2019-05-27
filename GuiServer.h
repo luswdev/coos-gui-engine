@@ -5,16 +5,10 @@
  * @date       2019.5.23
  * @brief      The server for gui engine.	
  *******************************************************************************
- * @copy
- *
- * 
- *******************************************************************************
  */ 
 
-/*---------------------------- Include ---------------------------------------*/
-#include "GuiApp.h"
-#include "GuiSystem.h"
-#include "GuiWindow.h"
+#ifndef _GUI_SERVER_H
+#define _GUI_SERVER_H
 
 typedef struct topwin
 {
@@ -38,3 +32,5 @@ StatusType SEventHandler(struct GuiEvent *event);
 
 void ServerEntry(void *parameter);
 P_GuiApp GetServer();
+
+#endif /* _GUI_SERVER_H */

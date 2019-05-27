@@ -5,15 +5,10 @@
  * @date       2019.5.23
  * @brief      The mouse action for gui engine.	
  *******************************************************************************
- * @copy
- *
- * 
- *******************************************************************************
  */ 
 
-/*---------------------------- Include ---------------------------------------*/
-#include "GuiSystem.h"
-#include "GuiDriver.h"
+#ifndef _GUI_MOUSE_H
+#define _GUI_MOUSE_H
 
 struct guiCursor
 {
@@ -23,3 +18,5 @@ struct guiCursor
 
 void MouseSetPos(S32 x, S32 y);
 void MouseMoveTo(S32 x, S32 y);
+
+#endif /* _GUI_MOUSE_H */

@@ -5,11 +5,10 @@
  * @date       2019.5.18
  * @brief      This is a file for GUI engine's app.	
  *******************************************************************************
- * @copy
- *
- * 
- *******************************************************************************
  */ 
+
+#ifndef _GUI_APP_H
+#define _GUI_APP_H
 
 /*---------------------------- Include ---------------------------------------*/
 #include <CoOS.h>
@@ -52,3 +51,5 @@ void CloseApp(P_GuiApp *app);
 void SleepApp(P_GuiApp *app, S32 sec);
 
 P_GuiApp AppSelf();
+
+#endif /* _GUI_APP_H */
