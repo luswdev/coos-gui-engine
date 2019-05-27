@@ -104,4 +104,16 @@ struct eventKbd
     U16 asciiCode;    /* character */
 }
 
+struct eventWin
+{
+    _GUI_EVENT_ELEMENT
+};
+
+
+struct eventWinCreate
+{
+    _GUI_EVENT_ELEMENT
+    P_GuiWin parentWinow;
+}
+
 #endif /* _GUI_EVENT_H */

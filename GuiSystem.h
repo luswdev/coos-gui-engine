@@ -17,8 +17,11 @@
 #include <OsTask.h>
 
 /*---------------------------- Error Codes   ---------------------------------*/
-#define E_TITLE_NULL          (StatusType)22
-#define E_ERROR               (StatusType)23	
+#define E_TITLE_NULL                (StatusType)22
+#define E_ERROR                     (StatusType)23
+#define E_NOSYS                     (StatusType)24
+#define GUI_REGION_STATUS_FAILURE   (StatusType)25
+#define GUI_REGION_STATUS_SUCCESS   (StatusType)26
 
 /*---------------------------- structure -------------------------------------*/
 typedef struct ListNode

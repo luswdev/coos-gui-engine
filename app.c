@@ -188,6 +188,7 @@ void RunApp(P_GuiApp app)
  *******************************************************************************
  * @brief      Exit a app	 
  * @param[in]  app   App ptr should exit		
+ * @param[in]  code  exit code		
  * @param[out] None
  * @retval     None			 
  *
@@ -195,12 +196,13 @@ void RunApp(P_GuiApp app)
  * @details    This function is called to exit a app.
  *******************************************************************************
  */
-void ExitApp(P_GuiApp app)
+void ExitApp(P_GuiApp app, U16 code)
 {
     if (app->refCnt == 0)
         return;
     
     app->refCnt--;
+    app->exitCode = code;
 }
 
 /**

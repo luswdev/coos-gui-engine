@@ -141,3 +141,11 @@ StatusType RegionSubtractRect(P_GuiRegion regD, P_GuiRegion regM, P_GuiRect rect
 {
 
 }
+
+void RectInflate(P_GuiRect rect, S32 d)
+{
+    rect->x1 -= d;
+    rect->x2 += d;
+    rect->y1 -= d;
+    rect->y2 += d;
+}

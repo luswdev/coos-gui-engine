@@ -176,7 +176,19 @@ void ServerEntry(void *parameter)
     serverApp = Co_NULL;
 }
 
+StatusType ServerPostEvent(struct GuiEvent *event)
+{
+    StatusType result;
 
+    if (serverApp != Co_NULL){
+        result = GuiSend(serverApp, event);
+    }
+    else{
+        result = E_NOSYS;
+    }
+
+    return result;
+}
 
 /**
  *******************************************************************************

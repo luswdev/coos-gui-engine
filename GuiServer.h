@@ -31,7 +31,10 @@ void SHandlerKbd(struct eventKbd *event);
 
 StatusType SEventHandler(struct GuiEvent *event);
 
+StatusType ServerPostEvent(struct GuiEvent *event);
+
 void ServerEntry(void *parameter);
 P_GuiApp GetServer();
+
 
 #endif /* _GUI_SERVER_H */

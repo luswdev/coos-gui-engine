@@ -23,6 +23,11 @@
 
 #define GUI_WIN_MAGIC					  0xA5A55A5A		/* win magic flag */
 
+#define WINTITLE_HEIGHT         20
+#define WINTITLE_CB_WIDTH       16
+#define WINTITLE_CB_HEIGHT      16
+#define WINTITLE_BORDER_SIZE    2
+
 enum guiWinFlag
 {
     GUI_WIN_FLAG_INIT        = 0x00,  /* init state              */
@@ -48,7 +53,7 @@ enum guiWinFlag
 /*---------------------------- structure -------------------------------------*/
 typedef struct window
 {
-    GuiContainer  parent;
+    GuiContainer parent;
 
     /* update count */
     S64 update;
@@ -60,8 +65,8 @@ typedef struct window
     /* parent window. Co_NULL if the window is a top level window */
     struct window *parentWindow;
 
-    GuiRegion outer_clip;
-    GuiRect outer_extent;
+    GuiRegion outerClip;
+    GuiRect outerExtent;
 
     P_GuiWidget foucsWidget;
 
@@ -79,6 +84,7 @@ typedef struct window
 
     /* window title */
     U8 *title;
+    P_GuiWidget _titleWgt
 
     /* call back */
     StatusType (*onActivate)(P_GuiWidget widget, struct GuiEvent *event);

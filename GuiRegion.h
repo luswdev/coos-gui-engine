@@ -36,10 +36,6 @@ typedef struct region
 #define GUI_MIN(a,b) ((a) < (b) ? (a) : (b))
 #define GUI_MAX(a,b) ((a) > (b) ? (a) : (b))
 
-/*---------------------------- Error Codes   ---------------------------------*/
-#define GUI_REGION_STATUS_FAILURE (StatusType)24
-#define GUI_REGION_STATUS_SUCCESS (StatusType)25
-
 /*---------------------------- Function Define -------------------------------*/
 static StatusType RegionBreak(P_GuiRegion *region);
 StatusType RegionCopy(P_GuiRegion dest, P_GuiRegion source);
@@ -55,5 +51,7 @@ StatusType RegionUnion(P_GuiRegion newReg, P_GuiRegion reg1, P_GuiRegion reg2);
 
 StatusType RegionSubtract(P_GuiRegion regD, P_GuiRegion regM, P_GuiRegion regS);
 StatusType RegionSubtractRect(P_GuiRegion regD, P_GuiRegion regM, P_GuiRect rect);
+
+void RectInflate(P_GuiRect rect, S32 d);
 
 #endif /* _GUI_REGION_H */
