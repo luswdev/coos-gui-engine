@@ -18,7 +18,7 @@ GuiRect guiEmptyRect = {0, 0, 0, 0};
 GuiPoint guiEmptyPoint = {0, 0};
 
 
-static StatusType RegionBreak(P_GuiRegion *region)
+static StatusType RegionBreak(P_GuiRegion region)
 {
     if(region->data && region->data->size){
         GuiFree(region->data);
@@ -29,12 +29,44 @@ static StatusType RegionBreak(P_GuiRegion *region)
     return GUI_REGION_STATUS_FAILURE;
 }
 
+void RegionInitWithExtents(P_GuiRegion region, const P_GuiRect extents)
+{
+    region->extent = *extents;
+    region->data = Co_NULL;
+}
+
+void RegionReset(P_GuiRegion region, P_GuiRect rect)
+{
+    if(region==Co_NULL){
+        return;
+    }
+
+    if(region->data && region->data->size){
+        GuiFree(region->data);
+    }
+
+    RegionInitWithExtents(region, rect);
+}
+
 void RectIntersect(P_GuiRect src, P_GuiRect dest)
 {
     if (dest->x1 < src->x1) dest->x1 = src->x1;
     if (dest->y1 < src->y1) dest->y1 = src->y1;
     if (dest->x2 > src->x2) dest->x2 = src->x2;
     if (dest->y2 > src->y2) dest->y2 = src->y2;
+}
+
+StatusType RegionIntersectRect(P_GuiRegion newReg,P_GuiRegion reg1, P_GuiRect rect)
+{
+    P_GuiRegion region;
+
+    region.data = RT_NULL;
+    region.extent.x1 = rect->x1;
+    region.extent.y1 = rect->y1;
+    region.extent.x2 = rect->x2;
+    region.extent.y2 = rect->y2;
+
+    return RectIntersect(newReg, reg1, &region);
 }
 
 StatusType RegionUnion(P_GuiRegion newReg, P_GuiRegion reg1, P_GuiRegion reg2)
@@ -100,8 +132,12 @@ StatusType RegionUnion(P_GuiRegion newReg, P_GuiRegion reg1, P_GuiRegion reg2)
     return GUI_REGION_STATUS_SUCCESS;
 }
 
-void RegionInitWithExtents(P_GuiRegion region, const P_GuiRect extents)
+StatusType RegionSubtract(P_GuiRegion regD, P_GuiRegion regM, P_GuiRegion regS)
 {
-    region->extent = *extents;
-    region->data = Co_NULL;
+
+}
+
+StatusType RegionSubtractRect(P_GuiRegion regD, P_GuiRegion regM, P_GuiRect rect)
+{
+
 }

@@ -415,7 +415,48 @@ void WidgetSetMinheight(P_GuiWidget widget, S32 height)
  */
 void WidgetUpdateClip(rtgui_widget_t *widget)
 {
+    GuiRect rect;
+    P_CoSList node;
+    P_GuiWidget parent;
 
+    /* no widget or widget is hide, no update clip */
+    if (widget == Co_NULL || !(widget->flag&GUI_WIDGET_FLAG_SHOWN) || widget->parent == Co_NULL){
+        return;
+    }
+
+    parent = widget->parent;
+    /* reset visiable extent */
+    widget->extentVisiable = widget->extent;
+    RectIntersect(&(parent->extentVisiable), &(widget->extentVisiable));
+
+    rect = parent->extentVisiable;
+    /* reset clip to extent */
+    RegionReset(&(widget->clip), &(widget->extent));
+    /* limit widget extent in parent extent */
+    RegionIntersectRect(&(widget->clip), &(widget->clip), &rect);
+
+    /* get the no transparent parent */
+    while (parent != Co_NULL && parent->flag & GUI_WIDGET_FLAG_TRANSPARENT){
+        parent = parent->parent;
+    }
+    if (parent != Co_NULL){
+        /* give my clip back to parent */
+        RegionUnion(&(parent->clip), &(parent->clip), &(widget->clip));
+
+        /* subtract widget clip in parent clip */
+        if (!(widget->flag & GUI_WIDGET_FLAG_TRANSPARENT) && parent->flag & GUI_WIDGET_FLAG_IS_CONTAINER){
+            RegionSubtractRect(&(parent->clip), &(parent->clip), &(widget->extent_visiable));
+        }
+    }
+
+    /* if it's a container object, update the clip info of children */
+    if(widget&GUI_WIDGET_FLAG_IS_CONTAINER){
+        for(node=(P_GuiContainer)&widget->children; node!=Co_NULL; node=node->next){
+            child = (P_GuiWidget)node->sibling;
+
+            WidgetUpdateClip(child);
+        }   
+    }
 }
 
 /**
@@ -458,10 +499,12 @@ void _WidgetMove(P_GuiWidget widget, S32 dx, S32 dy)
     /* reset clip info */
     RegionInitWithExtents(&(widget->clip), &(widget->extent));
 
-    for(node=(P_GuiContainer)&widget->children; node!=Co_NULL; node=node->next){
-        child = (P_GuiWidget)node->sibling;
+    if(widget&GUI_WIDGET_FLAG_IS_CONTAINER){
+        for(node=(P_GuiContainer)&widget->children; node!=Co_NULL; node=node->next){
+            child = (P_GuiWidget)node->sibling;
 
-        _WidgetMove(child, dx, dy);
+            _WidgetMove(child, dx, dy);
+        }   
     }
 }
 

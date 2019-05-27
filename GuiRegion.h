@@ -41,12 +41,19 @@ typedef struct region
 #define GUI_REGION_STATUS_SUCCESS (StatusType)25
 
 /*---------------------------- Function Define -------------------------------*/
+static StatusType RegionBreak(P_GuiRegion *region);
 StatusType RegionCopy(P_GuiRegion dest, P_GuiRegion source);
 
+void RegionInitWithExtents(P_GuiRegion region, const P_GuiRect extents);
+
+void RegionReset(rtgui_region_t *region, rtgui_rect_t *rect);
+
 void RectIntersect(P_GuiRect src, P_GuiRect dest);
+StatusType RegionIntersectRect(P_GuiRegion *newReg,P_GuiRegion *reg1, P_GuiRect *rect);
 
 StatusType RegionUnion(P_GuiRegion newReg, P_GuiRegion reg1, P_GuiRegion reg2);
 
-void RegionInitWithExtents(P_GuiRegion region, const P_GuiRect extents);
+StatusType RegionSubtract(P_GuiRegion regD, P_GuiRegion regM, P_GuiRegion regS);
+StatusType RegionSubtractRect(P_GuiRegion regD, P_GuiRegion regM, P_GuiRect rect);
 
 #endif /* _GUI_REGION_H */

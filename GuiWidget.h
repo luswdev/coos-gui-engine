@@ -57,6 +57,7 @@ typedef struct GuiWidget
 #define GUI_WIDGET_FLAG_FOCUSABLE     0x0010
 #define GUI_WIDGET_FLAG_DC_VISIBLE    0x0100
 #define GUI_WIDGET_FLAG_IN_ANIM       0x0200
+#define GUI_WIDGET_FLAG_IS_CONTAINER  0x0400
 
 /*---------------------------- Function Define -------------------------------*/
 P_GuiWidget WidgetCreate();
