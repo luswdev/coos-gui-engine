@@ -97,7 +97,7 @@ typedef struct window
     void *userData;
 
     /* Private data */
-    S64 (*_do_show)(struct window *win);
+    S64 (*_doShow)(struct window *win);
 
     /* app ref_count */
     U16 appRefCnt;

@@ -163,10 +163,56 @@ StatusType WinClose(P_GuiWin win)
 
 U64 WinDoShow(P_GuiWin win)
 {
+    U16 exitCode = -1;
+    P_GuiApp app;
+    struct eventWin event;
 
+    GUI_EVENT_INIT(&event, GUI_EVENT_WIN_SHOW);
+    event.win = win;
+
+    if(win==Co_NULL){
+        return exitCode;
+    }
+
+    win->flag &= ~GUI_WIN_FLAG_CLOSED;
+    win->flag &= ~GUI_WIN_FLAG_CB_PRESSED;
+
+    if (!(win->flag & GUI_WIN_FLAG_CONNECTED)){
+        if (_WinCreateInServer(win) == Co_FALSE){
+            return exitCode;
+        }
+    } 
+
+    /* set window unhidden before notify the server */
+    WidgetShow((P_GuiWidget)win);
+
+    if(ServerPostEvent((struct GuiEvent *)&eshow) != RT_EOK){
+        /* It could not be shown if a parent window is hidden. */
+        WidgetHide((P_GuiWidget)win);
+        return exitCode;
+    }
+
+    if (win->focused_widget == Co_NULL){
+        WidgetFocus((P_GuiWidget)win);
+    }
+
+    app = win->app;
+    if(app == RT_NULL){
+        return exitCode;
+    }
+
+    return exitCode;
 }
 
 U64 WinShow(P_GuiWin win, StatusType is_modal)
 {
-    
+    (P_GuiWidget)win->flag |= GUI_WIDGET_FLAG_SHOWN;
+
+    win->magic = GUI_WIN_MAGIC;
+
+    if(win->_doShow){
+        return win->_doShow(win);
+    }
+
+    return WinDoShow(win)
 }
