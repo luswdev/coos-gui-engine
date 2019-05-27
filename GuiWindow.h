@@ -113,7 +113,7 @@ void WinDele(P_GuiWin win);
 
 StatusType WinClose(P_GuiWin win);
 
-U64 WinShow(P_GuiWin win, StatusType is_modal);
+U64 WinShow(P_GuiWin win);
 U64 WinDoShow(P_GuiWin win);
 
 void WinHide(P_GuiWin win);
