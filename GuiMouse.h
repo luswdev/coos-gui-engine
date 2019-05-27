@@ -10,6 +10,7 @@
 #ifndef _GUI_MOUSE_H
 #define _GUI_MOUSE_H
 
+/*---------------------------- structure -------------------------------------*/
 struct guiCursor
 {
     /* current cursor x and y */

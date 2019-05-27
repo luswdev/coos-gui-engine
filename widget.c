@@ -404,6 +404,213 @@ void WidgetSetMinheight(P_GuiWidget widget, S32 height)
 
 /**
  *******************************************************************************
+ * @brief      update a widget clip region
+ * @param[in]  widget       widget ptr
+ * @param[out] none
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to update a widget clip region.
+ *******************************************************************************
+ */
+void WidgetUpdateClip(rtgui_widget_t *widget)
+{
+
+}
+
+/**
+ *******************************************************************************
+ * @brief      actually move a widget
+ * @param[in]  widget       widget ptr	
+ * @param[in]  dx           delta x	
+ * @param[in]  dy           delta y	
+ * @param[out] none
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to actually move a widget.
+ *******************************************************************************
+ */
+void _WidgetMove(P_GuiWidget widget, S32 dx, S32 dy)
+{
+    P_CoSList node; 
+    P_Widget child, parent;
+
+    rect->x1 += dx;
+    rect->x2 += dx;
+
+    rect->y1 += dy;
+    rect->y2 += dy;
+
+    /* handle visiable extent */
+    widget->extentVisiable = widget->extent;
+    parent = widget->parent;
+
+    /* we should find out the none-transparent parent */
+    while (parent!=Co_NULL && parent->flag & GUI_WIDGET_FLAG_TRANSPARENT){
+        parent = parent->parent;
+    }
+
+    if (widget->parent){
+        RectIntersect(&(widget->parent->extentVisiable), &(widget->extentVisiable));
+    }
+
+    /* reset clip info */
+    RegionInitWithExtents(&(widget->clip), &(widget->extent));
+
+    for(node=(P_GuiContainer)&widget->children; node!=Co_NULL; node=node->next){
+        child = (P_GuiWidget)node->sibling;
+
+        _WidgetMove(child, dx, dy);
+    }
+}
+
+/**
+ *******************************************************************************
+ * @brief      move widget and its children to a logic point
+ * @param[in]  widget       widget ptr	
+ * @param[in]  dx           delta x	
+ * @param[in]  dy           delta y	
+ * @param[out] none
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to move widget to a logic point.
+ *******************************************************************************
+ */
+void WidgetMoveToLogic(P_GuiWidget widget, S32 dx, S32 dy)
+{
+    GuiRect rect;
+    P_GuiWidget parent;
+
+    if (widget==Co_NULL){
+        return;
+    }
+
+    /* give clip of this widget back to parent */
+    parent = widget->parent;
+    if (parent!=Co_NULL)
+    {
+        /* get the parent rect, even if it's a transparent parent. */
+        rect = parent->extent_visiable;
+    }
+
+    /* we should find out the none-transparent parent */
+    while (parent!=Co_NULL && parent->flag & RTGUI_WIDGET_FLAG_TRANSPARENT){
+        parent = parent->parent;
+    }
+
+    if (parent != Co_NULL)
+    {
+        /* reset clip info */
+        RegionInitWithExtents(&(widget->clip), &(widget->extent));
+        RegionIntersectRect(&(widget->clip), &(widget->clip), &rect);
+
+        /* give back the extent */
+        RegionUnion(&(parent->clip), &(parent->clip), &(widget->clip));
+    }
+
+    _WidgetMove(widget, dx, dy);
+
+    // update clip
+}
+
+/**
+ *******************************************************************************
+ * @brief      get the physical position of a logic point on widget
+ * @param[in]  widget       widget ptr	
+ * @param[in]  point        point ptr
+ * @param[out] none
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to get the physical position.
+ *******************************************************************************
+ */
+void WidgetPointToDevice(P_GuiWidget widget, P_GuiPoint point)
+{
+    if(widget==Co_NULL || point==Co_NULL){
+        return;
+    }
+
+    point->x += widget->extent.x1;
+    point->y += widget->extent.y1;
+}
+
+/**
+ *******************************************************************************
+ * @brief      get the physical position of a logic rect on widget
+ * @param[in]  widget       widget ptr	
+ * @param[in]  rect         rect ptr
+ * @param[out] none
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to get the physical position.
+ *******************************************************************************
+ */
+void WidgetRectToDevice(P_GuiWidget widget, P_GuiRect rect)
+{
+    if(widget==Co_NULL || rect==Co_NULL){
+        return;
+    }
+
+    rect->x1 += widget->extent.x1;
+    rect->x2 += widget->extent.x1;
+
+    rect->y1 += widget->extent.y1;
+    rect->y2 += widget->extent.y1;
+}
+
+/**
+ *******************************************************************************
+ * @brief      get the logic position of a physical point on widget
+ * @param[in]  widget       widget ptr	
+ * @param[in]  point        point ptr
+ * @param[out] none
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to get the logic position.
+ *******************************************************************************
+ */
+void WidgetPointToLogic(P_GuiWidget widget, P_GuiPoint point)
+{
+    if(widget==Co_NULL || point==Co_NULL){
+        return;
+    }
+
+    point->x -= widget->extent.x1;
+    point->y -= widget->extent.y1;
+}
+
+/**
+ *******************************************************************************
+ * @brief      get the logic position of a physical rect on widget
+ * @param[in]  widget       widget ptr	
+ * @param[in]  rect         rect ptr
+ * @param[out] none
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to get the logic position.
+ *******************************************************************************
+ */
+void widgetRectToLogic(P_GuiWidget widget, P_GuiRect rect)
+{
+     if(widget==Co_NULL || rect==Co_NULL){
+        return;
+    }
+
+    rect->x1 -= widget->extent.x1;
+    rect->x2 -= widget->extent.x1;
+
+    rect->y1 -= widget->extent.y1;
+    rect->y2 -= widget->extent.y1;
+}
+
+/**
+ *******************************************************************************
  * @brief      let widget show
  * @param[in]  widget       widget ptr	
  * @param[out] none

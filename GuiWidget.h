@@ -3,7 +3,7 @@
  * @file       GuiWidget.h
  * @version    V0.0.1   
  * @date       2019.5.26
- * @brief      Some widget function for GUI engine's event.	
+ * @brief      Some widget function for GUI engine's widget.	
  *******************************************************************************
  */ 
 
@@ -85,5 +85,21 @@ StatusType WidgetOnshow(P_GuiWidget widget, struct GuiEvent *event);
 void WidgetHide(P_GuiWidget widget);
 StatusType WidgetOnhide(P_GuiWidget widget, struct GuiEvent *event);
 void WidgetUpdate(P_GuiWidget widget);
+
+/* get the physical position of a logic point on widget */
+void WidgetPointToDevice(P_GuiWidget widget, P_GuiPoint point);
+/* get the physical position of a logic rect on widget */
+void WidgetRectToDevice(P_GuiWidget widget, P_GuiRect rect);
+
+/* get the logic position of a physical point on widget */
+void WidgetPointToLogic(P_GuiWidget widget, P_GuiPoint point);
+/* get the logic position of a physical rect on widget */
+void widgetRectToLogic(P_GuiWidget widget, P_GuiRect rect);
+
+/* move widget and its children to a logic point */
+void WidgetMoveToLogic(P_GuiWidget widget, S32 dx, S32 dy);
+
+/* update the clip info of widget */
+void WidgetUpdateClip(rtgui_widget_t *widget);
 
 #endif /* _GUI_WIDGET_H */

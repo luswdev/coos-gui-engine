@@ -21,11 +21,16 @@
 #define E_ERROR               (StatusType)23	
 
 /*---------------------------- structure -------------------------------------*/
-typedef struct listNode
+typedef struct ListNode
 {
-    struct listNode *prev;
-    struct listNode *next;
+    struct ListNode *prev;
+    struct ListNode *next;
 }CoList,*P_CoList;
+
+typedef struct SListNode
+{
+    struct SListNode *next;
+}CoSList,*P_CoSList;
 
 typedef struct rect
 {
@@ -33,14 +38,10 @@ typedef struct rect
 
 }GuiRect,*P_GuiRect;
 
-typedef struct region
+typedef struct point
 {
-    GuiRect extent;
-
-    U32 size;
-    U32 nubRects;
-
-}GuiRegion,*P_GuiRegion;
+    S16 x, y;
+}GuiPoint,*P_GuiPoint;
 
 typedef StatusType (*EventHandlerPtr)(struct GuiWidget *widget, struct GuiEvent *event);
 

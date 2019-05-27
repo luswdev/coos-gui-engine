@@ -10,6 +10,7 @@
 #ifndef _GUI_TOPWIN_H
 #define _GUI_TOPWIN_H
 
+/*---------------------------- Function Define -------------------------------*/
 P_TopWin GetTopWin(S32 x, S32 y);
 P_TopWin GetTopWinFocus();
 

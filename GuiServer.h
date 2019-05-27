@@ -10,6 +10,7 @@
 #ifndef _GUI_SERVER_H
 #define _GUI_SERVER_H
 
+/*---------------------------- structure -------------------------------------*/
 typedef struct topwin
 {
     /* the window id */

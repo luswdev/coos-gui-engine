@@ -10,6 +10,7 @@
 #ifndef _GUI_WINDOW_H
 #define _GUI_WINDOW_H
 
+/*---------------------------- structure -------------------------------------*/
 typedef struct Window
 {
     P_GuiWidget foucsWidget;

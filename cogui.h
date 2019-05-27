@@ -17,6 +17,7 @@
 #include "GuiDriver.h"
 #include "GuiEvent.h"
 #include "GuiMouse.h"
+#include "GuiRegion.h"
 #include "GuiServer.h"
 #include "GuiSystem.h"
 #include "GuiTopwin.h"
