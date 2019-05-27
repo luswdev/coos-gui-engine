@@ -84,7 +84,7 @@ typedef struct window
 
     /* window title */
     U8 *title;
-    P_GuiWidget _titleWgt
+    P_GuiWidget _titleWgt;
 
     /* call back */
     StatusType (*onActivate)(P_GuiWidget widget, struct GuiEvent *event);
@@ -132,9 +132,7 @@ void WinSetOndeactivate(P_GuiWin win, EventHandlerPtr handler);
 void WinSetOnclose(P_GuiWin win, EventHandlerPtr handler);
 void WinSetOnkey(P_GuiWin win, EventHandlerPtr handler);
 
-StatusType rtgui_win_event_handler(P_GuiWin win, struct GuiEvent *event);
-
-void WinEventLoop(P_GuiWin *wnd);
+StatusType WinEventHandler(P_GuiWidget win, struct GuiEvent *event);
 
 void WinSetTitle(P_GuiWin win, const U8 *title);
 U8 *WinGetTitle(P_GuiWin win);

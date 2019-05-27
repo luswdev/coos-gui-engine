@@ -413,3 +413,116 @@ void WinMove(P_GuiWin win, S32 x, S32 y)
 {
 
 }
+
+StatusType WinEventHandler(P_GuiWidget win, struct GuiEvent *event)
+{
+    P_GuiWin window;
+
+    if(win==Co_NULL || event==Co_NULL){
+        return Co_FALSE;
+    }
+
+    window = (P_GuiWin)win;
+
+    switch (event->type){
+    case GUI_EVENT_WIN_SHOW:
+        WinDoShow(win);
+        break;
+
+    case GUI_EVENT_WIN_HIDE:
+        WinHide(win);
+        break;
+
+    case GUI_EVENT_WIN_CLOSE:
+        _WinDealClose(win, event, Co_FALSE);
+        /* don't broadcast WIN_CLOSE event to others */
+        return Co_TRUE;
+
+    case GUI_EVENT_WIN_MOVE:
+    {
+        //struct rtgui_event_win_move *emove = (struct rtgui_event_win_move *)event;
+
+        /* move window */
+        WinMove(win, emove->x, emove->y);
+    }
+    break;
+
+    case GUI_EVENT_WIN_ACTIVATE:
+        if(!((P_GuiWidget)win->flag & GUI_WIDGET_FLAG_SHOWN)){
+            /* activate a hide window */
+            return Co_TRUE;
+        }
+
+        win->flag |= GUI_WIN_FLAG_ACTIVATE;
+        /* There are many cases where the paint event will follow this activate
+         * event and just repaint the title is not a big deal. So just repaint
+         * the title if there is one. If you want to update the content of the
+         * window, do it in the on_activate callback.*/
+        if (win->_titleWgt)
+            WidgetUpdate(win->_titleWgt);
+
+        if (win->onActivate != Co_NULL)
+        {
+            win->onActivate((P_GuiWidget)win, event);
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    return Co_FALSE;
+}
+
+void WinSetOnactivate(P_GuiWin win, EventHandlerPtr handler)
+{
+    if(win!=Co_NULL){
+        win->onActivate = handler;
+    }
+}
+
+void WinSetOndeactivate(P_GuiWin win, EventHandlerPtr handler)
+{
+    if(win!=Co_NULL){
+        win->onDeactivate = handler;
+    }
+}
+
+void WinSetOnclose(P_GuiWin win, EventHandlerPtr handler)
+{
+    if(win!=Co_NULL){
+        win->onClose = handler;
+    }
+}
+
+void WinSetOnkey(P_GuiWin win, EventHandlerPtr handler)
+{
+    if(win!=Co_NULL){
+        win->onKey = handler;
+    }
+}
+
+void WinSetTitle(P_GuiWin win, const U8 *title)
+{
+    /* send title to server */
+    if(win->flag & GUI_WIN_FLAG_CONNECTED){
+        //TODO
+    }
+
+    /* modify in local side */
+    if(win->title != Co_NULL){
+        GuiFree(win->title);
+        win->title = Co_NULL;
+    }
+
+    if(title != Co_NULL){
+        win->title = title;
+    }
+}
+
+U8 *WinGetTitle(P_GuiWin win)
+{
+    if(win!=Co_NULL){
+        return win->title;
+    }
+}
