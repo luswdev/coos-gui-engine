@@ -110,9 +110,10 @@ void SHandlerKbd(struct eventKbd *event)
 /**
  *******************************************************************************
  * @brief      Server app handler
- * @param[in]  event    event to handle
+ * @param[in]  event        event to handle
  * @param[out] None
- * @retval     None			 
+ * @retval     Co_FALSE     failed
+ * @retval     Co_TRUE      success
  *
  * @par Description
  * @details    This function is server app handler function
@@ -176,6 +177,19 @@ void ServerEntry(void *parameter)
     serverApp = Co_NULL;
 }
 
+/**
+ *******************************************************************************
+ * @brief      post a event via server 
+ * @param[in]  event        event ptr
+ * @param[out] None
+ * @retval     E_NOSYS      if cannot find server app
+ * @retval     E_ERROR      if post failed
+ * @retval     E_OK         if post success		 
+ *
+ * @par Description
+ * @details    This function is called to post a event via server
+ *******************************************************************************
+ */
 StatusType ServerPostEvent(struct GuiEvent *event)
 {
     StatusType result;

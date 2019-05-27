@@ -53,9 +53,9 @@ void GuiFree(void* memBuf)
  * @brief      send a event to app	 
  * @param[in]  app      Where to send.
  * @param[in]  event    Which to send.
- * @param[out] E_ERROR  Bad.
- * @param[out] E_OK     Good.
- * @retval     None			 
+ * @param[out] None
+ * @retval     E_OK     Good.
+ * @retval     E_ERROR  Bad.		 
  *
  * @par Description
  * @details    This function is called to send a event to app.
@@ -79,8 +79,8 @@ StatusType GuiSend(P_GuiApp app, struct GuiEvent *event)
  * @brief      recive a event	 
  * @param[in]  app      Where to recive.
  * @param[in]  result   to put the result
- * @param[out] event    The recive event
- * @retval     None			 
+ * @param[out] None
+ * @retval     event    The recive event			 
  *
  * @par Description
  * @details    This function is called to recive a event.

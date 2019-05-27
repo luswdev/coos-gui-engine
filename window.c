@@ -15,7 +15,8 @@
  * @brief      create window in server
  * @param[in]  win      window ptr		
  * @param[out] None
- * @retval     None		 
+ * @retval     Co_FALSE     failed		 
+ * @retval     Co_TRUE      success		 
  *
  * @par Description
  * @details    This function is called to create a window in server.
@@ -48,7 +49,8 @@ StatusType _WinCreateInServer(P_GuiWin win){
  * @param[in]  rect             window rect		
  * @param[in]  style            window style		
  * @param[out] None
- * @retval     None		 
+ * @retval     -1               bad		 
+ * @retval     0                good		 
  *
  * @par Description
  * @details    This function is called to inital a window.
@@ -121,7 +123,8 @@ S32 _InitWin(P_GuiWin win, P_GuiWin parentWindow, U8 *title, P_GuiRect rect, U16
  * @param[in]  rect             window rect		
  * @param[in]  style            window style		
  * @param[out] None
- * @retval     None		 
+ * @retval     win              window ptr		 
+ * @retval     Co_NULL          failed	 
  *
  * @par Description
  * @details    This function is called to create a window.
@@ -183,7 +186,8 @@ void WinDele(P_GuiWin win)
  * @param[in]  event            event ptr		
  * @param[in]  force_close      need to force close?		
  * @param[out] None
- * @retval     None		 
+ * @retval     Co_FALSE		    bad
+ * @retval     Co_TRUE		    good
  *
  * @par Description
  * @details    This function is called to close a window.
@@ -218,7 +222,8 @@ StatusType _WinDealClose(P_GuiWin win, struct GuiEvent *event, StatusType forceC
  * @brief      close window
  * @param[in]  win              window ptr			
  * @param[out] None
- * @retval     None		 
+ * @retval     Co_FALSE		    bad
+ * @retval     Co_TRUE		    good	 
  *
  * @par Description
  * @details    This function is called to close a window.
@@ -239,7 +244,7 @@ StatusType WinClose(P_GuiWin win)
  * @brief      let window show (system function)
  * @param[in]  win              window ptr		
  * @param[out] None
- * @retval     None		 
+ * @retval     -1		 
  *
  * @par Description
  * @details    This function is called to let a window show.
@@ -293,7 +298,7 @@ U64 WinDoShow(P_GuiWin win)
  * @brief      let window show
  * @param[in]  win              window ptr		
  * @param[out] None
- * @retval     None		 
+ * @retval     -1		 
  *
  * @par Description
  * @details    This function is called to let a window show.
@@ -349,7 +354,9 @@ void WinHide(P_GuiWin win)
  * @brief      active window
  * @param[in]  win              window ptr		
  * @param[out] None
- * @retval     None		 
+ * @retval     E_NOSYS      if cannot find server app
+ * @retval     E_ERROR      if post failed
+ * @retval     E_OK         if post success			 
  *
  * @par Description
  * @details    This function is called to active a window.
@@ -369,7 +376,8 @@ StatusType WinActivate(P_GuiWin win)
  * @brief      check if window is active 
  * @param[in]  win              window ptr		
  * @param[out] None
- * @retval     None		 
+ * @retval     Co_TRUE          success		 
+ * @retval     Co_FALSE         failed		 
  *
  * @par Description
  * @details    This function is called to check if window is active .

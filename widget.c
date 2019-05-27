@@ -44,9 +44,9 @@ void _WidgetInit(P_GuiWidget widget)
  *******************************************************************************
  * @brief      create a widget	 
  * @param[in]  None		
- * @param[out] Co_NULL      create failed
- * @param[out] widget       widget
- * @retval     None		 
+ * @param[out] None
+ * @retval     widget       widget		
+ * @retval     Co_NULL      create failed 
  *
  * @par Description
  * @details    This function is called to create a widget.
@@ -70,7 +70,7 @@ P_GuiWidget WidgetCreate()
  *******************************************************************************
  * @brief      delete a widget	 
  * @param[in]  widget       widget ptr		
- * @param[out] none
+ * @param[out] None
  * @retval     None		 
  *
  * @par Description
@@ -106,7 +106,7 @@ void WidgetSetFocus(P_GuiWidget widget, EventHandlerPtr handler)
  * @brief      set widget unfocus handler
  * @param[in]  widget       widget ptr	
  * @param[in]  handler      handler ptr	
- * @param[out] none
+ * @param[out] None
  * @retval     None		 
  *
  * @par Description
@@ -125,7 +125,7 @@ void WidgetSetUnFocus(P_GuiWidget widget, EventHandlerPtr handler)
  *******************************************************************************
  * @brief      let widget focus
  * @param[in]  widget       widget ptr	
- * @param[out] none
+ * @param[out] None
  * @retval     None		 
  *
  * @par Description
@@ -168,7 +168,7 @@ void WidgetFocus(P_GuiWidget widget)
  *******************************************************************************
  * @brief      let widget unfocus handler
  * @param[in]  widget       widget ptr	
- * @param[out] none
+ * @param[out] None
  * @retval     None		 
  *
  * @par Description
@@ -726,7 +726,7 @@ void WidgetHide(P_GuiWidget widget)
  * @param[in]  widget       widget ptr	
  * @param[in]  event        event ptr
  * @param[out] none
- * @retval     None		 
+ * @retval     Co_FALSE     failed		 
  *
  * @par Description
  * @details    This function is called to do something when widget show.
@@ -749,7 +749,7 @@ StatusType WidgetOnshow(P_GuiWidget widget, struct GuiEvent *event)
  * @param[in]  widget       widget ptr	
  * @param[in]  event        event ptr
  * @param[out] none
- * @retval     None		 
+ * @retval     Co_FALSE     failed		 
  *
  * @par Description
  * @details    This function is called to do something when widget hide.
@@ -774,7 +774,7 @@ void WidgetUpdate(P_GuiWidget widget);
  * @param[in]  widget       widget ptr	
  * @param[in]  event        event ptr
  * @param[out] none
- * @retval     None		 
+ * @retval     Co_FALSE     failed		 
  *
  * @par Description
  * @details    This function is widget's event handler.

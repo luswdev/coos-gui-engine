@@ -250,6 +250,18 @@ void SleepApp(P_GuiApp *app, U32 sleepTick)
     InsertDelayList(app->tid, sleepTick);
 }
 
+/**
+ *******************************************************************************
+ * @brief      get current app ptr	 
+ * @param[in]  app   App ptr should sleep
+ * @param[in]  app   How long should the app sleep 		
+ * @param[out] None
+ * @retval     app   current app ptr			 
+ *
+ * @par Description
+ * @details    This function is called to let a app sleep.
+ *******************************************************************************
+ */
 P_GuiApp AppSelf()
 {
     P_GuiApp app;
