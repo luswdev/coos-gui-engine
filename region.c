@@ -31,7 +31,41 @@ static StatusType RegionBreak(P_GuiRegion region)
 
 StatusType RegionCopy(P_GuiRegion dst, P_GuiRegion src)
 {
+    if(dst==Co_NULL || src==Co_NULL){
+        return GUI_REGION_STATUS_FAILURE;
+    }
+
+    if(dst==src){
+        return GUI_REGION_STATUS_SUCCESS;
+    }    
     
+    dst->extent = src->extent;
+
+    if(!src->data || !src->data->size){
+        if(dst->data && dst->data->size){
+            GuiFree(dst->data);
+        }
+    }
+    if(!dst->data || (dst->data->size < src->data->numRects)){
+        if(dst->data && dst->data->size){
+            GuiFree(dst->data);
+        }
+
+        dst->data = GuiMalloc(sizeof(GuiRegionData)+(src->data->numRect)*sizeof(GuiRect));
+
+        if(!dst->data){
+            dst->data->extent = guiEmptyRect;
+            dst->data         = guiBrokendata;
+
+            return GUI_REGION_STATUS_FAILURE;
+        }
+        dst->data->size = src->data->numRects;
+    }
+
+    dst->data->numRects = src->data->numRects;
+    MemMove((char *)((P_GuiRect)dst->data+1), (char *)((P_GuiRect)src->data+1), dst->data->numRects * sizeof(GuiRect));
+    
+    return GUI_REGION_STATUS_SUCCESS;
 }
 
 void RegionInitWithExtents(P_GuiRegion region, const P_GuiRect extents)

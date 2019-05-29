@@ -48,6 +48,27 @@ void GuiFree(void* memBuf)
     CoKfree(memBuf);
 }
 
+void *MemMove(void *dest, const void *src, U64 n)
+{
+    char *tmp = (char *)dest, *s = (char *)src;
+
+    if(s < tmp && tmp < s + n){
+        tmp += n;
+        s += n;
+
+        while(n--){
+            *(--tmp) = *(--s);
+        }
+    }
+    else{
+        while(n--){
+            *tmp++ = *s++;
+        }
+    }
+
+    return dest;
+}
+
 /**
  *******************************************************************************
  * @brief      send a event to app	 

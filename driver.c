@@ -10,3 +10,10 @@
 /*---------------------------- Include ---------------------------------------*/
 #include "cogui.h"
 
+static struct GuiGD _driver;
+static struct P_GuiGD _currentDriver = &_driver;
+
+P_GuiGD GraphiDriverGetDefault()
+{   
+    return _currentDriver;
+}

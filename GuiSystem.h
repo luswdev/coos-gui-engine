@@ -46,7 +46,23 @@ typedef struct point
     S16 x, y;
 }GuiPoint,*P_GuiPoint;
 
-typedef StatusType (*EventHandlerPtr)(struct GuiWidget *widget, struct GuiEvent *event);
+/* Graphic context */
+struct gc
+{
+    /* foreground and background color */
+    GUI_COLOR foreground, background;
+
+    /* text style */
+    U16 textstyle;
+    /* text align */
+    U16 textalign;
+
+    /* font 
+    struct rtgui_font *font; */
+};
+
+typedef GUI_COLOR   U64
+typedef StatusType  (*EventHandlerPtr)(struct GuiWidget *widget, struct GuiEvent *event);
 
 /**
  * Border style
@@ -71,6 +87,8 @@ extern OSTCB    TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
 /*---------------------------- Function Define -------------------------------*/
 void *GuiMalloc(U32 size);
 void GuiFree(void* memBuf);
+
+void *MemMove(void *dest, const void *src, U64 n);
 
 StatusType GuiSend(P_GuiApp app, struct GuiEvent event);
 StatusType GuiSendSync(P_GuiApp app, struct GuiEvent event);
