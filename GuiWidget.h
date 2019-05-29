@@ -21,6 +21,13 @@ typedef struct GuiWidget
     CoList sibling;
 
     S32 flag;
+    
+    /* hardware device context */
+    U64 dcType;
+    const P_GuiDc dc_engine;
+
+    /* the graphic context of widget */
+    struct gc gc;
 
     /* the widget extent */
     GuiRect extent;

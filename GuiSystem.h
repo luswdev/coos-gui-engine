@@ -23,6 +23,27 @@
 #define GUI_REGION_STATUS_FAILURE   (StatusType)25
 #define GUI_REGION_STATUS_SUCCESS   (StatusType)26
 
+#define _UI_ABS(x)              ((x)>=0? (x):-(x))
+
+#define GUI_ARGB(a, r, g, b)  \
+        ((GUI_COLOR)(((U8)(b)|\
+        (((U64)(U8)(g))<<8))|\
+        (((U64)(U8)(r))<<16)|\
+        (((U64)(U8)(a))<<24)))
+#define GUI_RGB(r, g, b)  GUI_ARGB(255, (r), (g), (b))
+
+/*---------------------------- Variable Define -------------------------------*/
+const GUI_COLOR red     = GUI_RGB(0xff, 0x00, 0x00);
+const GUI_COLOR green   = GUI_RGB(0x00, 0xff, 0x00);
+const GUI_COLOR blue    = GUI_RGB(0x00, 0x00, 0xff);
+const GUI_COLOR black   = GUI_RGB(0x00, 0x00, 0x00);
+const GUI_COLOR white   = GUI_RGB(0xff, 0xff, 0xff);
+
+const GUI_COLOR highLight  = GUI_RGB(0xfc, 0xfc, 0xfc);
+const GUI_COLOR darkGrey   = GUI_RGB(0x7f, 0x7f, 0x7f);
+const GUI_COLOR lightGrey  = GUI_RGB(0xc0, 0xc0, 0xc0);
+
+
 /*---------------------------- structure -------------------------------------*/
 typedef struct ListNode
 {
