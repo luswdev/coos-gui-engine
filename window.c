@@ -351,6 +351,53 @@ void WinHide(P_GuiWin win)
 
 /**
  *******************************************************************************
+ * @brief      update window's clip
+ * @param[in]  win              window ptr		
+ * @param[out] None
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to update window's clip.
+ *******************************************************************************
+ */
+void WinUpdateClip(P_GuiWin win)
+{
+    P_GuiContainer cnt;
+    P_CoSList node;
+
+    if(win==Co_NULL){
+        return;
+    }
+
+    if(win&GUI_WIN_FLAG_CLOSED){
+        return;
+    }
+
+    if(win->_titleWgt){
+        /* Reset the inner clip of title. */
+        win->_titleWgt->extent = win->outerExtent;
+        RegionCopy(&win->_titleWgt->clip, &win->outerClip);
+        RegionSubtractRect(&win->_titleWgt->clip, &win->_titleWgt->clip, (P_GuiWidget)win->extent);
+
+        /* Reset the inner clip of window. */
+        RegionIntersectRect(&(P_GuiWidget)win->clip, &win->outerClip, &(P_GuiWidget)win->extent);
+    }
+    else{
+        (P_GuiWidget)win->extent = win->outerExtent;
+        RegionCopy(&(P_GuiWidget)win->clip, &win->outerClip);
+    }
+
+    /* update the clip info of each child */
+    cnt = (P_GuiContainer)win;
+    for(node=&cnt->children->next; node!=Co_NULL; node=node->next){
+        P_GuiWidget child = (P_GuiWidget)node->sibling;
+
+        WidgetUpdateClip(child);
+    }
+}
+
+/**
+ *******************************************************************************
  * @brief      active window
  * @param[in]  win              window ptr		
  * @param[out] None
@@ -411,9 +458,59 @@ StatusType WinIsActivated(P_GuiWin win)
  */
 void WinMove(P_GuiWin win, S32 x, S32 y)
 {
+    P_GuiWidget widget;
+    struct eventWinMove event;
+    S32 dx, dy;
 
+    GUI_EVENT_INIT(&event, GUI_EVENT_WIN_MOVE);
+
+    if(win==Co_NULL){
+        return;
+    }
+
+    if(win->_titleWgt){
+        widget = win->_titleWgt;
+        dx = x - widget->extent.x;
+        dy = y - widget->extent.y;
+        WidgetMoveToLogic(widget, dx, dy);
+
+        widget = (P_GuiWidget)win;
+        WidgetMoveToLogic(widget, dx, dy);
+    }
+    else{
+        widget = (P_GuiWidget)win;
+        dx = x - widget->extent.x;
+        dy = y - widget->extent.y;
+        WidgetMoveToLogic(widget, dx, dy);
+    }
+    RectMove(&win->outerExtent, dx, dy);
+
+    if(win->flag & GUI_WIN_FLAG_CONNECTED){
+        WidgetHide((P_GuiWidget)win);
+
+        event.win = win;
+        event.x   = x;
+        event.y   = y;
+        if(ServerPostEvent((struct event *)&event)!=E_OK){
+            return;
+        }
+    }
+
+    WidgetShow((P_GuiWidget)win);
 }
 
+/**
+ *******************************************************************************
+ * @brief      window's event handler
+ * @param[in]  win              window ptr		
+ * @param[in]  event            event ptr		
+ * @param[out] None
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to window's event handler.
+ *******************************************************************************
+ */
 StatusType WinEventHandler(P_GuiWidget win, struct GuiEvent *event)
 {
     P_GuiWin window;
@@ -440,7 +537,7 @@ StatusType WinEventHandler(P_GuiWidget win, struct GuiEvent *event)
 
     case GUI_EVENT_WIN_MOVE:
     {
-        //struct rtgui_event_win_move *emove = (struct rtgui_event_win_move *)event;
+        struct eventWinMove *emove = (struct eventWinMove *)event;
 
         /* move window */
         WinMove(win, emove->x, emove->y);
@@ -474,6 +571,50 @@ StatusType WinEventHandler(P_GuiWidget win, struct GuiEvent *event)
     return Co_FALSE;
 }
 
+/**
+ *******************************************************************************
+ * @brief      resize window
+ * @param[in]  win              window ptr		
+ * @param[in]  rect             new size	
+ * @param[out] None
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to resize window.
+ *******************************************************************************
+ */
+void WinSetRect(P_GuiWin win, P_GuiRect rect)
+{
+    struct eventWinResize event;
+
+    if(win==Co_NULL || rect==Co_NULL){
+        return;
+    }
+
+    (P_GuiWidget)win->extent = *rect;
+
+    if(win->flag&GUI_WIN_FLAG_CONNECTED){
+        /* set window resize event to server */
+        GUI_EVENT_INIT(&event, GUI_EVENT_WIN_RESIZE);
+        event.win = win;
+        event.rect = *rect;
+
+        ServerPostEvent(&(struct GuiEvent *)event);
+    }
+}
+
+/**
+ *******************************************************************************
+ * @brief      set window's onactivate handler
+ * @param[in]  win              window ptr		
+ * @param[in]  handler          handler function	
+ * @param[out] None
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to set window's onactivate handler.
+ *******************************************************************************
+ */
 void WinSetOnactivate(P_GuiWin win, EventHandlerPtr handler)
 {
     if(win!=Co_NULL){
@@ -481,6 +622,18 @@ void WinSetOnactivate(P_GuiWin win, EventHandlerPtr handler)
     }
 }
 
+/**
+ *******************************************************************************
+ * @brief      set window's ondeactivate handler
+ * @param[in]  win              window ptr		
+ * @param[in]  handler          handler function	
+ * @param[out] None
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to set window's ondeactivate handler.
+ *******************************************************************************
+ */
 void WinSetOndeactivate(P_GuiWin win, EventHandlerPtr handler)
 {
     if(win!=Co_NULL){
@@ -488,6 +641,18 @@ void WinSetOndeactivate(P_GuiWin win, EventHandlerPtr handler)
     }
 }
 
+/**
+ *******************************************************************************
+ * @brief      set window's onclose handler
+ * @param[in]  win              window ptr		
+ * @param[in]  handler          handler function	
+ * @param[out] None
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to set window's onclose handler.
+ *******************************************************************************
+ */
 void WinSetOnclose(P_GuiWin win, EventHandlerPtr handler)
 {
     if(win!=Co_NULL){
@@ -495,6 +660,18 @@ void WinSetOnclose(P_GuiWin win, EventHandlerPtr handler)
     }
 }
 
+/**
+ *******************************************************************************
+ * @brief      set window's onkey handler
+ * @param[in]  win              window ptr		
+ * @param[in]  handler          handler function	
+ * @param[out] None
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to set window's onkey handler.
+ *******************************************************************************
+ */
 void WinSetOnkey(P_GuiWin win, EventHandlerPtr handler)
 {
     if(win!=Co_NULL){
@@ -502,11 +679,30 @@ void WinSetOnkey(P_GuiWin win, EventHandlerPtr handler)
     }
 }
 
+/**
+ *******************************************************************************
+ * @brief      set window's title
+ * @param[in]  win              window ptr		
+ * @param[in]  title            title	
+ * @param[out] None
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to set window's title.
+ *******************************************************************************
+ */
 void WinSetTitle(P_GuiWin win, const U8 *title)
 {
     /* send title to server */
     if(win->flag & GUI_WIN_FLAG_CONNECTED){
-        //TODO
+        struct eventWinSetTitle event;
+
+        GUI_EVENT_INIT(&event, GUI_EVENT_WIN_TITLE);
+
+        event.win = win;
+        event.title = title;
+
+        ServerPostEvent(&(struct GuiEvent *)event);
     }
 
     /* modify in local side */
@@ -520,6 +716,17 @@ void WinSetTitle(P_GuiWin win, const U8 *title)
     }
 }
 
+/**
+ *******************************************************************************
+ * @brief      get window's title
+ * @param[in]  win              window ptr		
+ * @param[out] None
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to get window's title.
+ *******************************************************************************
+ */
 U8 *WinGetTitle(P_GuiWin win)
 {
     if(win!=Co_NULL){

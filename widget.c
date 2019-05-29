@@ -738,7 +738,9 @@ StatusType WidgetOnshow(P_GuiWidget widget, struct GuiEvent *event)
         return Co_FALSE;
     }
 
-    // clip
+    if(widget->parent!=Co_NULL && !(widget->flag & GUI_WIDGET_FLAG_TRANSPARENT)){
+        rtgui_widget_clip_parent(widget);
+    }
 
     return Co_FALSE;
 }
@@ -761,9 +763,66 @@ StatusType WidgetOnhide(P_GuiWidget widget, struct GuiEvent *event)
         return Co_FALSE;
     }
 
-    // clip
+    if (widget->parent!=Co_NULL)
+    {
+        WidgetClipReturn(widget);
+    }
 
     return Co_FALSE;
+}
+
+/**
+ *******************************************************************************
+ * @brief      get the clip with parent
+ * @param[in]  widget       widget ptr
+ * @param[out] None
+ * @retval     None 
+ *
+ * @par Description
+ * @details    This function is call to get the clip with parent.
+ *******************************************************************************
+ */
+void WidgetClipParent(P_GuiWidget widget)
+{
+    P_GuiWidget parent;
+
+    parent = widget->parent;
+    /* get the no transparent parent */
+    while(parent!=Co_NULL && parent->flag & GUI_WIDGET_FLAG_TRANSPARENT){
+        parent = parent->parent;
+    }
+
+    /* clip the widget extern from parent */
+    if(parent!=Co_NULL){
+        RegionSubtract(&(parent->clip), &(parent->clip), &(widget->clip));
+    }
+}
+
+/**
+ *******************************************************************************
+ * @brief      get the clip with parent
+ * @param[in]  widget       widget ptr
+ * @param[out] None
+ * @retval     None	 
+ *
+ * @par Description
+ * @details    This function is call to get the clip with parent.
+ *******************************************************************************
+ */
+void WidgetClipReturn(P_GuiWidget widget)
+{
+    P_GuiWidget parent;
+
+    parent = widget->parent;
+    /* get the no transparent parent */
+    while(parent!=Co_NULL && parent->flag & GUI_WIDGET_FLAG_TRANSPARENT){
+        parent = parent->parent;
+    }
+
+    /* give clip back to parent */
+    if(parent != Co_NULL){
+        RegionUnion(&(parent->clip), &(parent->clip), &(widget->clip))
+    }
 }
 
 void WidgetUpdate(P_GuiWidget widget);
@@ -773,7 +832,7 @@ void WidgetUpdate(P_GuiWidget widget);
  * @brief      widget's event handler
  * @param[in]  widget       widget ptr	
  * @param[in]  event        event ptr
- * @param[out] none
+ * @param[out] None
  * @retval     Co_FALSE     failed		 
  *
  * @par Description
@@ -785,4 +844,48 @@ StatusType WidgetEventHandler(P_GuiWidget widget, struct GuiEvent *event)
     if(widget!=Co_NULL){
         return Co_FALSE;
     }    
+}
+
+/**
+ *******************************************************************************
+ * @brief      get next sibling widget
+ * @param[in]  widget       widget ptr
+ * @param[out] None
+ * @retval     sibling      next sibling widget		 
+ *
+ * @par Description
+ * @details    This function is call to get next sibling widget.
+ *******************************************************************************
+ */
+P_GuiWidget WidgetGetNextSibling(P_GuiWidget widget)
+{
+    P_GuiWidget sibling;
+
+    if(widget->sibling.next!=Co_NULL){
+        sibling = &widget->sibling.next;
+    }
+
+    return sibling;
+}
+
+/**
+ *******************************************************************************
+ * @brief      get prev sibling widget
+ * @param[in]  widget       widget ptr
+ * @param[out] None
+ * @retval     sibling      prev sibling widget		 
+ *
+ * @par Description
+ * @details    This function is call to get prev sibling widget.
+ *******************************************************************************
+ */
+P_GuiWidget WidgetGetPrevSibling(P_GuiWidget widget)
+{
+    P_GuiWidget sibling;
+
+    if(widget->sibling.prev!=Co_NULL){
+        sibling = &widget->sibling.prev;
+    }
+
+    return sibling;
 }

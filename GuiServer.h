@@ -36,5 +36,4 @@ StatusType ServerPostEvent(struct GuiEvent *event);
 void ServerEntry(void *parameter);
 P_GuiApp GetServer();
 
-
 #endif /* _GUI_SERVER_H */

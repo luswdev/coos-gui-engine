@@ -38,7 +38,7 @@ typedef struct region
 
 /*---------------------------- Function Define -------------------------------*/
 static StatusType RegionBreak(P_GuiRegion *region);
-StatusType RegionCopy(P_GuiRegion dest, P_GuiRegion source);
+StatusType RegionCopy(P_GuiRegion dest, P_GuiRegion src);
 
 void RegionInitWithExtents(P_GuiRegion region, const P_GuiRect extents);
 
@@ -52,6 +52,7 @@ StatusType RegionUnion(P_GuiRegion newReg, P_GuiRegion reg1, P_GuiRegion reg2);
 StatusType RegionSubtract(P_GuiRegion regD, P_GuiRegion regM, P_GuiRegion regS);
 StatusType RegionSubtractRect(P_GuiRegion regD, P_GuiRegion regM, P_GuiRect rect);
 
+void RectMove(P_GuiRect rect, S32 x, S32 y);
 void RectInflate(P_GuiRect rect, S32 d);
 
 #endif /* _GUI_REGION_H */

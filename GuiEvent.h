@@ -30,6 +30,7 @@ enum eventType
     GUI_EVENT_WIN_CLOSE,             /* close a window        */
     GUI_EVENT_WIN_MOVE,              /* move a window         */
     GUI_EVENT_WIN_RESIZE,            /* resize a window       */
+    GUI_EVENT_WIN_TITLE,             /* set window title      */
     GUI_EVENT_WIN_UPDATE_END,        /* update done for window */
 
     /* mouse and keyboard event */
@@ -115,5 +116,23 @@ struct eventWinCreate
     _GUI_EVENT_ELEMENT
     P_GuiWin parentWinow;
 }
+
+struct eventWinMove
+{
+    _GUI_EVENT_ELEMENT
+    S16 x, y;
+};
+
+struct eventWinResize
+{
+    _GUI_EVENT_ELEMENT
+    GuiRect rect;
+};
+
+struct eventWinSetTitle
+{
+    _GUI_EVENT_ELEMENT
+    U8 *title;
+};
 
 #endif /* _GUI_EVENT_H */

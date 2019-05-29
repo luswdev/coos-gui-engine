@@ -100,7 +100,15 @@ void widgetRectToLogic(P_GuiWidget widget, P_GuiRect rect);
 /* move widget and its children to a logic point */
 void WidgetMoveToLogic(P_GuiWidget widget, S32 dx, S32 dy);
 
+void WidgetClipParent(P_GuiWidget widget);
+void WidgetClipReturn(P_GuiWidget widget);
+
 /* update the clip info of widget */
 void WidgetUpdateClip(rtgui_widget_t *widget);
+
+/* get the next sibling of widget */
+P_GuiWidget WidgetGetNextSibling(P_GuiWidget widget);
+/* get the prev sibling of widget */
+P_GuiWidget WidgetGetPrevSibling(P_GuiWidget widget);
 
 #endif /* _GUI_WIDGET_H */

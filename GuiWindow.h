@@ -134,6 +134,7 @@ void WinSetOnkey(P_GuiWin win, EventHandlerPtr handler);
 
 StatusType WinEventHandler(P_GuiWidget win, struct GuiEvent *event);
 
+void WinSetRect(P_GuiWin win, P_GuiRect rect);
 void WinSetTitle(P_GuiWin win, const U8 *title);
 U8 *WinGetTitle(P_GuiWin win);
 

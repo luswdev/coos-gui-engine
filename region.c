@@ -29,6 +29,11 @@ static StatusType RegionBreak(P_GuiRegion region)
     return GUI_REGION_STATUS_FAILURE;
 }
 
+StatusType RegionCopy(P_GuiRegion dst, P_GuiRegion src)
+{
+    
+}
+
 void RegionInitWithExtents(P_GuiRegion region, const P_GuiRect extents)
 {
     region->extent = *extents;
@@ -141,6 +146,16 @@ StatusType RegionSubtractRect(P_GuiRegion regD, P_GuiRegion regM, P_GuiRect rect
 {
 
 }
+
+void RectMove(P_GuiRect rect, S32 x, S32 y)
+{
+    rect->x1 += x;
+    rect->x2 += x;
+
+    rect->y1 += y;
+    rect->y2 += y;
+}
+
 
 void RectInflate(P_GuiRect rect, S32 d)
 {
