@@ -28,8 +28,6 @@ struct dcEngine
     void (*drawVline)(P_GuiDc dc, S32 x, S32 y1, S32 y2);
     void (*drawHline)(P_GuiDc dc, S32 x1, S32 x2, S32 y);
     void (*fillRect)(P_GuiDc dc, rtgui_rect_t *rect);
-    void (*blitLine)(P_GuiDc dc, S32 x1, S32 x2, S32 y, U8 lineData);
-    void (*blit)(P_GuiDc dc, P_GuiPoint dcPoint, P_GuiDc dest, P_GuiRect rect);
 
     rt_bool_t (*fini)( dc);
 }GuiDcEng,*P_GuiDcEng;

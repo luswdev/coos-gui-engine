@@ -61,7 +61,7 @@ struct gc
     struct rtgui_font *font; */
 };
 
-typedef GUI_COLOR   U64
+typedef U64 GUI_COLOR
 typedef StatusType  (*EventHandlerPtr)(struct GuiWidget *widget, struct GuiEvent *event);
 
 /**
