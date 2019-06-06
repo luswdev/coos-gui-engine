@@ -15,7 +15,7 @@ struct guiCursor
 {
     /* current cursor x and y */
     U16 cx, cy;
-}
+};
 
 void MouseSetPos(S32 x, S32 y);
 void MouseMoveTo(S32 x, S32 y);

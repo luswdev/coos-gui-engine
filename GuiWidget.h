@@ -10,51 +10,6 @@
 #ifndef _GUI_WIDGET_H
 #define _GUI_WIDGET_H
 
-/*---------------------------- structure -------------------------------------*/
-typedef struct GuiWidget
-{
-    /* the widget that contains this widget */
-    struct GuiWidget *parent;
-    /* the window that contains this widget */
-    GuiWin *topLevel;
-    /* the widget children and sibling */
-    CoList sibling;
-
-    S32 flag;
-    
-    /* hardware device context */
-    U64 dcType;
-    const P_GuiDc dc_engine;
-
-    /* the graphic context of widget */
-    struct gc gc;
-
-    /* the widget extent */
-    GuiRect extent;
-    /* the visiable extent */
-    GuiRect extentVisiable;
-    /* the rect clip information */
-    GuiRegion clip;
-
-    /* minimal width and height of widget */
-    S16 minWidth, minHeight;
-    /* widget align */
-    S32 align;
-    U16 border;
-    U16 borderStyle;
-
-    /* call back */
-    StatusType  (*onFocusIn)(struct GuiWidget *widget, struct GuiEvent *event);
-    StatusType (*onFocusOut)(struct GuiWidget *widget, struct GuiEvent *event);
-
-    /* the event handler */
-    StatusType (*handler)(P_GuiWidget widget ,struct GuiEvent *event);
-
-    /* user private data */
-    U32 userData;
-
-}GuiWidget,*P_GuiWidget;
-
 /* widget flag */
 #define GUI_WIDGET_FLAG_DEFAULT       0x0000
 #define GUI_WIDGET_FLAG_SHOWN         0x0001
@@ -67,7 +22,7 @@ typedef struct GuiWidget
 #define GUI_WIDGET_FLAG_IS_CONTAINER  0x0400
 
 /*---------------------------- Function Define -------------------------------*/
-P_GuiWidget WidgetCreate();
+P_GuiWidget WidgetCreate(void);
 void WidgetDel(P_GuiWidget widget);
 
 StatusType WidgetEventHandler(P_GuiWidget widget, struct GuiEvent *event);
@@ -111,7 +66,7 @@ void WidgetClipParent(P_GuiWidget widget);
 void WidgetClipReturn(P_GuiWidget widget);
 
 /* update the clip info of widget */
-void WidgetUpdateClip(rtgui_widget_t *widget);
+void WidgetUpdateClip(P_GuiWidget *widget);
 
 /* get the next sibling of widget */
 P_GuiWidget WidgetGetNextSibling(P_GuiWidget widget);

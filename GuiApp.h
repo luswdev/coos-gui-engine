@@ -15,52 +15,22 @@
 #include <OsTime.h>
 #include <OsTask.h>
 
-enum appFlag
-{
-    GUI_APP_FLAG_EXITED  = 0x04,
-    GUI_APP_FLAG_SHOWN   = 0x08,
-    GUI_APP_FLAG_KEEP    = 0x80,
-};
-
-
-/*---------------------------- structure -------------------------------------*/
-typedef struct App
-{
-    U8      id;
-    U8      *name;
-
-    enum appFlag flag;
-
-    U16     refCnt;
-    U16     exitCode;
-
-    /* Task id */
-    OS_TID tid;
-    /* Message queue */
-    OS_EventID   mq;
-
-    U32     winCnt;
-    /* window activate count */
-    U32     winActiCnt;
-
-    /* the event handler */
-    StatusType (*handler)(struct GuiEvent *event);
-
-    void    *userDate;
-}GuiApp,*P_GuiApp;
-
+/*---------------------------- Variable Define -------------------------------*/
 extern OSTCB    TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
+extern ECB  EventTbl[CFG_MAX_EVENT]; 
 
 /*---------------------------- Function declare ------------------------------*/
-P_GuiApp CreateApp(U8 *name);
-void _InitApp(P_GuiApp *app);
-void DeleteApp(P_GuiApp *app);
+P_GuiApp CreateApp(char *name);
+void _InitApp(P_GuiApp app);
+void DeleteApp(P_GuiApp app);
 
-void RunApp(P_GuiApp *app);
-void ExitApp(P_GuiApp *app, U16 code);
-void CloseApp(P_GuiApp *app);
-void SleepApp(P_GuiApp *app, S32 sec);
+StatusType AppEventHandler(struct GuiEvent *event);
 
-P_GuiApp AppSelf();
+void RunApp(P_GuiApp app);
+void ExitApp(P_GuiApp app, U16 code);
+void CloseApp(P_GuiApp app);
+void SleepApp(P_GuiApp app, U32 sleepTick);
+
+P_GuiApp AppSelf(void);
 
 #endif /* _GUI_APP_H */

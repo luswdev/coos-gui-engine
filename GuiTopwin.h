@@ -12,6 +12,6 @@
 
 /*---------------------------- Function Define -------------------------------*/
 P_TopWin GetTopWin(S32 x, S32 y);
-P_TopWin GetTopWinFocus();
+P_TopWin GetTopWinFocus(void);
 
 #endif /* _GUI_TOPWIN_H */

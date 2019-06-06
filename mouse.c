@@ -11,7 +11,7 @@
 #include "cogui.h"
 
 /*---------------------------- Variable Define -------------------------------*/
-struct gui_cursor *_cursor;
+struct guiCursor *_cursor;
 
 void MouseInit();
 

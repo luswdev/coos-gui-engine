@@ -10,21 +10,8 @@
 #ifndef _GUI_REGION_H
 #define _GUI_REGION_H
 
-/*---------------------------- structure -------------------------------------*/
-typedef struct regionData
-{
-    U32 size;
-    U32 nubRects;
-
-}GuiRegionData,*P_GuiRegionData;
-
-typedef struct region
-{
-    GuiRect extent;
-
-    P_GuiRegionData data;
-
-}GuiRegion,*P_GuiRegion;
+#include <coocox.h>
+#include "cogui.h"
 
 /* true iff Box r1 contains Box r2 */
 #define SUBSUMES(r1,r2) \
@@ -42,7 +29,7 @@ StatusType RegionCopy(P_GuiRegion dest, P_GuiRegion src);
 
 void RegionInitWithExtents(P_GuiRegion region, const P_GuiRect extents);
 
-void RegionReset(rtgui_region_t *region, rtgui_rect_t *rect);
+void RegionReset(P_GuiRegion *region, P_GuiRect *rect);
 
 void RectIntersect(P_GuiRect src, P_GuiRect dest);
 StatusType RegionIntersectRect(P_GuiRegion *newReg,P_GuiRegion *reg1, P_GuiRect *rect);

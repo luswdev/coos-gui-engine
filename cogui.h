@@ -11,18 +11,21 @@
 #define _COGUI_H
 
 /*---------------------------- Include ---------------------------------------*/
+#include "stdio.h"
+
+#include "GuiDef.h"
+#include "GuiSystem.h"
+#include "GuiRegion.h"
 #include "GuiApp.h"
+#include "GuiServer.h"
+#include "GuiWidget.h"
+#include "GuiWindow.h"
+#include "GuiTopwin.h"
 #include "GuiContainer.h"
 #include "GuiDc.h"
 #include "GuiDriver.h"
 #include "GuiEvent.h"
 #include "GuiMouse.h"
-#include "GuiRegion.h"
-#include "GuiServer.h"
-#include "GuiSystem.h"
-#include "GuiTopwin.h"
-#include "GuiWidget.h"
-#include "GuiWindow.h"
 #include "kbdDef.h"
 
 #endif /* _COGUI_H */

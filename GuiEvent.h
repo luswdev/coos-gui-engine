@@ -16,13 +16,13 @@
 enum eventType
 {
     /* applications event */
-    GUI_EVENT_APP_CREATE,            /* create an application */
-    GUI_EVENT_APP_DESTROY,           /* destroy an application */
+    GUI_EVENT_APP_CREATE=0,            /* create an application */
+    GUI_EVENT_APP_DELE,           /* destroy an application */
     GUI_EVENT_APP_ACTIVATE,          /* activate an application */
 
     /* window event */
     GUI_EVENT_WIN_CREATE,            /* create a window       */
-    GUI_EVENT_WIN_DESTROY,           /* destroy a window      */
+    GUI_EVENT_WIN_DELE,           /* destroy a window      */
     GUI_EVENT_WIN_SHOW,              /* show a window         */
     GUI_EVENT_WIN_HIDE,              /* hide a window         */
     GUI_EVENT_WIN_ACTIVATE,          /* activate a window     */
@@ -37,6 +37,9 @@ enum eventType
     GUI_EVENT_MOUSE_MOTION,          /* mouse motion          */
     GUI_EVENT_MOUSE_BUTTON,          /* mouse button info     */
     GUI_EVENT_KBD,                   /* keyboard info         */
+		
+		/* user command event. It should always be the last command type. */
+    GUI_EVENT_COMMAND,      /* user command          */
 };
 
 /*---------------------------- structure -------------------------------------*/
@@ -48,18 +51,18 @@ struct GuiEvent {
     P_GuiApp sender;
 
     /* mailbox to acknowledge request */
-    OS_EventID* ack;
+    OS_EventID ack;
 };
 
 #define _GUI_EVENT_ELEMENT                  \
     struct GuiEvent parent;                 \
     P_GuiWin *win;                          \
 
-#define GUI_EVENT_INIT(e,t)     \
+#define GUI_EVENT_INIT(e,t,s)   \
 {                               \
     (e)->type   = (t);          \
-    (e)->sender = AppSelf();    \ 
-    (e)->ack    = Co_NULL;      \ 
+    (e)->sender = (s);    			\
+    (e)->ack    = 0;      			\
 }                               \
 
 struct eventApp
@@ -67,7 +70,7 @@ struct eventApp
     struct GuiEvent parent; 
 
     P_GuiApp app;
-}
+};
 
 struct eventMouse
 {
@@ -81,6 +84,8 @@ struct eventMouse
 
     /* window activate count */
     U32 winActiCnt;
+
+    P_GuiApp app;
 };
 
 #define GUI_MOUSE_BUTTON_LEFT         0x01
@@ -103,7 +108,9 @@ struct eventKbd
     U16 key;          /* current key */
     U16 mod;          /* current key modifiers */
     U16 asciiCode;    /* character */
-}
+
+    P_GuiApp app;
+};
 
 struct eventWin
 {
@@ -115,7 +122,7 @@ struct eventWinCreate
 {
     _GUI_EVENT_ELEMENT
     P_GuiWin parentWinow;
-}
+};
 
 struct eventWinMove
 {
@@ -135,4 +142,4 @@ struct eventWinSetTitle
     U8 *title;
 };
 
-#endif /* _GUI_EVENT_H */
+#endif

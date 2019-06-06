@@ -10,13 +10,10 @@
 #ifndef _GUI_CONTAINER_H
 #define _GUI_CONTAINER_H
 
-/*---------------------------- structure -------------------------------------*/
-typedef struct container
-{
-    GuiWidget parent;
+/*---------------------------- Function Define -------------------------------*/
+P_GuiContainer ContainerVreate(void);
+void ContainerDele(P_GuiContainer container);
 
-    CoSList children;
-
-}GuiContainer,*P_GuiContainer;
+StatusType ContainerEventHandler(P_GuiWidget widget, struct GuiEvent *event);
 
 #endif /* _GUI_CONTAINER_H */
