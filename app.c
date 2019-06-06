@@ -31,7 +31,7 @@ void _InitApp(P_GuiApp app)
     app->mq         = 0;
     app->winCnt     = 0;
     app->winActiCnt = 0;
-		app->handler    = AppEventHandler;
+	app->handler    = AppEventHandler;
 }
 
 /**
@@ -54,12 +54,12 @@ P_GuiApp CreateApp(char *title)
     struct eventApp event;
 
     if(tid == 0)
-		{                     /* Is idle task?                      */   											 
+	{                     /* Is idle task?                      */   											 
         return Co_NULL;                 /* Yes,error return                   */
     }
 
     if(title == Co_NULL)
-		{    
+	{    
         return Co_NULL;
     }
     
@@ -68,7 +68,7 @@ P_GuiApp CreateApp(char *title)
     /* create application */
     app = GuiMalloc(sizeof(GuiApp));
     if (app == Co_NULL)
-		{    
+	{    
         return Co_NULL;
     }
     
@@ -85,7 +85,7 @@ P_GuiApp CreateApp(char *title)
 
     srvApp = GetServer();
     if(srvApp == Co_NULL)
-		{
+	{
         TCBTbl[tid].userData = app;
 
         printf("[OK](this is the server app)\n");
@@ -96,7 +96,7 @@ P_GuiApp CreateApp(char *title)
     event.app = app;
 
     if(GuiSend(srvApp, &event.parent) == E_OK)
-		{
+	{
         TCBTbl[tid].userData = app;
 
         printf("[OK] ptr=0x%p\n",app);
@@ -126,7 +126,7 @@ void DeleteApp(P_GuiApp app)
     struct eventApp event;
 
     if(app == Co_NULL || app->tid == 0 || app->mq == 0)
-		{
+	{
         return;
     }
 
@@ -141,40 +141,40 @@ void DeleteApp(P_GuiApp app)
     serverApp = GetServer();
     GUI_EVENT_INIT(&event.parent, GUI_EVENT_APP_DELE, app);
 		
-		printf("Initial event done, sender ptr=%p\n", event.parent.sender);
+	printf("Initial event done, sender ptr=%p\n", event.parent.sender);
 		
     event.app = app;
 
     if(GuiSend(serverApp, &event.parent) != E_OK)
-		{	
+	{	
        return;
     }
 		
-		GuiFree(app);
+	GuiFree(app);
 }
 
 StatusType AppEventHandler(struct GuiEvent *event)
 {
-		if(event==Co_NULL)
-		{
+	if(event==Co_NULL)
+	{
         return Co_FALSE;
     }
 		
-		printf("[%s]Handle a event, type no.%d\n", AppSelf()->name,(int)event->type);
+	printf("[%s]Handle a event, type no.%d\n", AppSelf()->name,(int)event->type);
 		
-		switch (event->type)
+	switch (event->type)
     {
-			case GUI_EVENT_APP_DELE:
+	case GUI_EVENT_APP_DELE:
 					ExitApp(((struct eventApp *)event)->app, 0);\
 					break;
 				
-			default:
-				printf("[%s]bad event\n", AppSelf()->name);
-        return Co_FALSE;
+	default:
+		printf("[%s]bad event\n", AppSelf()->name);
+		return Co_FALSE;
 				
-		}
+	}
 		
-		return Co_TRUE;
+	return Co_TRUE;
 }
 
 /**
@@ -199,11 +199,11 @@ void _appEventLoop(P_GuiApp app)
     {
         event = GuiRecv(app->mq, &result);
         if(result==E_OK)
-				{
+		{
             printf("[%s]Recive a event.\n", app->name);
 
             app->handler(event);
-						printf("[%s]Handle over\n", app->name);
+			printf("[%s]Handle over\n", app->name);
         }
     }
 }
@@ -223,22 +223,22 @@ void RunApp(P_GuiApp app)
 {
     /* check whether app is exist */
     if (app == Co_NULL)
-		{
-				return;
-		}
+	{
+			return;
+	}
         
 
     /* check whether app's task is exist */
     if (app->tid == 0)
-		{
+	{
         return;
-		}
+	}
 
     /* check whether app's user data is exist */
     if (TCBTbl[app->tid].userData == 0)
-		{
+	{
         return;
-		}
+	}
 
     printf("[%s]starting app...\n", app->name);
     _appEventLoop(app);
@@ -260,11 +260,11 @@ void RunApp(P_GuiApp app)
 void ExitApp(P_GuiApp app, U16 code)
 {
     if (app->refCnt == 0)
-		{
+	{
         return;
-		}
+	}
 		
-		printf("Exiting app name \"%s\", code %d\n", app->name, code);
+	printf("Exiting app name \"%s\", code %d\n", app->name, code);
     
     app->refCnt--;
     app->exitCode = code;
@@ -283,7 +283,7 @@ void ExitApp(P_GuiApp app, U16 code)
  */
 void CloseApp(P_GuiApp app)
 {
-		struct eventApp event;
+	struct eventApp event;
 
     GUI_EVENT_INIT(&event.parent, GUI_EVENT_APP_DELE, AppSelf());
     event.app = app;
@@ -307,21 +307,21 @@ void SleepApp(P_GuiApp app, U32 sleepTick)
 {
     /* check whether app is exist */
     if (app == Co_NULL)
-		{
+	{
         return;
-		}
+	}
 
     /* check whether app's task is exist */
     if (app->tid == 0)
-		{
+	{
         return;
-		}
+	}
 
     /* check whether app's user data is exist */
     if (app->userData == 0)
-		{
+	{
         return;
-		}
+	}
 
     CoTickDelay(sleepTick);
 }
