@@ -50,9 +50,9 @@ struct cogui_event {
 
 #define _COGUI_EVENT_ELEMENT           \
     struct cogui_event parent;         \
-    P_GuiWin *win;                     \
+    cogui_window_t *win;                     \
 
-#define COGUI_EVENT_INIT(e,t,s)        \
+#define COGUI_EVENT_INIT(e,t)        \
 {                                      \
     (e)->type   = (t);                 \
     (e)->sender = cogui_app_self();    \
@@ -63,7 +63,7 @@ struct cogui_event_app
 {
     struct cogui_event parent; 
 
-    cpgui_app_t *app;
+    cogui_app_t *app;
 };
 
 struct cogui_event_mouse
@@ -77,7 +77,7 @@ struct cogui_event_mouse
 
     U32 win_acti_cnt;
 
-    cpgui_app_t *app;
+    cogui_app_t *app;
 };
 
 #define COGUI_MOUSE_BUTTON_LEFT         0x01
@@ -112,7 +112,7 @@ struct cogui_event_win
 struct cogui_event_win_create
 {
     _COGUI_EVENT_ELEMENT
-    P_GuiWin parentWinow;
+    cogui_window_t parent_window;
 };
 
 struct cogui_event_win_move
@@ -124,7 +124,7 @@ struct cogui_event_win_move
 struct cogui_event_win_resize
 {
     _COGUI_EVENT_ELEMENT
-    GuiRect rect;
+    cogui_rect_t *rect;
 };
 
 struct cogui_event_win_set_title

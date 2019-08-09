@@ -45,7 +45,7 @@ cogui_widget_t *cogui_widget_create(void)
 
 void cogui_widget_delete(cogui_widget_t *widget)
 {   
-    GuiFree(widget);
+    cogui_free(widget);
 }
 
 void WidgetSetFocus(cogui_widget_t *widget, event_handler_ptr handler)
@@ -67,13 +67,13 @@ void WidgetFocus(cogui_widget_t *widget)
     cogui_widget_t *old_focus;
 
     COGUI_ASSERT(widget != Co_NULL);
-    COGUI_ASSERT(widget->topLevel != Co_NULL);
+    COGUI_ASSERT(widget->top_level != Co_NULL);
 
     if (!(widget->flag & COGUI_WIDGET_FLAG_FOCUSABLE) || 
        (widget->flag & COGUI_WIDGET_FLAG_DISABLE))
         return;
 
-    old_focus = widget->top_level->focusWidget;
+    old_focus = widget->top_level->focus_widget;
     if (old_focus == widget)
 	    return;
 
@@ -264,7 +264,7 @@ void _cogui_widget_move(cogui_widget_t *widget, S32 dx, S32 dy)
     widget->extent.y2 += dy;
 
     /* handle visiable extent */
-    widget->extentVisiable = widget->extent;
+    widget->extent_visiable = widget->extent;
 //    parent = widget->parent;
 
     /* we should find out the none-transparent parent *
@@ -384,10 +384,10 @@ void cogui_widget_show(cogui_widget_t *widget)
 
     widget->flag |= COGUI_WIDGET_FLAG_SHOWN;
 
-    if (widget->topLevel != Co_NULL) {
+    if (widget->top_level != Co_NULL) {
         // update clip
 
-        COGUI_EVENT_INIT(&event, COGUI_EVENT_WIN_SHOW,);
+        COGUI_EVENT_INIT(&event, COGUI_EVENT_WIN_SHOW);
 
         if (widget->handler != Co_NULL)
             widget->handler(widget, &event);

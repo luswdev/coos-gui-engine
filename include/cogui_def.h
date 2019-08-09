@@ -13,8 +13,8 @@
 #include <coocox.h>
 
 struct cogui_widget;
-struct window;
-struct GuiContainer;
+struct cogui_window;
+struct cogui_container;
 struct cogui_event;
 struct cogui_dc;
 
@@ -225,8 +225,8 @@ struct cogui_dc_buffer
     struct cogui_gc gc;
 
     /* pixel format */
-    U8 pixelFormat;
-    U8 blendMode;		/* RTGUI_BLENDMODE: None/Blend/Add/Mod */
+    U8 pixel_format;
+    U8 blend_mode;		/* RTGUI_BLENDMODE: None/Blend/Add/Mod */
 
     /* width and height */
     U16 width, height;
@@ -234,7 +234,7 @@ struct cogui_dc_buffer
     U16 pitch;
 
 	/* pixel alpha */
-    U8 pixelAlpha;
+    U8 pixel_alpha;
     /* pixel data */
     U8 *pixel;
 };
@@ -279,7 +279,7 @@ struct cogui_widget
     /* the widget that contains this widget */
     struct cogui_widget *parent;
     /* the window that contains this widget */
-    struct window *top_level;
+    struct cogui_window *top_level;
     /* the widget children and sibling */
     cogui_list_t sibling;
 
@@ -290,7 +290,7 @@ struct cogui_widget
     const cogui_dc_t dc_engine;
 
     /* the graphic context of widget */
-    cogui_graphic_driver_t *gc;
+    struct cogui_gc gc;
 
     /* the widget extent */
     cogui_rect_t extent;
@@ -319,15 +319,15 @@ struct cogui_widget
 typedef struct cogui_widget cogui_widget_t;
 
 /*---------------------------- window ----------------------------------------*/
-enum guiWinFlag
+enum cogui_win_flag
 {
-    GUI_WIN_FLAG_INIT        = 0x00,  /* init state              */
-    GUI_WIN_FLAG_MODAL       = 0x01,  /* modal mode window       */
-    GUI_WIN_FLAG_CLOSED      = 0x02,  /* window is closed        */
-    GUI_WIN_FLAG_ACTIVATE    = 0x04,  /* window is activated     */
-    GUI_WIN_FLAG_UNDER_MODAL = 0x08,  /* window is under modal
+    COGUI_WIN_FLAG_INIT        = 0x00,  /* init state              */
+    COGUI_WIN_FLAG_MODAL       = 0x01,  /* modal mode window       */
+    COGUI_WIN_FLAG_CLOSED      = 0x02,  /* window is closed        */
+    COGUI_WIN_FLAG_ACTIVATE    = 0x04,  /* window is activated     */
+    COGUI_WIN_FLAG_UNDER_MODAL = 0x08,  /* window is under modal
                                            show(modaled by other)  */
-    GUI_WIN_FLAG_CONNECTED   = 0x10,  /* connected to server */
+    COGUI_WIN_FLAG_CONNECTED   = 0x10,  /* connected to server */
     /* window is event_key dispatcher(dispatch it to the focused widget in
      * current window) _and_ a key handler(it should be able to handle keys
      * such as ESC). Both of dispatching and handling are in the same
@@ -336,12 +336,12 @@ enum guiWinFlag
      *
      * If this flag is set, we are in key-handling mode.
      */
-    GUI_WIN_FLAG_HANDLE_KEY  = 0x20,
+    COGUI_WIN_FLAG_HANDLE_KEY  = 0x20,
 
-    GUI_WIN_FLAG_CB_PRESSED  = 0x40,
+    COGUI_WIN_FLAG_CB_PRESSED  = 0x40,
 };
 
-typedef struct window
+struct cogui_window
 {
     struct GuiContainer *parent;
 
@@ -350,15 +350,15 @@ typedef struct window
 
     /* drawing count */
     S64 drawing;
-    cogui_rect_t drawingRect;
+    cogui_rect_t drawing_rect;
 
     /* parent window. Co_NULL if the window is a top level window */
-    struct window *parentWindow;
+    struct cogui_window *parent_window;
 
-    cogui_region_t outerClip;
-    cogui_rect_t outerExtent;
+    cogui_region_t outer_clip;
+    cogui_rect_t outer_extent;
 
-    cogui_widget_t *focusWidget;
+    cogui_widget_t *focus_widget;
 
     /* which app I belong */
     cogui_app_t *app;
@@ -367,69 +367,72 @@ typedef struct window
     U16 style;
 
     /* window state flag */
-    enum guiWinFlag flag;
+    enum cogui_win_flag flag;
 
     /* last mouse event handled widget */
-    cogui_widget_t *lastMeventWidget;
+    cogui_widget_t *last_mouse_event_widget;
 
     /* window title */
     U8 *title;
-    cogui_widget_t *_titleWgt;
+    cogui_widget_t *_title_wgt;
 
     /* call back */
-    StatusType (*onActivate)(cogui_widget_t * widget, struct cogui_event *event);
-    StatusType (*onDeactivate)(cogui_widget_t * widget, struct cogui_event *event);
-    StatusType (*onClose)(cogui_widget_t * widget, struct cogui_event *event);
+    StatusType (*on_activate)(cogui_widget_t * widget, struct cogui_event *event);
+    StatusType (*on_deactivate)(cogui_widget_t * widget, struct cogui_event *event);
+    StatusType (*on_close)(cogui_widget_t * widget, struct cogui_event *event);
 
-    StatusType (*onKey)(cogui_widget_t * widget, struct cogui_event *event);
+    StatusType (*on_key)(cogui_widget_t * widget, struct cogui_event *event);
 
     /* reserved user data */
-    void *userData;
+    void *user_data;
 
     /* Private data */
-    S64 (*_doShow)(struct window *win);
+    S64 (*_do_show)(struct cogui_window *win);
 
     /* app ref_count */
-    U16 appRefCnt;
+    U16 app_ref_cnt;
 
     /* win magic flag, magic value is 0xA5A55A5A */
     U32	magic;
-
-}GuiWin,*P_GuiWin;
+};
+typedef struct cogui_window cogui_window_t;
 
 /**
  * Top window
  */
-typedef struct topwin
+struct cogui_topwin
 {
     /* the window id */
-    P_GuiWin *wid;
+    cogui_window_t *wid;
 
     /* which app belong */
-    cogui_app_t **app;
+    cogui_app_t *app;
 
-}TopWin,*P_TopWin;
+};
+typedef struct cogui_topwin cogui_topwin_t;
 
 /*---------------------------- container -------------------------------------*/
-typedef struct box
+struct cogui_box
 {
     U16 orient;
-    U16 borderSize;
+    U16 borders_size;
 
-    struct GuiContainer *container;
-}GuiBox,*P_GuiBox;
+    struct cogui_container *container;
+};
+typedef struct cogui_box cogui_box_t;
 
-typedef struct GuiContainer
+struct cogui_container
 {
     cogui_widget_t *parent;
 
     StatusType (*handler)(struct cogui_event *event);
 
     /* layout box */
-    P_GuiBox layoutBox;
+    cogui_box_t *layout_box;
 
-    CoList children;
+    cogui_list_t children;
 
-}GuiContainer,*P_GuiContainer;
+};
+typedef struct cogui_container cogui_container_t;
 
 #endif /* _COGUI_DEF_H */

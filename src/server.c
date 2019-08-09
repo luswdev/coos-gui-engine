@@ -22,7 +22,7 @@ void cogui_server_handler_mouse_btn(struct cogui_event_mouse *event)
     /* the topwin contains current mouse */
     //P_TopWin win    = Co_NULL;
 
-    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_MOUSE_BUTTON);
+    COGUI_EVENT_INIT(&event->parent, COGUI_EVENT_MOUSE_BUTTON);
 
     /* set cursor position */
     //MouseSetPos(event->x, event->y);
@@ -34,7 +34,7 @@ void cogui_server_handler_mouse_btn(struct cogui_event_mouse *event)
 
     event->win = win->wid;*/
 
-    while(cogui_send(event->app, &event.parent) != E_OK){
+    while(cogui_send(event->app, &event->parent) != E_OK){
         CoTickDelay(50);
     }
 }
@@ -44,7 +44,7 @@ void cogui_server_handler_mouse_motion(struct cogui_event_mouse *event)
     /* the topwin contains current mouse */
     //P_TopWin win    = Co_NULL;
 
-    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_MOUSE_MOTION);
+    COGUI_EVENT_INIT(&event->parent, COGUI_EVENT_MOUSE_MOTION);
 
     /*win = GetTopWin(event->x, event->y);
     if(win == Co_NULL){
@@ -52,7 +52,7 @@ void cogui_server_handler_mouse_motion(struct cogui_event_mouse *event)
     }
 
     event->win = win->wid;*/
-    cogui_send(event->app, &event.parent);
+    cogui_send(event->app, &event->parent);
 
     //MouseMoveTo(event->x, event->y);
 }
@@ -62,7 +62,7 @@ void cogui_server_event_kbd(struct cogui_event_kbd *event)
     /* the topwin contains current mouse */
     //P_TopWin win = Co_NULL;
 
-    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_KBD);
+    COGUI_EVENT_INIT(&event->parent, COGUI_EVENT_KBD);
 
     /*win = GetTopWinFocus();
     if(win == Co_NULL){
@@ -71,10 +71,10 @@ void cogui_server_event_kbd(struct cogui_event_kbd *event)
 
     event->win = win->wid;*/
 
-    cogui_send(event->app, &event.parent);
+    cogui_send(event->app, &event->parent);
 }
 
-StatusType cogui_server_event_handler(struct GuiEvent *event)
+StatusType cogui_server_event_handler(struct cogui_event *event)
 {
     COGUI_ASSERT(event != Co_NULL);
 
@@ -131,7 +131,7 @@ StatusType cogui_server_post_event(struct cogui_event *event)
     StatusType result;
 
     if (server_app != Co_NULL){
-        result = cougui_send(server_pp, event);
+        result = cogui_send(server_app, event);
     }
     else{
         result = E_NOSYS;
@@ -140,12 +140,12 @@ StatusType cogui_server_post_event(struct cogui_event *event)
     return result;
 }
 
-cogui_app_t *GetServer(void)
+cogui_app_t *cogui_get_server(void)
 {
     return server_app;
 }
 
-void ServerInit(void)
+void cogui_server_init(void)
 {
 	printf("Create a task \"server_entry\"...\r\n");
     CoCreateTask(cogui_server_entry, (void *)0, 15,&server_Stk[TASK_STK_SIZE-1], TASK_STK_SIZE);

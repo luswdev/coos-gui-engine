@@ -25,7 +25,7 @@
 cogui_widget_t *cogui_widget_create(void);
 void cogui_widget_delete(cogui_widget_t *widget);
 
-StatusType cogui_widget_event_handler(cogui_widget_t *widget, struct cogui_event_t *event);
+StatusType cogui_widget_event_handler(cogui_widget_t *widget, struct cogui_event *event);
 
 void cogui_widget_focus(cogui_widget_t *widget);
 void cogui_widget_unfocus(cogui_widget_t *widget);
@@ -44,9 +44,9 @@ void cogui_widget_set_minwidth(cogui_widget_t *widget, S32 width);
 void cogui_widget_set_minheight(cogui_widget_t *widget, S32 height);
 
 void cogui_widget_show(cogui_widget_t *widget);
-StatusType cogui_widget_onshow(cogui_widget_t *widget, struct cogui_event_t *event);
+StatusType cogui_widget_onshow(cogui_widget_t *widget, struct cogui_event *event);
 void cogui_widget_hide(cogui_widget_t *widget);
-StatusType cogui_widget_onhide(cogui_widget_t *widget, struct cogui_event_t *event);
+StatusType cogui_widget_onhide(cogui_widget_t *widget, struct cogui_event *event);
 void cogui_widget_update(cogui_widget_t *widget);
 
 /* get the physical position of a logic point on widget */

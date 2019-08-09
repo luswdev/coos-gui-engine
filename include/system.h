@@ -56,8 +56,8 @@ void *cogui_memmove(void *dest, const void *src, U64 n);
 
 StatusType cogui_ack(struct cogui_event *event, StatusType status);
 
-StatusType cogui_send(P_GuiApp app, struct cogui_event *event);
-StatusType cogui_send_sync(P_GuiApp app, struct cogui_event *event);
+StatusType cogui_send(cogui_app_t *app, struct cogui_event *event);
+StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event);
 struct cogui_event *cogui_recv(OS_EventID mq, StatusType *result);
 
 void cogui_assert_handler(const char *ex_string, const char *func, U32 line);

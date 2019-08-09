@@ -26,7 +26,7 @@ void cogui_dc_draw_line(cogui_dc_t *dc, S32 x1, S32 x2, S32 y1, S32 y2)
 	}
 }
 
-void cogui_dc_draw_rect(cogui_dc_t *dc, P_GuiRect rect)
+void cogui_dc_draw_rect(cogui_dc_t *dc, cogui_rect_t *rect)
 {
 	COGUI_ASSERT(dc != Co_NULL);
 	
@@ -47,7 +47,7 @@ void cogui_dc_draw_rect(cogui_dc_t *dc, P_GuiRect rect)
 }
 
 
-void cogui_dc_draw_shaded_rect(cogui_dc_t *dc, P_GuiRect rect, cogui_color_t c1, cogui_color_t c2)
+void cogui_dc_draw_shaded_rect(cogui_dc_t *dc, cogui_rect_t *rect, cogui_color_t c1, cogui_color_t c2)
 {
 	COGUI_ASSERT(dc != Co_NULL);
 		
@@ -60,7 +60,7 @@ void cogui_dc_draw_shaded_rect(cogui_dc_t *dc, P_GuiRect rect, cogui_color_t c1,
 	dc->engine->draw_hline(dc, rect->x1, rect->y1, rect->y2-1);
 }
 
-void cogui_dc_fill_rect_forecolor(cogui_dc_t *dc, P_GuiRect rect)
+void cogui_dc_fill_rect_forecolor(cogui_dc_t *dc, cogui_rect_t *rect)
 {
 	COGUI_ASSERT(dc != Co_NULL);
 	
@@ -75,10 +75,10 @@ void cogui_dc_fill_rect_forecolor(cogui_dc_t *dc, P_GuiRect rect)
 	
 }
 
-void cogui_dc_draw_border(cogui_dc_t *dc, P_GuiRect rect, int flag)
+void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect, int flag)
 {
-	GuiRect r;
-	cogui_color_t c;
+	cogui_rect_t r;
+	//cogui_color_t c;
 	
 	COGUI_ASSERT(dc != Co_NULL);
 	
@@ -88,21 +88,21 @@ void cogui_dc_draw_border(cogui_dc_t *dc, P_GuiRect rect, int flag)
 	r = *rect;
 	switch(flag)
 	{
-		case GUI_BORDER_SIMPLE:
+		case COGUI_BORDER_SIMPLE:
 			COGUI_DC_FC(dc) = 0xFFFF;
-			CoGuiDcDrawRect(dc, &r);
+			cogui_dc_draw_rect(dc, &r);
 			break;
-		case GUI_BORDER_EXTRA:
+		case COGUI_BORDER_EXTRA:
 			COGUI_DC_FC(dc) = 0xF7DE;
-			CoGuiDcDrawRect(dc, &r);
+			cogui_dc_draw_rect(dc, &r);
 			break;
-		case GUI_BORDER_SUNKEN:
+		case COGUI_BORDER_SUNKEN:
 			break;
-		case GUI_BORDER_BOX:
+		case COGUI_BORDER_BOX:
 			break;
-		case GUI_BORDER_STATIC:
+		case COGUI_BORDER_STATIC:
 			break;
-		case GUI_BORDER_RAISE:
+		case COGUI_BORDER_RAISE:
 			break;
 		default:
 			break;

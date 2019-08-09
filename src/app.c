@@ -14,7 +14,7 @@
 void _cogui_app_init(cogui_app_t *app)
 {
     app->name         = Co_NULL;
-    app->refCnt       = 0;
+    app->ref_cnt      = 0;
     app->tid          = 0;
     app->mq           = 0;
     app->win_cnt      = 0;
@@ -78,7 +78,7 @@ void cogui_app_delete(cogui_app_t *app)
     CoDelMbox(app->mq, OPT_DEL_ANYWAY);
     TCBTbl[app->tid].userData = 0;
 		
-    srv_app = GetServer();
+    srv_app = cogui_get_server();
     COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_APP_DELE);
     event.app = app;
 
@@ -88,7 +88,7 @@ void cogui_app_delete(cogui_app_t *app)
 	cogui_free(app);
 }
 
-StatusType cogui_app_event_handler(struct GuiEvent *event)
+StatusType cogui_app_event_handler(struct cogui_event *event)
 {
 	COGUI_ASSERT(event != Co_NULL);
 
@@ -141,9 +141,9 @@ void cogui_app_exit(cogui_app_t *app, U16 code)
 
 void cogui_app_close(cogui_app_t *app)
 {
-	struct eventApp event;
+	struct cogui_event_app event;
 
-    GUI_EVENT_INIT(&event.parent, GUI_EVENT_APP_DELE);
+    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_APP_DELE);
     event.app = app;
 
     cogui_send(app, &event.parent);

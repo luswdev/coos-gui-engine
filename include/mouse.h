@@ -2,7 +2,7 @@
  *******************************************************************************
  * @file       mouse.h
  * @version    V0.0.1   
- * @date       2019.5.23
+ * @date       2019.8.9
  * @brief      The mouse action for gui engine.	
  *******************************************************************************
  */ 
@@ -11,13 +11,12 @@
 #define _COGUI_MOUSE_H
 
 /*---------------------------- structure -------------------------------------*/
-struct guiCursor
+struct cogui_couser
 {
-    /* current cursor x and y */
     U16 cx, cy;
 };
 
-void MouseSetPos(S32 x, S32 y);
-void MouseMoveTo(S32 x, S32 y);
+void cogui_mouse_set_pos(S32 x, S32 y);
+void cogui_mouse_move_to(S32 x, S32 y);
 
 #endif /* _COGUI_MOUSE_H */

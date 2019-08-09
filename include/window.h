@@ -10,54 +10,54 @@
 #ifndef _COGUI_WINDOW_H
 #define _COGUI_WINDOW_H
 
-#define GUI_WIN_STYLE_NO_FOCUS            0x0001  /* non-focused window            */
-#define GUI_WIN_STYLE_NO_TITLE            0x0002  /* no title window               */
-#define GUI_WIN_STYLE_NO_BORDER           0x0004  /* no border window              */
-#define GUI_WIN_STYLE_CLOSEBOX            0x0008  /* window has the close button   */
-#define GUI_WIN_STYLE_MINIBOX             0x0010  /* window has the mini button    */
+#define COGUI_WIN_STYLE_NO_FOCUS            0x0001  /* non-focused window            */
+#define COGUI_WIN_STYLE_NO_TITLE            0x0002  /* no title window               */
+#define COGUI_WIN_STYLE_NO_BORDER           0x0004  /* no border window              */
+#define COGUI_WIN_STYLE_CLOSEBOX            0x0008  /* window has the close button   */
+#define COGUI_WIN_STYLE_MINIBOX             0x0010  /* window has the mini button    */
 
-#define GUI_WIN_STYLE_DESTROY_ON_CLOSE    0x0020  /* window is destroyed when closed */
-#define GUI_WIN_STYLE_ONTOP               0x0040  /* window is in the top layer    */
-#define GUI_WIN_STYLE_ONBTM               0x0080  /* window is in the bottom layer */
-#define GUI_WIN_STYLE_MAINWIN             0x0106  /* window is a main window       */
+#define COGUI_WIN_STYLE_DESTROY_ON_CLOSE    0x0020  /* window is destroyed when closed */
+#define COGUI_WIN_STYLE_ONTOP               0x0040  /* window is in the top layer    */
+#define COGUI_WIN_STYLE_ONBTM               0x0080  /* window is in the bottom layer */
+#define COGUI_WIN_STYLE_MAINWIN             0x0106  /* window is a main window       */
 
-#define GUI_WIN_MAGIC					  0xA5A55A5A		/* win magic flag */
+#define COGUI_WIN_MAGIC					  0xA5A55A5A		/* win magic flag */
 
-#define WINTITLE_HEIGHT         20
-#define WINTITLE_CB_WIDTH       16
-#define WINTITLE_CB_HEIGHT      16
-#define WINTITLE_BORDER_SIZE    2
+#define COWINTITLE_HEIGHT         20
+#define COWINTITLE_CB_WIDTH       16
+#define COWINTITLE_CB_HEIGHT      16
+#define COWINTITLE_BORDER_SIZE    2
 
-P_GuiWin WinCreate(P_GuiWin parentWindow, U8 *title, P_GuiRect rect, U16 style);
-void WinDele(P_GuiWin win);
+cogui_window_t *WinCreate(cogui_window_t *parentWindow, U8 *title, cogui_rect_t *rect, U16 style);
+void WinDele(cogui_window_t *win);
 
-StatusType WinClose(P_GuiWin win);
+StatusType WinClose(cogui_window_t *win);
 
-U64 WinShow(P_GuiWin win);
-U64 WinDoShow(P_GuiWin win);
+U64 WinShow(cogui_window_t *win);
+U64 WinDoShow(cogui_window_t *win);
 
-void WinHide(P_GuiWin win);
+void WinHide(cogui_window_t *win);
 
-StatusType WinActivate(P_GuiWin win);
-StatusType WinIsActivated(P_GuiWin win);
+StatusType WinActivate(cogui_window_t *win);
+StatusType WinIsActivated(cogui_window_t *win);
 
-void WinMove(P_GuiWin win, S32 x, S32 y);
+void WinMove(cogui_window_t *win, S32 x, S32 y);
 
-void WinSetRect(P_GuiWin win, P_GuiRect rect);
-void WinUpdateClip(P_GuiWin win);
+void WinSetRect(cogui_window_t *win, cogui_rect_t *rect);
+void WinUpdateClip(cogui_window_t *win);
 
-void WinSetOnactivate(P_GuiWin win, EventHandlerPtr handler);
-void WinSetOndeactivate(P_GuiWin win, EventHandlerPtr handler);
-void WinSetOnclose(P_GuiWin win, EventHandlerPtr handler);
-void WinSetOnkey(P_GuiWin win, EventHandlerPtr handler);
+void WinSetOnactivate(cogui_window_t *win, event_handler_ptr handler);
+void WinSetOndeactivate(cogui_window_t *win, event_handler_ptr handler);
+void WinSetOnclose(cogui_window_t *win, event_handler_ptr handler);
+void WinSetOnkey(cogui_window_t *win, event_handler_ptr handler);
 
-StatusType WinEventHandler(cogui_widget_t * win, struct GuiEvent *event);
+StatusType WinEventHandler(cogui_widget_t * win, struct cogui_event *event);
 
-void WinSetRect(P_GuiWin win, P_GuiRect rect);
-void WinSetTitle(P_GuiWin win, const U8 *title);
-U8 *WinGetTitle(P_GuiWin win);
+void WinSetRect(cogui_window_t *win, cogui_rect_t *rect);
+void WinSetTitle(cogui_window_t *win, const U8 *title);
+U8 *WinGetTitle(cogui_window_t *win);
 
-P_GuiWin WinGetTopmostShown(void);
-P_GuiWin WinGetNextShown(void);
+cogui_window_t *WinGetTopmostShown(void);
+cogui_window_t *WinGetNextShown(void);
 
 #endif /* _COGUI_WINDOW_H */

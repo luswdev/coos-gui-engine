@@ -11,7 +11,7 @@
 #define _COGUI_TOPWIN_H
 
 /*---------------------------- Function Define -------------------------------*/
-P_TopWin GetTopWin(S32 x, S32 y);
-P_TopWin GetTopWinFocus(void);
+cogui_topwin_t *GetTopWin(S32 x, S32 y);
+cogui_topwin_t *GetTopWinFocus(void);
 
 #endif /* _COGUI_TOPWIN_H */

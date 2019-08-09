@@ -13,7 +13,7 @@ static void cogui_dc_hw_draw_point(cogui_dc_t *dc, S32 x, S32 y);
 static void cogui_dc_hw_draw_color_point(cogui_dc_t *dc, S32 x, S32 y, cogui_color_t color);
 static void cogui_dc_hw_draw_vline(cogui_dc_t *dc, S32 x, S32 y1, S32 y2);
 static void cogui_dc_hw_draw_hline(cogui_dc_t *dc, S32 x1, S32 x2, S32 y);
-static void cogui_dc_hw_fill_rect(cogui_dc_t *dc, cogui_rect_t rect);
+static void cogui_dc_hw_fill_rect(cogui_dc_t *dc, cogui_rect_t *rect);
 static StatusType cogui_dc_hw_fini(cogui_dc_t *dc);
 
 struct cogui_dc_engine dc_hw_engine =
@@ -77,7 +77,7 @@ static void cogui_dc_hw_draw_point(cogui_dc_t *self, S32 x, S32 y)
     if (y >= dc->owner->extent.y2) 
         return;
 
-    dc->hwDriver->ops->set_pixel(&(dc->owner->gc.foreground), x, y);
+    dc->hw_driver->ops->set_pixel(&(dc->owner->gc.foreground), x, y);
 }
 
 static void cogui_dc_hw_draw_color_point(cogui_dc_t *self, S32 x, S32 y, cogui_color_t color)
@@ -99,7 +99,7 @@ static void cogui_dc_hw_draw_color_point(cogui_dc_t *self, S32 x, S32 y, cogui_c
     if (y >= dc->owner->extent.y2)
         return;
     
-    dc->hwDriver->ops->set_pixel(&color, x, y);
+    dc->hw_driver->ops->set_pixel(&color, x, y);
 }
 
 static void cogui_dc_hw_draw_vline(cogui_dc_t *self, S32 x, S32 y1, S32 y2)
@@ -121,7 +121,7 @@ static void cogui_dc_hw_draw_vline(cogui_dc_t *self, S32 x, S32 y1, S32 y2)
     y2 = y2 + dc->owner->extent.y1;
 
     if (y1 > y2)
-        _intSwap(y1, y2);
+        _int_swap(y1, y2);
     
     if (y1 > dc->owner->extent.y2 || y2 < dc->owner->extent.y1)
         return;
@@ -132,7 +132,7 @@ static void cogui_dc_hw_draw_vline(cogui_dc_t *self, S32 x, S32 y1, S32 y2)
     if (y2 > dc->owner->extent.y2)
         y2 = dc->owner->extent.y2;
 
-    dc->hwDriver->ops->draw_vline(&(dc->owner->gc.foreground), x, y1, y2);
+    dc->hw_driver->ops->draw_vline(&(dc->owner->gc.foreground), x, y1, y2);
 }
 
 static void cogui_dc_hw_draw_hline(cogui_dc_t *self, S32 x1, S32 x2, S32 y)
@@ -164,10 +164,10 @@ static void cogui_dc_hw_draw_hline(cogui_dc_t *self, S32 x1, S32 x2, S32 y)
     if (x2 > dc->owner->extent.x2)
         x2 = dc->owner->extent.x2;
 
-    dc->hwDriver->ops->draw_hline(&(dc->owner->gc.foreground), x1, x2, y);
+    dc->hw_driver->ops->draw_hline(&(dc->owner->gc.foreground), x1, x2, y);
 }
 
-static void cogui_dc_hw_fill_rect(cogui_dc_t *self, cogui_rect_tv rect)
+static void cogui_dc_hw_fill_rect(cogui_dc_t *self, cogui_rect_t *rect)
 {
     cogui_color_t color;
     S32 y1, y2, x1, x2;
@@ -210,6 +210,6 @@ static void cogui_dc_hw_fill_rect(cogui_dc_t *self, cogui_rect_tv rect)
         y2 = dc->owner->extent.y2;
     
     for (; y1 < y2; y1++) {
-        dc->hwDriver->ops->draw_hline(&color, x1, x2, y1);
+        dc->hw_driver->ops->draw_hline(&color, x1, x2, y1);
     }
 }

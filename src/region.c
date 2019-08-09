@@ -28,41 +28,7 @@ static StatusType RegionBreak(cogui_region_t *region)
 
 StatusType RegionCopy(cogui_region_t *dst, cogui_region_t *src)
 {
-    if(dst==Co_NULL || src==Co_NULL){
-        return GUI_REGION_STATUS_FAILURE;
-    }
 
-    if(dst==src){
-        return GUI_REGION_STATUS_SUCCESS;
-    }    
-    
-    dst->extent = src->extent;
-
-    if(!src->data || !src->data->size){
-        if(dst->data && dst->data->size){
-            GuiFree(dst->data);
-        }
-    }
-    if(!dst->data || (dst->data->size < src->data->numRects)){
-        if(dst->data && dst->data->size){
-            GuiFree(dst->data);
-        }
-
-        dst->data = GuiMalloc(sizeof(GuiRegionData)+(src->data->numRect)*sizeof(GuiRect));
-
-        if(!dst->data){
-            dst->data->extent = guiEmptyRect;
-            dst->data         = guiBrokendata;
-
-            return GUI_REGION_STATUS_FAILURE;
-        }
-        dst->data->size = src->data->numRects;
-    }
-
-    dst->data->numRects = src->data->numRects;
-    MemMove((char *)((P_GuiRect)dst->data+1), (char *)((P_GuiRect)src->data+1), dst->data->numRects * sizeof(GuiRect));
-    
-    return GUI_REGION_STATUS_SUCCESS;
 }
 
 void RegionInitWithExtents(cogui_region_t *region, const cogui_rect_t *extents)
@@ -107,65 +73,7 @@ StatusType RegionIntersectRect(cogui_region_t *newReg,cogui_region_t *reg1, cogu
 
 StatusType RegionUnion(cogui_region_t *newReg, cogui_region_t *reg1, cogui_region_t *reg2)
 {
-    if(newReg==Co_NULL || reg1==Co_NULL || reg2==Co_NULL){
-        return GUI_REGION_STATUS_FAILURE;
-    }
 
-    /* Region 1 and 2 are the same */
-    if (reg1 == reg2)
-    {
-        return RegionCopy(newReg, reg1);
-    }
-
-    /* Region 1 is empty */
-    if (reg1->data && !(reg1->data->numRects))
-    {
-        if (reg1==&guiBrokendata){
-            return RegionBreak(newReg)
-        }
-        if (newReg != reg2)
-            return RegionCopy(newReg, reg2);
-        return GUI_REGION_STATUS_SUCCESS;
-    }
-
-    /*  Region 2 is empty */
-    if (reg2->data && !(reg2->data->numRects))
-    {
-        if (reg2==&guiBrokendata){
-            return RegionBreak(newReg);
-        if (newReg != reg1)
-            return RegionCopy(newReg, reg1);
-        return GUI_REGION_STATUS_SUCCESS;
-    }
-
-    /* Region 1 completely subsumes region 2 */
-    if (!reg1->data && SUBSUMES(&reg1->extent, &reg2->extent))
-    {
-        if (newReg != reg1)
-            return RegionCopy(newReg, reg1);
-        return GUI_REGION_STATUS_SUCCESS;
-    }
-
-    /*  Region 2 completely subsumes region 1 */
-    if (!reg2->data && SUBSUMES(&reg2->extent, &reg1->extent))
-    {
-        if (newReg != reg2)
-            return RegionCopy(newReg, reg2);
-        return GUI_REGION_STATUS_SUCCESS;
-    }
-
-    // ops
-
-    newReg->extent.x1 = GUI_MIN(reg1->extent.x1, reg2->extent.x1);
-    newReg->extent.y1 = GUI_MIN(reg1->extent.y1, reg2->extent.y1);
-    newReg->extent.x2 = GUI_MAX(reg1->extent.x2, reg2->extent.x2);
-    newReg->extent.y2 = GUI_MAX(reg1->extent.y2, reg2->extent.y2);
-
-    if(newReg==Co_NULL){
-        return GUI_REGION_STATUS_FAILURE;
-    }
-
-    return GUI_REGION_STATUS_SUCCESS;
 }
 
 StatusType RegionSubtract(cogui_region_t *regD, cogui_region_t *regM, cogui_region_t *regS)
