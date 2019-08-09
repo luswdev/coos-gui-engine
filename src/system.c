@@ -7,7 +7,7 @@
  *******************************************************************************
  */ 
 
-#include "cogui.h"
+#include "../include/cogui.h"
 
 void cogui_system_init(void *par)
 {
@@ -86,7 +86,6 @@ struct cogui_event *cogui_recv(OS_EventID mq, StatusType *result)
 
     return event;
 }
-
 
 void cogui_assert_handler(const char *ex_string, const char *func, U32 line)
 {

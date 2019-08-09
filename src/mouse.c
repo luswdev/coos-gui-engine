@@ -7,17 +7,14 @@
  *******************************************************************************
  */ 
 
-/*---------------------------- Include ---------------------------------------*/
-#include "cogui.h"
+#include "../include/cogui.h"
 
-/*---------------------------- Variable Define -------------------------------*/
 struct guiCursor *_cursor;
 
 void MouseInit();
 
 void MouseSetPos(S32 x, S32 y)
 {
-    /* move current cursor */
     _cursor->cx = x;
     _cursor->cy = y;
 }

@@ -1,14 +1,13 @@
 /**
  *******************************************************************************
  * @file       driver.c
- * @version    V0.0.1   
- * @date       2019.5.19
+ * @version    V0.0.2   
+ * @date       2019.8.9
  * @brief      Some system function for GUI engine's driver.	
  *******************************************************************************
  */ 
 
-/*---------------------------- Include ---------------------------------------*/
-#include "cogui.h"
+#include "../include/cogui.h"
 
 static cogui_graphic_driver_t _driver;
 static cogui_graphic_driver_t *_current_driver = &_driver;

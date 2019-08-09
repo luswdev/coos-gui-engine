@@ -1,13 +1,13 @@
 /**
  *******************************************************************************
  * @file       dc.c
- * @version    V0.0.1   
- * @date       2019.5.29
+ * @version    V0.1.0 
+ * @date       2019.8.9
  * @brief      This is a file for GUI dc engine.	
  *******************************************************************************
  */ 
 
-#include "cogui.h"
+#include "../include/cogui.h"
 
 void cogui_dc_draw_line(cogui_dc_t *dc, S32 x1, S32 x2, S32 y1, S32 y2)
 {

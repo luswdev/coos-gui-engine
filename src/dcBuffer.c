@@ -7,9 +7,8 @@
  *******************************************************************************
  */ 
 
-#include "cogui.h"
+#include "../include/cogui.h"
 
-/*---------------------------- Function declare ------------------------------*/
 static void DcBufferDrawPoint(cogui_dc_t *dc, S32 x, S32 y);
 static void DcBufferDrawColorPoint(cogui_dc_t *dc, S32 x, S32 y, cogui_color_t color);
 static void DcBufferDrawVline(cogui_dc_t *dc, S32 x, S32 y1, S32 y2);

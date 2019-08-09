@@ -7,7 +7,7 @@
  *******************************************************************************
  */ 
 
-#include "cogui.h"
+#include "../include/cogui.h"
 
 void _InitContainer(P_GuiContainer container)
 {

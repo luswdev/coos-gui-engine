@@ -7,16 +7,13 @@
  *******************************************************************************
  */ 
 
-/*---------------------------- Include ---------------------------------------*/
-#include "cogui.h"
+#include "../include/cogui.h"
 
-/*---------------------------- Variable Define -------------------------------*/
 static GuiRegionData guiRegionEmptydata = {0, 0};
 static GuiRegionData guiBrokendata = {0, 0};
 
 GuiRect guiEmptyRect = {0, 0, 0, 0};
 GuiPoint guiEmptyPoint = {0, 0};
-
 
 static StatusType RegionBreak(cogui_region_t *region)
 {

@@ -1,37 +1,22 @@
 /**
  *******************************************************************************
  * @file       server.c
- * @version    V0.0.1   
- * @date       2019.5.19
+ * @version    V0.0.2  
+ * @date       2019.8.9
  * @brief      The server for gui engine.	
  *******************************************************************************
  */ 
 
-/*---------------------------- Include ---------------------------------------*/
-#include "cogui.h"
+#include "../include/cogui.h"
 
-/*---------------------------- Define  ---------------------------------------*/
-#define TASK_STK_SIZE		128	/*!< Define stack size.	              */
+#define TASK_STK_SIZE		128
 
-/*---------------------------- Variable declare ------------------------------*/
 cogui_app_t *server_app = Co_NULL;
-
-OS_STK   server_Stk[TASK_STK_SIZE];	     /*!< Stack of 'task_init' task.      */
+OS_STK   server_Stk[TASK_STK_SIZE];
 
 //void SHandlerMonitorAdd();
 //void SHandlerMonitorRemove();
 
-/**
- *******************************************************************************
- * @brief      Handle mouse button event
- * @param[in]  event        mouse event
- * @param[out] None
- * @retval     None		 
- *
- * @par Description
- * @details    This function is called to handle a mouse button event
- *******************************************************************************
- */
 void cogui_server_handler_mouse_btn(struct cogui_event_mouse *event)
 {
     /* the topwin contains current mouse */
@@ -54,17 +39,6 @@ void cogui_server_handler_mouse_btn(struct cogui_event_mouse *event)
     }
 }
 
-/**
- *******************************************************************************
- * @brief      Handle mouse motion event
- * @param[in]  event        mouse event
- * @param[out] None
- * @retval     None		 
- *
- * @par Description
- * @details    This function is called to handle a mouse motion event
- *******************************************************************************
- */
 void cogui_server_handler_mouse_motion(struct cogui_event_mouse *event)
 {
     /* the topwin contains current mouse */
@@ -83,17 +57,6 @@ void cogui_server_handler_mouse_motion(struct cogui_event_mouse *event)
     //MouseMoveTo(event->x, event->y);
 }
 
-/**
- *******************************************************************************
- * @brief      Handle keyboard event
- * @param[in]  event        keyboard event
- * @param[out] None
- * @retval     None		 
- *
- * @par Description
- * @details    This function is called to handle a keyboard event
- *******************************************************************************
- */
 void cogui_server_event_kbd(struct cogui_event_kbd *event)
 {
     /* the topwin contains current mouse */
@@ -111,18 +74,6 @@ void cogui_server_event_kbd(struct cogui_event_kbd *event)
     cogui_send(event->app, &event.parent);
 }
 
-/**
- *******************************************************************************
- * @brief      Server app handler
- * @param[in]  event        event to handle
- * @param[out] None
- * @retval     Co_FALSE     failed
- * @retval     Co_TRUE      success
- *
- * @par Description
- * @details    This function is server app handler function
- *******************************************************************************
- */
 StatusType cogui_server_event_handler(struct GuiEvent *event)
 {
     COGUI_ASSERT(event != Co_NULL);
@@ -160,17 +111,6 @@ StatusType cogui_server_event_handler(struct GuiEvent *event)
     return Co_TRUE;
 }
 
-/**
- *******************************************************************************
- * @brief      Start the server	 
- * @param[in]  parameter    some add on parameter
- * @param[out] None
- * @retval     None			 
- *
- * @par Description
- * @details    This function is called to start the server
- *******************************************************************************
- */
 void cogui_server_entry(void *parameter)
 {
     server_app = cogui_app_create("gui_server");
@@ -186,19 +126,6 @@ void cogui_server_entry(void *parameter)
     server_app = Co_NULL;
 }
 
-/**
- *******************************************************************************
- * @brief      post a event via server 
- * @param[in]  event        event ptr
- * @param[out] None
- * @retval     E_NOSYS      if cannot find server app
- * @retval     E_ERROR      if post failed
- * @retval     E_OK         if post success		 
- *
- * @par Description
- * @details    This function is called to post a event via server
- *******************************************************************************
- */
 StatusType cogui_server_post_event(struct cogui_event *event)
 {
     StatusType result;
@@ -213,22 +140,10 @@ StatusType cogui_server_post_event(struct cogui_event *event)
     return result;
 }
 
-/**
- *******************************************************************************
- * @brief      Get server ptr 
- * @param[in]  None
- * @param[out] None
- * @retval     serverApp    Current server ptr			 
- *
- * @par Description
- * @details    This function is called to get server ptr
- *******************************************************************************
- */
 cogui_app_t *GetServer(void)
 {
     return server_app;
 }
-
 
 void ServerInit(void)
 {

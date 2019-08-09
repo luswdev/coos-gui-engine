@@ -1,28 +1,16 @@
 /**
  *******************************************************************************
  * @file       app.c
- * @version    V0.0.1   
- * @date       2019.5.18
+ * @version    V0.0.2 
+ * @date       2019.8.9
  * @brief      This is a file for GUI engine's app.	
  *******************************************************************************
  */ 
 
-/*---------------------------- Include ---------------------------------------*/
-#include "cogui.h"
+#include "../include/cogui.h"
 #include "stdio.h"
 #include "string.h"
 
-/**
- *******************************************************************************
- * @brief      Initial a app	 
- * @param[in]  app     App ptr		
- * @param[out] None
- * @retval     None		 
- *
- * @par Description
- * @details    This function is called to initial a app.
- *******************************************************************************
- */
 void _cogui_app_init(cogui_app_t *app)
 {
     app->name         = Co_NULL;
@@ -34,18 +22,6 @@ void _cogui_app_init(cogui_app_t *app)
 	app->handler      = cogui_app_event_handler;
 }
 
-/**
- *******************************************************************************
- * @brief      Create a app	 
- * @param[in]  name     App title name		
- * @param[out] None
- * @retval     Co_NULL  Create app fail.
- * @retval     cogui_app_t *Create app successful.			 
- *
- * @par Description
- * @details    This function is called to create a app.
- *******************************************************************************
- */
 cogui_app_t *cogui_app_create(char *title)
 {
     cogui_app_t *app;
@@ -53,10 +29,9 @@ cogui_app_t *cogui_app_create(char *title)
     OS_TID tid = CoGetCurTaskID();
     struct cogui_event_app event;
 
-    COGUI_ASSERT(tid != 0); /* Is idle task? */
+    COGUI_ASSERT(tid != 0);
     COGUI_ASSERT(title != Co_NULL);
 
-    /* create application */
     app = cogui_malloc(sizeof(cogui_app_t));
     if (app == Co_NULL)
         return Co_NULL;
@@ -65,11 +40,9 @@ cogui_app_t *cogui_app_create(char *title)
 
     app->tid = tid;
 
-    /* set application title */
     app->name = cogui_malloc(sizeof(char)*(strlen(title)+1));
     strcpy(app->name,title);
 
-    /* create message queue */
     app->mq = CoCreateMbox(EVENT_SORT_TYPE_FIFO);
 
     srv_app = cogui_get_server();
@@ -90,17 +63,6 @@ cogui_app_t *cogui_app_create(char *title)
     return Co_NULL;
 }
 
-/**
- *******************************************************************************
- * @brief      Delete a app	 
- * @param[in]  app   App ptr should delete		
- * @param[out] None
- * @retval     None			 
- *
- * @par Description
- * @details    This function is called to delete a app.
- *******************************************************************************
- */
 void cogui_app_delete(cogui_app_t *app)
 {
     cogui_app_t *srv_app;
@@ -144,17 +106,6 @@ StatusType cogui_app_event_handler(struct GuiEvent *event)
 	return Co_TRUE;
 }
 
-/**
- *******************************************************************************
- * @brief      Run a app loop
- * @param[in]  app   App ptr should run		
- * @param[out] None
- * @retval     None			 
- *
- * @par Description
- * @details    This function is called to run a app loop.
- *******************************************************************************
- */
 void _cogui_app_event_loop(cogui_app_t *app)
 {
     StatusType result;
@@ -170,17 +121,6 @@ void _cogui_app_event_loop(cogui_app_t *app)
     }
 }
 
-/**
- *******************************************************************************
- * @brief      Run a app	 
- * @param[in]  app   App ptr should run		
- * @param[out] None
- * @retval     None			 
- *
- * @par Description
- * @details    This function is called to run a app.
- *******************************************************************************
- */
 void cogui_app_run(cogui_app_t *app)
 {
     COGUI_ASSERT(app != Co_NULL);
@@ -190,18 +130,6 @@ void cogui_app_run(cogui_app_t *app)
     _cogui_app_event_loop(app);
 }
 
-/**
- *******************************************************************************
- * @brief      Exit a app	 
- * @param[in]  app   App ptr should exit		
- * @param[in]  code  exit code		
- * @param[out] None
- * @retval     None			 
- *
- * @par Description
- * @details    This function is called to exit a app.
- *******************************************************************************
- */
 void cogui_app_exit(cogui_app_t *app, U16 code)
 {
     if (app->ref_cnt == 0)
@@ -211,17 +139,6 @@ void cogui_app_exit(cogui_app_t *app, U16 code)
     app->exit_code = code;
 }
 
-/**
- *******************************************************************************
- * @brief      Close a app	 
- * @param[in]  app   App ptr should close		
- * @param[out] None
- * @retval     None			 
- *
- * @par Description
- * @details    This function is called to close a app.
- *******************************************************************************
- */
 void cogui_app_close(cogui_app_t *app)
 {
 	struct eventApp event;
@@ -232,18 +149,6 @@ void cogui_app_close(cogui_app_t *app)
     cogui_send(app, &event.parent);
 }
 
-/**
- *******************************************************************************
- * @brief      Let a app sleep	 
- * @param[in]  app   App ptr should sleep
- * @param[in]  app   How long should the app sleep 		
- * @param[out] None
- * @retval     None			 
- *
- * @par Description
- * @details    This function is called to let a app sleep.
- *******************************************************************************
- */
 void cogui_app_sleep(cogui_app_t *app, U32 sleep_tick)
 {
     COGUI_ASSERT(app != Co_NULL);
@@ -253,18 +158,6 @@ void cogui_app_sleep(cogui_app_t *app, U32 sleep_tick)
     CoTickDelay(sleep_tick);
 }
 
-/**
- *******************************************************************************
- * @brief      get current app ptr	 
- * @param[in]  app   App ptr should sleep
- * @param[in]  app   How long should the app sleep 		
- * @param[out] None
- * @retval     app   current app ptr			 
- *
- * @par Description
- * @details    This function is called to let a app sleep.
- *******************************************************************************
- */
 cogui_app_t *cogui_app_self(void)
 {
     cogui_app_t *app;

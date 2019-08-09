@@ -1,13 +1,13 @@
 /**
  *******************************************************************************
  * @file       widget.c
- * @version    V0.0.1   
- * @date       2019.5.26
+ * @version    V0.0.2  
+ * @date       2019.8.9
  * @brief      Some widget function for GUI engine's event.	
  *******************************************************************************
  */ 
 
-#include "cogui.h"
+#include "../include/cogui.h"
 
 const cogui_color_t default_foreground = 0xFFFF;
 const cogui_color_t default_background = 0x0000;
