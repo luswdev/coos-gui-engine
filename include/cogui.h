@@ -10,7 +10,6 @@
 #ifndef _COGUI_H
 #define _COGUI_H
 
-/*---------------------------- Include ---------------------------------------*/
 #include "stdio.h"
 
 #include "cogui_def.h"

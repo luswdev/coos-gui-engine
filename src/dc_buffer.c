@@ -1,6 +1,6 @@
 /**
  *******************************************************************************
- * @file       dcBuffer.c
+ * @file       dc_buffer.c
  * @version    V0.0.1   
  * @date       2019.5.29
  * @brief      This is a file for GUI dc engine.	

@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
- * @file       GuiApp.h
- * @version    V0.0.1   
- * @date       2019.5.18
+ * @file       app.h
+ * @version    V0.0.2  
+ * @date       2019.8.9
  * @brief      This is a file for GUI engine's app.	
  *******************************************************************************
  */ 
@@ -10,16 +10,13 @@
 #ifndef _COGUI_APP_H
 #define _COGUI_APP_H
 
-/*---------------------------- Include ---------------------------------------*/
 #include <CoOS.h>
 #include <OsTime.h>
 #include <OsTask.h>
 
-/*---------------------------- Variable Define -------------------------------*/
 extern OSTCB    TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
 extern ECB      EventTbl[CFG_MAX_EVENT]; 
 
-/*---------------------------- Function declare ------------------------------*/
 cogui_app_t *cogui_app_create(char *name);
 void _cogui_app_init(cogui_app_t *app);
 void cogui_app_delete(cogui_app_t *app);

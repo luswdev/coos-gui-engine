@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
- * @file       GuiEvent.h
- * @version    V0.0.1   
- * @date       2019.5.19
+ * @file       event.h
+ * @version    V0.0.2   
+ * @date       2019.8.9
  * @brief      Some system function for GUI engine's event.	
  *******************************************************************************
  */ 
@@ -10,47 +10,41 @@
 #ifndef _COGUI_EVENT_H
 #define _COGUI_EVENT_H
 
-/*---------------------------- Include ---------------------------------------*/
 #include "cogui.h"
 
 enum cogui_event_type
 {
     /* applications event */
-    COGUI_EVENT_APP_CREATE = 0,        /* create an application */
-    COGUI_EVENT_APP_DELE,              /* destroy an application */
-    COGUI_EVENT_APP_ACTIVATE,          /* activate an application */
+    COGUI_EVENT_APP_CREATE = 0,
+    COGUI_EVENT_APP_DELE,
+    COGUI_EVENT_APP_ACTIVATE,
 
     /* window event */
-    COGUI_EVENT_WIN_CREATE,            /* create a window       */
-    COGUI_EVENT_WIN_DELE,              /* destroy a window      */
-    COGUI_EVENT_WIN_SHOW,              /* show a window         */
-    COGUI_EVENT_WIN_HIDE,              /* hide a window         */
-    COGUI_EVENT_WIN_ACTIVATE,          /* activate a window     */
-    COGUI_EVENT_WIN_DEACTIVATE,        /* deactivate a window   */
-    COGUI_EVENT_WIN_CLOSE,             /* close a window        */
-    COGUI_EVENT_WIN_MOVE,              /* move a window         */
-    COGUI_EVENT_WIN_RESIZE,            /* resize a window       */
-    COGUI_EVENT_WIN_TITLE,             /* set window title      */
-    COGUI_EVENT_WIN_UPDATE_END,        /* update done for window */
+    COGUI_EVENT_WIN_CREATE,
+    COGUI_EVENT_WIN_DELE,
+    COGUI_EVENT_WIN_SHOW,
+    COGUI_EVENT_WIN_HIDE,
+    COGUI_EVENT_WIN_ACTIVATE,
+    COGUI_EVENT_WIN_DEACTIVATE,
+    COGUI_EVENT_WIN_CLOSE,
+    COGUI_EVENT_WIN_MOVE,
+    COGUI_EVENT_WIN_RESIZE,
+    COGUI_EVENT_WIN_TITLE,
+    COGUI_EVENT_WIN_UPDATE_END,
 
     /* mouse and keyboard event */
-    COGUI_EVENT_MOUSE_MOTION,          /* mouse motion          */
-    COGUI_EVENT_MOUSE_BUTTON,          /* mouse button info     */
-    COGUI_EVENT_KBD,                   /* keyboard info         */
-		
-		/* user command event. It should always be the last command type. */
-    COGUI_EVENT_COMMAND,               /* user command          */
+    COGUI_EVENT_MOUSE_MOTION,
+    COGUI_EVENT_MOUSE_BUTTON,
+    COGUI_EVENT_KBD,
+
+    COGUI_EVENT_COMMAND,
 };
 
-/*---------------------------- structure -------------------------------------*/
 struct cogui_event {
-    /* the event type */
     enum cogui_event_type type;
 
-    /* the event sender */
     cogui_app_t *sender;
 
-    /* mailbox to acknowledge request */
     OS_EventID ack;
 };
 
@@ -79,10 +73,8 @@ struct cogui_event_mouse
     U16 x, y;
     U16 button;
 
-    /* id of session(from up to down) */
     U32 id;
 
-    /* window activate count */
     U32 win_acti_cnt;
 
     cpgui_app_t *app;
@@ -100,8 +92,7 @@ struct cogui_event_mouse
 struct cogui_event_kbd
 {
     _COGUI_EVENT_ELEMENT
-
-    /* window activate count */
+    
     U32 win_acti_cnt;
 
     U16 type;         /* key up or down */

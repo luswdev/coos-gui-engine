@@ -1,6 +1,6 @@
 /**
  *******************************************************************************
- * @file       dcHw.c
+ * @file       dc_hw.c
  * @version    V0.1.0  
  * @date       2019.8.9
  * @brief      This is a file for GUI dc engine.	

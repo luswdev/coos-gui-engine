@@ -1,14 +1,14 @@
 /**
  *******************************************************************************
- * @file       GuiSystem.h
- * @version    V0.0.1   
- * @date       2019.5.15
+ * @file       system.h
+ * @version    V0.0.2
+ * @date       2019.8.9
  * @brief      This is a file for GUI engine.	
  *******************************************************************************
  */ 
 
-#ifndef _GUI_SYSTEM_H
-#define _GUI_SYSTEM_H
+#ifndef _COGUI_SYSTEM_H
+#define _COGUI_SYSTEM_H
 
 #include <coocox.h>
 #include <CoOS.h>
@@ -41,9 +41,9 @@ const GUI_COLOR darkGrey   = GUI_RGB(0x7f, 0x7f, 0x7f);
 const GUI_COLOR lightGrey  = GUI_RGB(0xc0, 0xc0, 0xc0);*/
 
 #define COGUI_ASSERT(EX) 								\
-if(!(EX)){											\
+if(!(EX)){											    \
 	cogui_assert_handler(#EX, __FUNCTION__, __LINE__);	\
-}													\
+}													    \
 
 extern OSTCB TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
 
@@ -62,4 +62,4 @@ struct cogui_event *cogui_recv(OS_EventID mq, StatusType *result);
 
 void cogui_assert_handler(const char *ex_string, const char *func, U32 line);
 
-#endif /* _GUI_SYSTEM_H */
+#endif /* _COGUI_SYSTEM_H */

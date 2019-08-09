@@ -7,13 +7,12 @@
  *******************************************************************************
  */ 
 
-#ifndef _GUI_CONTAINER_H
-#define _GUI_CONTAINER_H
+#ifndef _COGUI_CONTAINER_H
+#define _COGUI_CONTAINER_H
 
-/*---------------------------- Function Define -------------------------------*/
 P_GuiContainer ContainerVreate(void);
 void ContainerDele(P_GuiContainer container);
 
 StatusType ContainerEventHandler(cogui_widget_t * widget, struct GuiEvent *event);
 
-#endif /* _GUI_CONTAINER_H */
+#endif /* _COGUI_CONTAINER_H */

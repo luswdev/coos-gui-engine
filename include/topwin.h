@@ -1,17 +1,17 @@
 /**
  *******************************************************************************
- * @file       GuiTopwin.h
+ * @file       topwin.h
  * @version    V0.0.1   
  * @date       2019.5.24
  * @brief      The top window management for gui engine.	
  *******************************************************************************
  */ 
 
-#ifndef _GUI_TOPWIN_H
-#define _GUI_TOPWIN_H
+#ifndef _COGUI_TOPWIN_H
+#define _COGUI_TOPWIN_H
 
 /*---------------------------- Function Define -------------------------------*/
 P_TopWin GetTopWin(S32 x, S32 y);
 P_TopWin GetTopWinFocus(void);
 
-#endif /* _GUI_TOPWIN_H */
+#endif /* _COGUI_TOPWIN_H */

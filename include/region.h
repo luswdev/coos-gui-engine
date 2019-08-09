@@ -1,14 +1,14 @@
 /**
  *******************************************************************************
- * @file       GuiRegion.h
+ * @file       region.h
  * @version    V0.0.1   
  * @date       2019.5.27
  * @brief      This is a file for GUI region.	
  *******************************************************************************
  */ 
 
-#ifndef _GUI_REGION_H
-#define _GUI_REGION_H
+#ifndef _COGUI_REGION_H
+#define _COGUI_REGION_H
 
 #include <coocox.h>
 #include "cogui.h"
@@ -42,4 +42,4 @@ StatusType RegionSubtractRect(cogui_region_t *regD, cogui_region_t *regM, cogui_
 void RectMove(cogui_rect_t *rect, S32 x, S32 y);
 void RectInflate(cogui_rect_t *rect, S32 d);
 
-#endif /* _GUI_REGION_H */
+#endif /* _COGUI_REGION_H */
