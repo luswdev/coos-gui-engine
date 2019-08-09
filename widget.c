@@ -10,6 +10,9 @@
 /*---------------------------- Include ---------------------------------------*/
 #include "cogui.h"
 
+const cogui_color_t guiDefaultForeground = 0xFFFF;
+const cogui_color_t guiDefaultBackground = 0x0000;
+
 /**
  *******************************************************************************
  * @brief      Initial a widget	 
@@ -21,23 +24,27 @@
  * @details    This function is called to initial a widget.
  *******************************************************************************
  */
-void _WidgetInit(P_GuiWidget widget)
+void _WidgetInit(cogui_widget_t * widget)
 {
+	/* init gc */
+	widget->gc.foreground = guiDefaultForeground;
+	widget->gc.background = guiDefaultBackground;
+	
     /* set parent and toplevel root */
-    widget->parent        = Co_NULL;
-    widget->topLevel      = Co_NULL;
+    widget->parent   = Co_NULL;
+    widget->topLevel = Co_NULL;
 
     widget->minWidth = widget->minHeight = 0;
 
     /* some common event handler */
-    widget->onFocusIn   = Co_NULL;
-    widget->onFocusOut  = Co_NULL;
+    widget->onFocusIn  = Co_NULL;
+    widget->onFocusOut = Co_NULL;
 
     /* set default event handler */
     widget->handler = WidgetEventHandler;
 
     /* init user data private to 0 */
-    widget->user_data = 0;
+    widget->userData = 0;
 }
 
 /**
@@ -52,12 +59,13 @@ void _WidgetInit(P_GuiWidget widget)
  * @details    This function is called to create a widget.
  *******************************************************************************
  */
-P_GuiWidget WidgetCreate()
+cogui_widget_t * WidgetCreate()
 {
-    P_GuiWidget widget;
+    cogui_widget_t * widget;
 
-    widget = GuiMalloc(sizeof(GuiWidget));
-    if(widget==Co_NULL){
+    widget = GuiMalloc(sizeof(cogui_widget_t));
+    if(widget == Co_NULL)
+	{
         return Co_NULL;
     }
     
@@ -77,7 +85,7 @@ P_GuiWidget WidgetCreate()
  * @details    This function is called to delete a widget.
  *******************************************************************************
  */
-void WidgetDel(P_GuiWidget widget)
+void WidgetDel(cogui_widget_t * widget)
 {   
     GuiFree(widget);
 }
@@ -94,10 +102,11 @@ void WidgetDel(P_GuiWidget widget)
  * @details    This function is called to set widget focus handler.
  *******************************************************************************
  */
-void WidgetSetFocus(P_GuiWidget widget, EventHandlerPtr handler)
+void WidgetSetFocus(cogui_widget_t * widget, EventHandlerPtr handler)
 {
-    if(widget!=Co_NULL){
-        widget->OnFocusIn = handler;
+    if(widget != Co_NULL && handler != Co_NULL)
+	{
+        widget->onFocusIn = handler;
     }
 }
 
@@ -113,10 +122,11 @@ void WidgetSetFocus(P_GuiWidget widget, EventHandlerPtr handler)
  * @details    This function is called to set widget unfocus handler.
  *******************************************************************************
  */
-void WidgetSetUnFocus(P_GuiWidget widget, EventHandlerPtr handler)
+void WidgetSetUnFocus(cogui_widget_t * widget, EventHandlerPtr handler)
 {
-    if(widget!=Co_NULL){
-        widget->OnFocusOut = handler;
+    if(widget != Co_NULL && handler != Co_NULL)
+	{
+        widget->onFocusOut = handler;
     }
 }
 
@@ -132,35 +142,42 @@ void WidgetSetUnFocus(P_GuiWidget widget, EventHandlerPtr handler)
  * @details    This function is called to let widget focus.
  *******************************************************************************
  */
-void WidgetFocus(P_GuiWidget widget)
+void WidgetFocus(cogui_widget_t * widget)
 {
-    P_GuiWidget oldFocus;
+    cogui_widget_t * oldFocus;
 
-    if(widget==Co_NULL || widget->topLevel==Co_NULL){
+    if(widget == Co_NULL || widget->topLevel == Co_NULL)
+	{
         return;
     }
 
-    if(!(widget->flag&GUI_WIDGET_FLAG_FOCUSABLE) || 
-       (widget->flag&GUI_WIDGET_FLAG_DISABLE)){
+    if(!(widget->flag&COGUI_WIDGET_FLAG_FOCUSABLE) || 
+       (widget->flag&COGUI_WIDGET_FLAG_DISABLE))
+	{
         return;
     }
 
     oldFocus = widget->topLevel->focusWidget;
-    if(oldFocus==widget){   /* it's the same focused widget */
+    if(oldFocus==widget)
+	{   /* it's the same focused widget */
         return;
     }
 
     /* unfocused the old widget */
-    if (oldFocus != Co_NULL)
-        WidgetUnfocus(oldFocus);
+    if(oldFocus != Co_NULL)
+	{
+        WidgetUnFocus(oldFocus);
+	}
 
     /* set widget as focused */
-    widget->flag |= GUI_WIDGET_FLAG_FOCUS;
+    widget->flag |= COGUI_WIDGET_FLAG_FOCUS;
     widget->topLevel->focusWidget = widget;
 
     /* invoke on focus in call back */
-    if (widget->onFocusIn != Co_NULL)
+    if(widget->onFocusIn != Co_NULL)
+	{
         widget->onFocusIn(widget, Co_NULL);
+	}
 }
 
 
@@ -175,20 +192,23 @@ void WidgetFocus(P_GuiWidget widget)
  * @details    This function is called to let widget unfocus handler.
  *******************************************************************************
  */
-void WidgetUnFocus(P_GuiWidget widget)
+void WidgetUnFocus(cogui_widget_t * widget)
 {
-    if(widget==Co_NULL){
+    if(widget==Co_NULL)
+	{
         return;
     }
 
-    if (!widget->topLevel || !(widget->flag&GUI_WIDGET_FLAG_FOCUS)){
+    if(!widget->topLevel || !(widget->flag&COGUI_WIDGET_FLAG_FOCUS))
+	{
         return;
     }
 
-    widget->flag &= ~GUI_WIDGET_FLAG_FOCUS;
+    widget->flag &= ~COGUI_WIDGET_FLAG_FOCUS;
 
-    if (widget->on_focus_out != Co_NULL){
-        widget->on_focus_out(widget, Co_NULL);
+    if(widget->onFocusOut != Co_NULL)
+	{
+        widget->onFocusOut(widget, Co_NULL);
     }
 
     widget->topLevel->focusWidget = Co_NULL;
@@ -207,13 +227,15 @@ void WidgetUnFocus(P_GuiWidget widget)
  * @details    This function is called to get widget rectangle.
  *******************************************************************************
  */
-void WidgetGetRect(P_GuiWidget widget, P_GuiRect rect)
+void WidgetGetRect(cogui_widget_t * widget, P_GuiRect rect)
 {
-    if(widget==Co_NULL){
+    if(widget == Co_NULL)
+	{
         return;
     }
 
-    if (rect != Co_NULL){
+    if(rect != Co_NULL)
+	{
         rect->x1 = rect->y1 = 0;
         rect->x2 = widget->extent.x2 - widget->extent.x1;
         rect->y2 = widget->extent.y2 - widget->extent.y1;
@@ -232,9 +254,10 @@ void WidgetGetRect(P_GuiWidget widget, P_GuiRect rect)
  * @details    This function is called to set widget border style.
  *******************************************************************************
  */
-void WidgetSetBorder(P_GuiWidget widget, U32 style)
+void WidgetSetBorder(cogui_widget_t * widget, U32 style)
 {
-    if(widget == Co_NULL){
+    if(widget == Co_NULL)
+	{
         return;
     }
 
@@ -277,9 +300,10 @@ void WidgetSetBorder(P_GuiWidget widget, U32 style)
  * @details    This function is called to set widget rectangle by a exist rectangle.
  *******************************************************************************
  */
-void WidgetSetRect(P_GuiWidget widget, P_GuiRect rect)
+void WidgetSetRect(cogui_widget_t * widget, P_GuiRect rect)
 {
-    if(widget==Co_NULL || rect==Co_NULL){
+    if(widget == Co_NULL || rect == Co_NULL)
+	{
         return;
     }
 
@@ -310,7 +334,7 @@ void WidgetSetRect(P_GuiWidget widget, P_GuiRect rect)
  * @details    This function is called to set widget rectangle by coordinates.
  *******************************************************************************
  */
-void WidgetSetRectangle(P_GuiWidget widget, S32 x, S32 y, S32 width, S32 height)
+void WidgetSetRectangle(cogui_widget_t * widget, S32 x, S32 y, S32 width, S32 height)
 {
     GuiRect rect;
 
@@ -334,9 +358,10 @@ void WidgetSetRectangle(P_GuiWidget widget, S32 x, S32 y, S32 width, S32 height)
  * @details    This function is called to get widget extent.
  *******************************************************************************
  */
-void WidgetGetExtent(P_GuiWidget widget, P_GuiRect rect)
+void WidgetGetExtent(cogui_widget_t * widget, P_GuiRect rect)
 {
-    if(widget==Co_NULL || rect==Co_NULL){
+    if(widget == Co_NULL || rect == Co_NULL)
+	{
         return;
     }
 
@@ -356,9 +381,10 @@ void WidgetGetExtent(P_GuiWidget widget, P_GuiRect rect)
  * @details    This function is called to set widget min-size.
  *******************************************************************************
  */
-void WidgetSetMinsize(P_GuiWidget widget, S32 width, S32 height)
+void WidgetSetMinsize(cogui_widget_t * widget, S32 width, S32 height)
 {
-    if(widget!=Co_NULL){
+    if(widget != Co_NULL)
+	{
         widget->minWidth = width;
         widget->minHeight = height;
     }
@@ -376,9 +402,10 @@ void WidgetSetMinsize(P_GuiWidget widget, S32 width, S32 height)
  * @details    This function is called to set widget min-width.
  *******************************************************************************
  */
-void WidgetSetMinwidth(P_GuiWidget widget, S32 width)
+void WidgetSetMinwidth(cogui_widget_t * widget, S32 width)
 {
-    if(widget!=Co_NULL){
+    if(widget != Co_NULL)
+	{
         widget->minWidth = width;
     }
 }
@@ -395,9 +422,10 @@ void WidgetSetMinwidth(P_GuiWidget widget, S32 width)
  * @details    This function is called to set widget min-height.
  *******************************************************************************
  */
-void WidgetSetMinheight(P_GuiWidget widget, S32 height)
+void WidgetSetMinheight(cogui_widget_t * widget, S32 height)
 {
-    if(widget!=Co_NULL){
+    if(widget != Co_NULL)
+	{
         widget->minHeight = height;
     }
 }
@@ -413,50 +441,56 @@ void WidgetSetMinheight(P_GuiWidget widget, S32 height)
  * @details    This function is called to update a widget clip region.
  *******************************************************************************
  */
-void WidgetUpdateClip(rtgui_widget_t *widget)
+void WidgetUpdateClip(cogui_widget_t * widget)
 {
-    GuiRect rect;
-    P_CoSList node;
-    P_GuiWidget parent;
+    //GuiRect rect;
+    //P_CoList node;
+    //cogui_widget_t * parent, child;
 
     /* no widget or widget is hide, no update clip */
-    if (widget == Co_NULL || !(widget->flag&GUI_WIDGET_FLAG_SHOWN) || widget->parent == Co_NULL){
-        return;
-    }
+    //if(widget == Co_NULL || !(widget->flag&COGUI_WIDGET_FLAG_SHOWN) || widget->parent == Co_NULL)
+	//{
+    //    return;
+    //}
 
-    parent = widget->parent;
+    //parent = widget->parent;
     /* reset visiable extent */
-    widget->extentVisiable = widget->extent;
-    RectIntersect(&(parent->extentVisiable), &(widget->extentVisiable));
+    //widget->extentVisiable = widget->extent;
+    //RectIntersect(&(parent->extentVisiable), &(widget->extentVisiable));
 
-    rect = parent->extentVisiable;
+    //rect = parent->extentVisiable;
     /* reset clip to extent */
-    RegionReset(&(widget->clip), &(widget->extent));
+    //RegionReset(&(widget->clip), &(widget->extent));
     /* limit widget extent in parent extent */
-    RegionIntersectRect(&(widget->clip), &(widget->clip), &rect);
+    //RegionIntersectRect(&(widget->clip), &(widget->clip), &rect);
 
     /* get the no transparent parent */
-    while (parent != Co_NULL && parent->flag & GUI_WIDGET_FLAG_TRANSPARENT){
-        parent = parent->parent;
-    }
-    if (parent != Co_NULL){
-        /* give my clip back to parent */
-        RegionUnion(&(parent->clip), &(parent->clip), &(widget->clip));
+    //while(parent != Co_NULL && parent->flag & COGUI_WIDGET_FLAG_TRANSPARENT)
+	//{
+    //    parent = parent->parent;
+    //}
+    //if(parent != Co_NULL)
+	//{
+    //    /* give my clip back to parent */
+    //    RegionUnion(&(parent->clip), &(parent->clip), &(widget->clip));
 
-        /* subtract widget clip in parent clip */
-        if (!(widget->flag & GUI_WIDGET_FLAG_TRANSPARENT) && parent->flag & GUI_WIDGET_FLAG_IS_CONTAINER){
-            RegionSubtractRect(&(parent->clip), &(parent->clip), &(widget->extent_visiable));
-        }
-    }
+    //    /* subtract widget clip in parent clip */
+    //    if(!(widget->flag & COGUI_WIDGET_FLAG_TRANSPARENT) && parent->flag & COGUI_WIDGET_FLAG_IS_CONTAINER)
+	//	{
+    //        RegionSubtractRect(&(parent->clip), &(parent->clip), &(widget->extentVisiable));
+    //    }
+    //}
 
     /* if it's a container object, update the clip info of children */
-    if(widget&GUI_WIDGET_FLAG_IS_CONTAINER){
-        for(node=(P_GuiContainer)&widget->children; node!=Co_NULL; node=node->next){
-            child = (P_GuiWidget)node->sibling;
+    //if(widget->flag & COGUI_WIDGET_FLAG_IS_CONTAINER)
+	//{
+    //    for(node=&((P_GuiContainer)widget)->children; node!=Co_NULL; node=node->next)
+	//	{
+    //        child = (cogui_widget_t *)(&((cogui_widget_t *)node)->sibling);
 
-            WidgetUpdateClip(child);
-        }   
-    }
+    //        WidgetUpdateClip(child);
+    //    }   
+    //}
 }
 
 /**
@@ -472,40 +506,44 @@ void WidgetUpdateClip(rtgui_widget_t *widget)
  * @details    This function is called to actually move a widget.
  *******************************************************************************
  */
-void _WidgetMove(P_GuiWidget widget, S32 dx, S32 dy)
+void _WidgetMove(cogui_widget_t * widget, S32 dx, S32 dy)
 {
-    P_CoSList node; 
-    P_Widget child, parent;
+//    P_CoList node; 
+//    cogui_widget_t * child, parent;
 
-    rect->x1 += dx;
-    rect->x2 += dx;
+    widget->extent.x1 += dx;
+    widget->extent.x2 += dx;
 
-    rect->y1 += dy;
-    rect->y2 += dy;
+    widget->extent.y1 += dy;
+    widget->extent.y2 += dy;
 
     /* handle visiable extent */
     widget->extentVisiable = widget->extent;
-    parent = widget->parent;
+//    parent = widget->parent;
 
-    /* we should find out the none-transparent parent */
-    while (parent!=Co_NULL && parent->flag & GUI_WIDGET_FLAG_TRANSPARENT){
+    /* we should find out the none-transparent parent *
+    while(parent != Co_NULL && parent->flag & COGUI_WIDGET_FLAG_TRANSPARENT)
+	{
         parent = parent->parent;
     }
 
-    if (widget->parent){
+    if(widget->parent)
+	{
         RectIntersect(&(widget->parent->extentVisiable), &(widget->extentVisiable));
-    }
+    }*/
 
-    /* reset clip info */
+    /* reset clip info *
     RegionInitWithExtents(&(widget->clip), &(widget->extent));
 
-    if(widget&GUI_WIDGET_FLAG_IS_CONTAINER){
-        for(node=(P_GuiContainer)&widget->children; node!=Co_NULL; node=node->next){
-            child = (P_GuiWidget)node->sibling;
+    if(widget->flag & COGUI_WIDGET_FLAG_IS_CONTAINER)
+	{
+        for(node=&((P_GuiContainer)widget)->children; node!=Co_NULL; node=node->next)
+		{
+            child = (cogui_widget_t *)(&((cogui_widget_t *)node)->sibling);
 
             _WidgetMove(child, dx, dy);
         }   
-    }
+    }*/
 }
 
 /**
@@ -521,39 +559,41 @@ void _WidgetMove(P_GuiWidget widget, S32 dx, S32 dy)
  * @details    This function is called to move widget to a logic point.
  *******************************************************************************
  */
-void WidgetMoveToLogic(P_GuiWidget widget, S32 dx, S32 dy)
+void WidgetMoveToLogic(cogui_widget_t * widget, S32 dx, S32 dy)
 {
-    GuiRect rect;
-    P_GuiWidget parent;
+//    GuiRect rect;
+    cogui_widget_t * parent;
 
-    if (widget==Co_NULL){
+    if(widget==Co_NULL)
+	{
         return;
     }
 
     /* give clip of this widget back to parent */
     parent = widget->parent;
-    if (parent!=Co_NULL)
+    if(parent!=Co_NULL)
     {
         /* get the parent rect, even if it's a transparent parent. */
-        rect = parent->extent_visiable;
+        //rect = parent->extentVisiable;
     }
 
-    /* we should find out the none-transparent parent */
-    while (parent!=Co_NULL && parent->flag & RTGUI_WIDGET_FLAG_TRANSPARENT){
+    /* we should find out the none-transparent parent *
+    while(parent!=Co_NULL && parent->flag & COGUI_WIDGET_FLAG_TRANSPARENT)
+	{
         parent = parent->parent;
-    }
+    }*/
 
-    if (parent != Co_NULL)
+    /*if(parent != Co_NULL)
     {
-        /* reset clip info */
+        * reset clip info *
         RegionInitWithExtents(&(widget->clip), &(widget->extent));
         RegionIntersectRect(&(widget->clip), &(widget->clip), &rect);
 
-        /* give back the extent */
+        * give back the extent *
         RegionUnion(&(parent->clip), &(parent->clip), &(widget->clip));
     }
 
-    _WidgetMove(widget, dx, dy);
+    _WidgetMove(widget, dx, dy);*/
 
     // update clip
 }
@@ -570,9 +610,10 @@ void WidgetMoveToLogic(P_GuiWidget widget, S32 dx, S32 dy)
  * @details    This function is called to get the physical position.
  *******************************************************************************
  */
-void WidgetPointToDevice(P_GuiWidget widget, P_GuiPoint point)
+void WidgetPointToDevice(cogui_widget_t * widget, P_GuiPoint point)
 {
-    if(widget==Co_NULL || point==Co_NULL){
+    if(widget == Co_NULL || point == Co_NULL)
+	{
         return;
     }
 
@@ -592,9 +633,10 @@ void WidgetPointToDevice(P_GuiWidget widget, P_GuiPoint point)
  * @details    This function is called to get the physical position.
  *******************************************************************************
  */
-void WidgetRectToDevice(P_GuiWidget widget, P_GuiRect rect)
+void WidgetRectToDevice(cogui_widget_t * widget, P_GuiRect rect)
 {
-    if(widget==Co_NULL || rect==Co_NULL){
+    if(widget == Co_NULL || rect == Co_NULL)
+	{
         return;
     }
 
@@ -617,9 +659,10 @@ void WidgetRectToDevice(P_GuiWidget widget, P_GuiRect rect)
  * @details    This function is called to get the logic position.
  *******************************************************************************
  */
-void WidgetPointToLogic(P_GuiWidget widget, P_GuiPoint point)
+void WidgetPointToLogic(cogui_widget_t * widget, P_GuiPoint point)
 {
-    if(widget==Co_NULL || point==Co_NULL){
+    if(widget == Co_NULL || point == Co_NULL)
+	{
         return;
     }
 
@@ -639,9 +682,10 @@ void WidgetPointToLogic(P_GuiWidget widget, P_GuiPoint point)
  * @details    This function is called to get the logic position.
  *******************************************************************************
  */
-void widgetRectToLogic(P_GuiWidget widget, P_GuiRect rect)
+void widgetRectToLogic(cogui_widget_t * widget, P_GuiRect rect)
 {
-     if(widget==Co_NULL || rect==Co_NULL){
+    if(widget == Co_NULL || rect == Co_NULL)
+	{
         return;
     }
 
@@ -663,25 +707,29 @@ void widgetRectToLogic(P_GuiWidget widget, P_GuiRect rect)
  * @details    This function is called to let widget show.
  *******************************************************************************
  */
-void WidgetShow(P_GuiWidget widget)
+void WidgetShow(cogui_widget_t * widget)
 {
     struct GuiEvent event;
 
-    if(widget==Co_NULL){
+    if(widget == Co_NULL)
+	{
         return;
     }
 
-    if(widget->flag&GUI_WIDGET_FLAG_SHOWN){
+    if(widget->flag & COGUI_WIDGET_FLAG_SHOWN)
+	{
         return;
     }
 
-    widget->flag |= GUI_WIDGET_FLAG_SHOWN;
+    widget->flag |= COGUI_WIDGET_FLAG_SHOWN;
 
-    if(widget->topLevel != Co_NULL){
+    if(widget->topLevel != Co_NULL)
+	{
         // update clip
 
-        GUI_EVENT_INIT(&event, GUI_EVENT_WIN_SHOW);
-        if (widget->handler != Co_NULL){
+        GUI_EVENT_INIT(&event, GUI_EVENT_WIN_SHOW, AppSelf());
+        if(widget->handler != Co_NULL)
+		{
             widget->handler(widget, &event);
         }
     }
@@ -698,26 +746,30 @@ void WidgetShow(P_GuiWidget widget)
  * @details    This function is called to let widget hide.
  *******************************************************************************
  */
-void WidgetHide(P_GuiWidget widget)
+void WidgetHide(cogui_widget_t * widget)
 {
     struct GuiEvent event;
 
-    if(widget==Co_NULL){
+    if(widget == Co_NULL)
+	{
         return;
     }
 
-    if(!(widget->flag&GUI_WIDGET_FLAG_SHOWN)){
+    if(!(widget->flag & COGUI_WIDGET_FLAG_SHOWN))
+	{
         return;
     }
 
-    if(widget->topLevel != Co_NULL){
-        GUI_EVENT_INIT(&event, GUI_EVENT_WIN_HIDE);
-        if (widget->handler != Co_NULL){
+    if(widget->topLevel != Co_NULL)
+	{
+        GUI_EVENT_INIT(&event, GUI_EVENT_WIN_HIDE, AppSelf());
+        if (widget->handler != Co_NULL)
+		{
             widget->handler(widget, &event);
         }
     }
 
-    widget->flag &= ~GUI_WIDGET_FLAG_SHOWN;
+    widget->flag &= ~COGUI_WIDGET_FLAG_SHOWN;
 }
 
 /**
@@ -732,14 +784,16 @@ void WidgetHide(P_GuiWidget widget)
  * @details    This function is called to do something when widget show.
  *******************************************************************************
  */
-StatusType WidgetOnshow(P_GuiWidget widget, struct GuiEvent *event)
+StatusType WidgetOnshow(cogui_widget_t * widget, struct GuiEvent *event)
 {
-    if(!(widget->flag&GUI_WIDGET_FLAG_SHOWN)){
+    if(!(widget->flag & COGUI_WIDGET_FLAG_SHOWN))
+	{
         return Co_FALSE;
     }
 
-    if(widget->parent!=Co_NULL && !(widget->flag & GUI_WIDGET_FLAG_TRANSPARENT)){
-        rtgui_widget_clip_parent(widget);
+    if(widget->parent!=Co_NULL && !(widget->flag & COGUI_WIDGET_FLAG_TRANSPARENT))
+	{
+        WidgetClipParent(widget);
     }
 
     return Co_FALSE;
@@ -757,13 +811,14 @@ StatusType WidgetOnshow(P_GuiWidget widget, struct GuiEvent *event)
  * @details    This function is called to do something when widget hide.
  *******************************************************************************
  */
-StatusType WidgetOnhide(P_GuiWidget widget, struct GuiEvent *event)
+StatusType WidgetOnhide(cogui_widget_t * widget, struct GuiEvent *event)
 {
-     if(widget->flag&GUI_WIDGET_FLAG_SHOWN){
+    if(widget->flag & COGUI_WIDGET_FLAG_SHOWN)
+	{
         return Co_FALSE;
     }
 
-    if (widget->parent!=Co_NULL)
+    if (widget->parent != Co_NULL)
     {
         WidgetClipReturn(widget);
     }
@@ -782,20 +837,22 @@ StatusType WidgetOnhide(P_GuiWidget widget, struct GuiEvent *event)
  * @details    This function is call to get the clip with parent.
  *******************************************************************************
  */
-void WidgetClipParent(P_GuiWidget widget)
+void WidgetClipParent(cogui_widget_t * widget)
 {
-    P_GuiWidget parent;
+//    cogui_widget_t * parent;
 
-    parent = widget->parent;
-    /* get the no transparent parent */
-    while(parent!=Co_NULL && parent->flag & GUI_WIDGET_FLAG_TRANSPARENT){
+//    parent = widget->parent;
+    /* get the no transparent parent *
+    while(parent!=Co_NULL && parent->flag & COGUI_WIDGET_FLAG_TRANSPARENT)
+	{
         parent = parent->parent;
     }
 
-    /* clip the widget extern from parent */
-    if(parent!=Co_NULL){
+    * clip the widget extern from parent *
+    if(parent != Co_NULL)
+	{
         RegionSubtract(&(parent->clip), &(parent->clip), &(widget->clip));
-    }
+    }*/
 }
 
 /**
@@ -809,23 +866,25 @@ void WidgetClipParent(P_GuiWidget widget)
  * @details    This function is call to get the clip with parent.
  *******************************************************************************
  */
-void WidgetClipReturn(P_GuiWidget widget)
+void WidgetClipReturn(cogui_widget_t * widget)
 {
-    P_GuiWidget parent;
+//    cogui_widget_t * parent;
 
-    parent = widget->parent;
-    /* get the no transparent parent */
-    while(parent!=Co_NULL && parent->flag & GUI_WIDGET_FLAG_TRANSPARENT){
+//    parent = widget->parent;
+    /* get the no transparent parent *
+    while(parent != Co_NULL && parent->flag & COGUI_WIDGET_FLAG_TRANSPARENT)
+	{
         parent = parent->parent;
     }
 
-    /* give clip back to parent */
-    if(parent != Co_NULL){
-        RegionUnion(&(parent->clip), &(parent->clip), &(widget->clip))
-    }
+    * give clip back to parent *
+    if(parent != Co_NULL)
+	{
+        RegionUnion(&(parent->clip), &(parent->clip), &(widget->clip));
+    }*/
 }
 
-void WidgetUpdate(P_GuiWidget widget);
+void WidgetUpdate(cogui_widget_t * widget);
 
 /**
  *******************************************************************************
@@ -839,11 +898,14 @@ void WidgetUpdate(P_GuiWidget widget);
  * @details    This function is widget's event handler.
  *******************************************************************************
  */
-StatusType WidgetEventHandler(P_GuiWidget widget, struct GuiEvent *event)
+StatusType WidgetEventHandler(cogui_widget_t * widget, struct GuiEvent *event)
 {
-    if(widget!=Co_NULL){
+    if(widget != Co_NULL)
+	{
         return Co_FALSE;
-    }    
+    }
+	
+	return Co_FALSE;
 }
 
 /**
@@ -857,12 +919,13 @@ StatusType WidgetEventHandler(P_GuiWidget widget, struct GuiEvent *event)
  * @details    This function is call to get next sibling widget.
  *******************************************************************************
  */
-P_GuiWidget WidgetGetNextSibling(P_GuiWidget widget)
+cogui_widget_t * WidgetGetNextSibling(cogui_widget_t * widget)
 {
-    P_GuiWidget sibling;
+    cogui_widget_t * sibling;
 
-    if(widget->sibling.next!=Co_NULL){
-        sibling = &widget->sibling.next;
+    if(widget->sibling.next != Co_NULL)
+	{
+        sibling = (cogui_widget_t *)&widget->sibling.next;
     }
 
     return sibling;
@@ -879,12 +942,13 @@ P_GuiWidget WidgetGetNextSibling(P_GuiWidget widget)
  * @details    This function is call to get prev sibling widget.
  *******************************************************************************
  */
-P_GuiWidget WidgetGetPrevSibling(P_GuiWidget widget)
+cogui_widget_t * WidgetGetPrevSibling(cogui_widget_t * widget)
 {
-    P_GuiWidget sibling;
+    cogui_widget_t * sibling;
 
-    if(widget->sibling.prev!=Co_NULL){
-        sibling = &widget->sibling.prev;
+    if(widget->sibling.prev != Co_NULL)
+	{
+        sibling = (cogui_widget_t *)&widget->sibling.prev;
     }
 
     return sibling;

@@ -24,22 +24,22 @@
 #define GUI_MAX(a,b) ((a) > (b) ? (a) : (b))
 
 /*---------------------------- Function Define -------------------------------*/
-static StatusType RegionBreak(P_GuiRegion *region);
-StatusType RegionCopy(P_GuiRegion dest, P_GuiRegion src);
+static StatusType RegionBreak(cogui_region_t *region);
+StatusType RegionCopy(cogui_region_t *dest, cogui_region_t *src);
 
-void RegionInitWithExtents(P_GuiRegion region, const P_GuiRect extents);
+void RegionInitWithExtents(cogui_region_t *region, cogui_rect_t *extents);
 
-void RegionReset(P_GuiRegion *region, P_GuiRect *rect);
+void RegionReset(cogui_region_t *region, cogui_rect_t *rect);
 
-void RectIntersect(P_GuiRect src, P_GuiRect dest);
-StatusType RegionIntersectRect(P_GuiRegion *newReg,P_GuiRegion *reg1, P_GuiRect *rect);
+void RectIntersect(cogui_rect_t *src, cogui_rect_t *dest);
+StatusType RegionIntersectRect(cogui_region_t *newReg,cogui_region_t *reg1, cogui_rect_t *rect);
 
-StatusType RegionUnion(P_GuiRegion newReg, P_GuiRegion reg1, P_GuiRegion reg2);
+StatusType RegionUnion(cogui_region_t *newReg, cogui_region_t *reg1, cogui_region_t *reg2);
 
-StatusType RegionSubtract(P_GuiRegion regD, P_GuiRegion regM, P_GuiRegion regS);
-StatusType RegionSubtractRect(P_GuiRegion regD, P_GuiRegion regM, P_GuiRect rect);
+StatusType RegionSubtract(cogui_region_t *regD, cogui_region_t *regM, cogui_region_t *regS);
+StatusType RegionSubtractRect(cogui_region_t *regD, cogui_region_t *regM, cogui_rect_t *rect);
 
-void RectMove(P_GuiRect rect, S32 x, S32 y);
-void RectInflate(P_GuiRect rect, S32 d);
+void RectMove(cogui_rect_t *rect, S32 x, S32 y);
+void RectInflate(cogui_rect_t *rect, S32 d);
 
 #endif /* _GUI_REGION_H */

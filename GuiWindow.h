@@ -54,7 +54,7 @@ void WinSetOndeactivate(P_GuiWin win, EventHandlerPtr handler);
 void WinSetOnclose(P_GuiWin win, EventHandlerPtr handler);
 void WinSetOnkey(P_GuiWin win, EventHandlerPtr handler);
 
-StatusType WinEventHandler(P_GuiWidget win, struct GuiEvent *event);
+StatusType WinEventHandler(cogui_widget_t * win, struct GuiEvent *event);
 
 void WinSetRect(P_GuiWin win, P_GuiRect rect);
 void WinSetTitle(P_GuiWin win, const U8 *title);

@@ -7,17 +7,14 @@
  *******************************************************************************
  */ 
 
-#ifndef _GUI_SERVER_H
-#define _GUI_SERVER_H
+#ifndef _COGUI_SERVER_H
+#define _COGUI_SERVER_H
 
 /*---------------------------- Function Define -------------------------------*/
-StatusType SEventHandler(struct GuiEvent *event);
+StatusType cogui_server_post_event(struct cogui_event *event);
 
-StatusType ServerPostEvent(struct GuiEvent *event);
+cogui_app_t *cogui_get_server(void);
 
-void ServerEntry(void *parameter);
-P_GuiApp GetServer(void);
-
-void ServerInit(void);
+void cogui_server_init(void);
 
 #endif /* _GUI_SERVER_H */

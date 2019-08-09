@@ -23,15 +23,15 @@
  * @details    This function is called to initial a app.
  *******************************************************************************
  */
-void _InitApp(P_GuiApp app)
+void _cogui_app_init(cogui_app_t *app)
 {
-    app->name       = Co_NULL;
-    app->refCnt     = 0;
-    app->tid        = 0;
-    app->mq         = 0;
-    app->winCnt     = 0;
-    app->winActiCnt = 0;
-	app->handler    = AppEventHandler;
+    app->name         = Co_NULL;
+    app->refCnt       = 0;
+    app->tid          = 0;
+    app->mq           = 0;
+    app->win_cnt      = 0;
+    app->win_acti_cnt = 0;
+	app->handler      = cogui_app_event_handler;
 }
 
 /**
@@ -40,72 +40,53 @@ void _InitApp(P_GuiApp app)
  * @param[in]  name     App title name		
  * @param[out] None
  * @retval     Co_NULL  Create app fail.
- * @retval     P_GuiApp Create app successful.			 
+ * @retval     cogui_app_t *Create app successful.			 
  *
  * @par Description
  * @details    This function is called to create a app.
  *******************************************************************************
  */
-P_GuiApp CreateApp(char *title)
+cogui_app_t *cogui_app_create(char *title)
 {
-    P_GuiApp app;
-    P_GuiApp srvApp;
+    cogui_app_t *app;
+    cogui_app_t *srv_app;
     OS_TID tid = CoGetCurTaskID();
-    struct eventApp event;
+    struct cogui_event_app event;
 
-    if(tid == 0)
-	{                     /* Is idle task?                      */   											 
-        return Co_NULL;                 /* Yes,error return                   */
-    }
-
-    if(title == Co_NULL)
-	{    
-        return Co_NULL;
-    }
-    
-    printf("creating a app name \"%s\" ...\n", title);
+    COGUI_ASSERT(tid != 0); /* Is idle task? */
+    COGUI_ASSERT(title != Co_NULL);
 
     /* create application */
-    app = GuiMalloc(sizeof(GuiApp));
+    app = cogui_malloc(sizeof(cogui_app_t));
     if (app == Co_NULL)
-	{    
         return Co_NULL;
-    }
     
-    _InitApp(app);
+    _cogui_app_init(app);
 
     app->tid = tid;
 
     /* set application title */
-    app->name = GuiMalloc(sizeof(char)*(strlen(title)+1));
+    app->name = cogui_malloc(sizeof(char)*(strlen(title)+1));
     strcpy(app->name,title);
 
     /* create message queue */
     app->mq = CoCreateMbox(EVENT_SORT_TYPE_FIFO);
 
-    srvApp = GetServer();
-    if(srvApp == Co_NULL)
-	{
+    srv_app = cogui_get_server();
+    if(srv_app == Co_NULL) {
         TCBTbl[tid].userData = app;
-
-        printf("[OK](this is the server app)\n");
         return app;
     }
 		
-    GUI_EVENT_INIT(&event.parent, GUI_EVENT_APP_CREATE, app);
+    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_APP_CREATE);
     event.app = app;
 
-    if(GuiSend(srvApp, &event.parent) == E_OK)
-	{
+    if(cogui_send(srv_app, &event.parent) == E_OK) {
         TCBTbl[tid].userData = app;
-
-        printf("[OK] ptr=0x%p\n",app);
         return app;
     }
 
-    GuiFree(app);
-
-    printf("[Failed]\n");    
+    cogui_free(app);
     return Co_NULL;
 }
 
@@ -120,56 +101,42 @@ P_GuiApp CreateApp(char *title)
  * @details    This function is called to delete a app.
  *******************************************************************************
  */
-void DeleteApp(P_GuiApp app)
+void cogui_app_delete(cogui_app_t *app)
 {
-    P_GuiApp serverApp;
-    struct eventApp event;
+    cogui_app_t *srv_app;
+    struct cogui_event_app event;
 
-    if(app == Co_NULL || app->tid == 0 || app->mq == 0)
-	{
-        return;
-    }
+    COGUI_ASSERT(app != Co_NULL);
+    COGUI_ASSERT(app->tid);
+    COGUI_ASSERT(app->mq);
 
-    printf("Deleting app \"%s\", ptr=0x%p\n", app->name, app);
-
-    GuiFree(app->name);
+    cogui_free(app->name);
     app->name = Co_NULL;
 		
     CoDelMbox(app->mq, OPT_DEL_ANYWAY);
-    TCBTbl[app->tid].userData=0;
+    TCBTbl[app->tid].userData = 0;
 		
-    serverApp = GetServer();
-    GUI_EVENT_INIT(&event.parent, GUI_EVENT_APP_DELE, app);
-		
-	printf("Initial event done, sender ptr=%p\n", event.parent.sender);
-		
+    srv_app = GetServer();
+    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_APP_DELE);
     event.app = app;
 
-    if(GuiSend(serverApp, &event.parent) != E_OK)
-	{	
+    if(cogui_send(srv_app, &event.parent) != E_OK)
        return;
-    }
 		
-	GuiFree(app);
+	cogui_free(app);
 }
 
-StatusType AppEventHandler(struct GuiEvent *event)
+StatusType cogui_app_event_handler(struct GuiEvent *event)
 {
-	if(event==Co_NULL)
-	{
-        return Co_FALSE;
-    }
-		
-	printf("[%s]Handle a event, type no.%d\n", AppSelf()->name,(int)event->type);
-		
+	COGUI_ASSERT(event != Co_NULL);
+
 	switch (event->type)
     {
-	case GUI_EVENT_APP_DELE:
-					ExitApp(((struct eventApp *)event)->app, 0);\
-					break;
+	case COGUI_EVENT_APP_DELE:
+		cogui_app_exit(((struct cogui_event_app *)event)->app, 0);
+		break;
 				
 	default:
-		printf("[%s]bad event\n", AppSelf()->name);
 		return Co_FALSE;
 				
 	}
@@ -188,22 +155,17 @@ StatusType AppEventHandler(struct GuiEvent *event)
  * @details    This function is called to run a app loop.
  *******************************************************************************
  */
-void _appEventLoop(P_GuiApp app)
+void _cogui_app_event_loop(cogui_app_t *app)
 {
     StatusType result;
-    U16 currentRef;
-    struct GuiEvent *event;
+    U16 current_ref;
+    struct cogui_event *event;
 
-    currentRef = ++app->refCnt;
-    while(currentRef <= app->refCnt)
-    {
-        event = GuiRecv(app->mq, &result);
-        if(result==E_OK)
-		{
-            printf("[%s]Recive a event.\n", app->name);
-
+    current_ref = ++app->ref_cnt;
+    while(current_ref <= app->ref_cnt) {
+        event = cogui_recv(app->mq, &result);
+        if(result == E_OK) {
             app->handler(event);
-			printf("[%s]Handle over\n", app->name);
         }
     }
 }
@@ -219,30 +181,13 @@ void _appEventLoop(P_GuiApp app)
  * @details    This function is called to run a app.
  *******************************************************************************
  */
-void RunApp(P_GuiApp app)
+void cogui_app_run(cogui_app_t *app)
 {
-    /* check whether app is exist */
-    if (app == Co_NULL)
-	{
-			return;
-	}
-        
+    COGUI_ASSERT(app != Co_NULL);
+    COGUI_ASSERT(app->tid);
+    COGUI_ASSERT(TCBTbl[app->tid].userData);
 
-    /* check whether app's task is exist */
-    if (app->tid == 0)
-	{
-        return;
-	}
-
-    /* check whether app's user data is exist */
-    if (TCBTbl[app->tid].userData == 0)
-	{
-        return;
-	}
-
-    printf("[%s]starting app...\n", app->name);
-    _appEventLoop(app);
-	  printf("[%s]runing time over.\n", app->name);
+    _cogui_app_event_loop(app);
 }
 
 /**
@@ -257,17 +202,13 @@ void RunApp(P_GuiApp app)
  * @details    This function is called to exit a app.
  *******************************************************************************
  */
-void ExitApp(P_GuiApp app, U16 code)
+void cogui_app_exit(cogui_app_t *app, U16 code)
 {
-    if (app->refCnt == 0)
-	{
+    if (app->ref_cnt == 0)
         return;
-	}
-		
-	printf("Exiting app name \"%s\", code %d\n", app->name, code);
     
-    app->refCnt--;
-    app->exitCode = code;
+    app->ref_cnt--;
+    app->exit_code = code;
 }
 
 /**
@@ -281,14 +222,14 @@ void ExitApp(P_GuiApp app, U16 code)
  * @details    This function is called to close a app.
  *******************************************************************************
  */
-void CloseApp(P_GuiApp app)
+void cogui_app_close(cogui_app_t *app)
 {
 	struct eventApp event;
 
-    GUI_EVENT_INIT(&event.parent, GUI_EVENT_APP_DELE, AppSelf());
+    GUI_EVENT_INIT(&event.parent, GUI_EVENT_APP_DELE);
     event.app = app;
 
-    GuiSend(app, &event.parent);
+    cogui_send(app, &event.parent);
 }
 
 /**
@@ -303,27 +244,13 @@ void CloseApp(P_GuiApp app)
  * @details    This function is called to let a app sleep.
  *******************************************************************************
  */
-void SleepApp(P_GuiApp app, U32 sleepTick)
+void cogui_app_sleep(cogui_app_t *app, U32 sleep_tick)
 {
-    /* check whether app is exist */
-    if (app == Co_NULL)
-	{
-        return;
-	}
+    COGUI_ASSERT(app != Co_NULL);
+    COGUI_ASSERT(app->tid);
+    COGUI_ASSERT(app->user_data);
 
-    /* check whether app's task is exist */
-    if (app->tid == 0)
-	{
-        return;
-	}
-
-    /* check whether app's user data is exist */
-    if (app->userData == 0)
-	{
-        return;
-	}
-
-    CoTickDelay(sleepTick);
+    CoTickDelay(sleep_tick);
 }
 
 /**
@@ -338,14 +265,14 @@ void SleepApp(P_GuiApp app, U32 sleepTick)
  * @details    This function is called to let a app sleep.
  *******************************************************************************
  */
-P_GuiApp AppSelf(void)
+cogui_app_t *cogui_app_self(void)
 {
-    P_GuiApp app;
+    cogui_app_t *app;
     OS_TID self;
 
 
     self = CoGetCurTaskID();
-    app  = (P_GuiApp)TCBTbl[self].userData;
+    app  = (cogui_app_t *)TCBTbl[self].userData;
 
     return app;
 }

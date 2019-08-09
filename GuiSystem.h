@@ -10,20 +10,17 @@
 #ifndef _GUI_SYSTEM_H
 #define _GUI_SYSTEM_H
 
-/*---------------------------- Include ---------------------------------------*/
 #include <coocox.h>
 #include <CoOS.h>
 #include <OsKernelHeap.h>
 #include <OsTask.h>
 
-/*---------------------------- Error Codes   ---------------------------------*/
 #define E_TITLE_NULL                (StatusType)22
 #define E_ERROR                     (StatusType)23
 #define E_NOSYS                     (StatusType)24
 #define GUI_REGION_STATUS_FAILURE   (StatusType)25
 #define GUI_REGION_STATUS_SUCCESS   (StatusType)26
 
-/*---------------------------- define  ----------------------------------------*/
 #define _UI_ABS(x)              ((x)>=0? (x):-(x))
 
 #define GUI_ARGB(a, r, g, b)  \
@@ -33,7 +30,6 @@
         (((U64)(U8)(a))<<24)))
 #define GUI_RGB(r, g, b)  GUI_ARGB(255, (r), (g), (b))
 
-/*---------------------------- Variable Define -------------------------------*/
 /*const GUI_COLOR red     = GUI_RGB(0xff, 0x00, 0x00);
 const GUI_COLOR green   = GUI_RGB(0x00, 0xff, 0x00);
 const GUI_COLOR blue    = GUI_RGB(0x00, 0x00, 0xff);
@@ -44,38 +40,26 @@ const GUI_COLOR highLight  = GUI_RGB(0xfc, 0xfc, 0xfc);
 const GUI_COLOR darkGrey   = GUI_RGB(0x7f, 0x7f, 0x7f);
 const GUI_COLOR lightGrey  = GUI_RGB(0xc0, 0xc0, 0xc0);*/
 
-/**
- * Border style
- */
-enum GUI_BORDER_STYLE
-{
-    GUI_BORDER_NONE = 0,
-    GUI_BORDER_SIMPLE,
-    GUI_BORDER_RAISE,
-    GUI_BORDER_SUNKEN,
-    GUI_BORDER_BOX,
-    GUI_BORDER_STATIC,
-    GUI_BORDER_EXTRA,
-    GUI_BORDER_UP,
-    GUI_BORDER_DOWN
-};
-#define GUI_BORDER_DEFAULT_WIDTH  2
-#define GUI_WIDGET_DEFAULT_MARGIN 3
+#define COGUI_ASSERT(EX) 								\
+if(!(EX)){											\
+	cogui_assert_handler(#EX, __FUNCTION__, __LINE__);	\
+}													\
 
-extern OSTCB    TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
+extern OSTCB TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
 
-/*---------------------------- Function Define -------------------------------*/
-void GuiSystemInit(void *par);
+void cogui_system_init(void *par);
 
-void *GuiMalloc(U32 size);
-void GuiFree(void* memBuf);
+void *cogui_malloc(U32 size);
+void cogui_free(void* memBuf);
 
-void *MemMove(void *dest, const void *src, U64 n);
+void *cogui_memmove(void *dest, const void *src, U64 n);
 
-StatusType GuiAck(struct GuiEvent *event, StatusType status);
+StatusType cogui_ack(struct cogui_event *event, StatusType status);
 
-StatusType GuiSend(P_GuiApp app, struct GuiEvent *event);
-StatusType GuiSendSync(P_GuiApp app, struct GuiEvent *event);
-struct GuiEvent * GuiRecv(OS_EventID mq, StatusType *result);
+StatusType cogui_send(P_GuiApp app, struct cogui_event *event);
+StatusType cogui_send_sync(P_GuiApp app, struct cogui_event *event);
+struct cogui_event *cogui_recv(OS_EventID mq, StatusType *result);
+
+void cogui_assert_handler(const char *ex_string, const char *func, U32 line);
 
 #endif /* _GUI_SYSTEM_H */

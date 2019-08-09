@@ -12,11 +12,11 @@
 
 #include <coocox.h>
 
-struct GuiWidget;
+struct cogui_widget;
 struct window;
 struct GuiContainer;
 struct GuiEvent;
-struct GuiDc;
+struct cogui_dc;
 
 /**
  *******************************************************************************
@@ -24,8 +24,8 @@ struct GuiDc;
  *******************************************************************************
  */
 
-typedef U64 GUI_COLOR;
-typedef StatusType  (*EventHandlerPtr)(struct GuiWidget *widget, struct GuiEvent *event);
+typedef U64 cogui_color_t;
+typedef StatusType  (*EventHandlerPtr)(struct cogui_widget *widget, struct GuiEvent *event);
 
 
 /**
@@ -39,94 +39,115 @@ typedef StatusType  (*EventHandlerPtr)(struct GuiWidget *widget, struct GuiEvent
 /**
  * double linked list
  */
-typedef struct ListNode
+struct cogui_list_node
 {
-    struct ListNode *prev;
-    struct ListNode *next;
-}CoList,*P_CoList;
+    struct list_node *prev;
+    struct list_node *next;
+};
+typedef struct cogui_list_node coogui_list_node_t;
 
 /**
  * single linked list
  */
-typedef struct SListNode
+struct cogui_slist_node
 {
-    struct SListNode *next;
-}CoSList,*P_CoSList;
+    struct cogui_slist_node *next;
+};
+typedef struct cogui_slist_node cogui_slist_node_t;
 
 /*---------------------------- region ----------------------------------------*/
 
 /**
  * rectangle
  */
-typedef struct rect
+struct cogui_rect_t
 {
     S16 x1, x2, y1, y2;
-
-}GuiRect,*P_GuiRect;
+};
+typedef struct cogui_rect_t cogui_rect_t;
 
 /**
  * region
  */
-typedef struct regionData
+struct cogui_region_data
 {
     U32 size;
-    U32 nubRects;
+    U32 num_rects;
+};
+typedef struct cogui_region_data cogui_region_data_t;
 
-}GuiRegionData,*P_GuiRegionData;
-
-typedef struct region
+struct cogui_region
 {
-    GuiRect extent;
+    cogui_rect_t extent;
+    cogui_region_data_t *data;
 
-    P_GuiRegionData data;
-
-}GuiRegion,*P_GuiRegion;
+};
+typedef struct cogui_region cogui_region_t;
 
 /**
  * 2D point
  */
-typedef struct point
+struct cogui_point
 {
     S16 x, y;
-}GuiPoint,*P_GuiPoint;
+};
+typedef struct cogui_point cogui_point_t;
+
+/**
+ * Border style
+ */
+enum cogui_border_style
+{
+    COGUI_BORDER_NONE = 0,
+    COGUI_BORDER_SIMPLE,
+    COGUI_BORDER_RAISE,
+    COGUI_BORDER_SUNKEN,
+    COGUI_BORDER_BOX,
+    COGUI_BORDER_STATIC,
+    COGUI_BORDER_EXTRA,
+    COGUI_BORDER_UP,
+    COGUI_BORDER_DOWN
+};
+#define COGUI_BORDER_DEFAULT_WIDTH  2
+#define COGUI_WIDGET_DEFAULT_MARGIN 3
 
 /*---------------------------- driver ----------------------------------------*/
 
 /* graphic driver operations */
-struct graphicDriverOops
+struct graphic_driver_ops
 {
     /* set and get pixel in (x, y) */
-    void (*setPixel)(GUI_COLOR *c, S32 x, S32 y);
-    void (*getPixel)(GUI_COLOR *c, S32 x, S32 y);
+    void (*set_pixel)(cogui_color_t *c, S32 x, S32 y);
+    void (*get_pixel)(cogui_color_t *c, S32 x, S32 y);
 
-    void (*drawHline)(GUI_COLOR *c, S32 x1, S32 x2, S32 y);
-    void (*drawVline)(GUI_COLOR *c, S32 x , S32 y1, S32 y2);
+    void (*draw_hline)(cogui_color_t *c, S32 x1, S32 x2, S32 y);
+    void (*draw_vline)(cogui_color_t *c, S32 x , S32 y1, S32 y2);
 
     /* draw raw hline */
-    void (*drawRawHline)(U8 *pixels, S32 x1, S32 x2, S32 y);
+    void (*draw_raw_hline)(U8 *pixels, S32 x1, S32 x2, S32 y);
 };
 
 /* graphic extension operations */
-struct graphicExtOps
+struct graphic_ext_ops
 {
     /* some 2D operations */
-    void (*drawLine)(GUI_COLOR *c, S32 x1, S32 y1, S32 x2, S32 y2);
+    void (*draw_line)(cogui_color_t *c, S32 x1, S32 y1, S32 x2, S32 y2);
 
-    void (*drawRect)(GUI_COLOR *c, S32 x1, S32 y1, S32 x2, S32 y2);
-    void (*fillRect)(GUI_COLOR *c, S32 x1, S32 y1, S32 x2, S32 y2);
+    void (*draw_rect)(cogui_color_t *c, S32 x1, S32 y1, S32 x2, S32 y2);
+    void (*fill_rect)(cogui_color_t *c, S32 x1, S32 y1, S32 x2, S32 y2);
 
-    void (*drawCircle)(GUI_COLOR *c, S32 x, S32 y, S32 r);
-    void (*fillCircle)(GUI_COLOR *c, S32 x, S32 y, S32 r);
+    void (*draw_circle)(cogui_color_t *c, S32 x, S32 y, S32 r);
+    void (*fill_circle)(cogui_color_t *c, S32 x, S32 y, S32 r);
 
-    void (*drawEllipse)(GUI_COLOR *c, S32 x, S32 y, S32 rx, S32 ry);
-    void (*fillEllipse)(GUI_COLOR *c, S32 x, S32 y, S32 rx, S32 ry);
+    void (*draw_ellipse)(cogui_color_t *c, S32 x, S32 y, S32 rx, S32 ry);
+    void (*fill_ellipse)(cogui_color_t *c, S32 x, S32 y, S32 rx, S32 ry);
 };
 
-typedef struct graphicDriver
+struct cogui_graphic_driver
 {
     /* pixel format and byte per pixel */
-    U8 pixelFormat;
-    U8 bitsPerPixel;
+    U8 pixel_format;
+    U8 bits_per_pixel;
     U16 pitch;
 
     /* screen width and height */
@@ -136,19 +157,20 @@ typedef struct graphicDriver
     /* framebuffer address and ops */
     U8 *framebuffer;
 
-    const struct graphicDriverOops *ops;
-    const struct graphicExtOps *extOps;
-}GuiGD,*P_GuiGD;
+    struct graphic_driver_ops *ops;
+    struct graphic_ext_ops *ext_ops;
+};
+typedef struct cogui_graphic_driver cogui_graphic_driver_t;
 
 /*---------------------------- dc --------------------------------------------*/
 
 /**
  *  Graphic context
  */
-struct GuiGc
+struct cogui_gc
 {
     /* foreground and background color */
-    GUI_COLOR foreground, background;
+    cogui_color_t foreground, background;
 
     /* text style */
     U16 textstyle;
@@ -159,47 +181,48 @@ struct GuiGc
     struct rtgui_font *font; */
 };
 
-enum guiDcType
+enum cogui_dc_type
 {
-    GUI_DC_HW,
-    GUI_DC_CLIENT,
-    GUI_DC_BUFFER,
+    COGUI_DC_HW,
+    COGUI_DC_CLIENT,
+    COGUI_DC_BUFFER,
 };
 
-typedef struct dcEngine
+struct cogui_dc_engine
 {
     /* interface */
-    void (*drawPoint)(struct GuiDc dc, S32 x, S32 y);
-    void (*drawColorPoint)(struct GuiDc dc, S32 x, S32 y, GUI_COLOR color);
-    void (*drawVline)(struct GuiDc dc, S32 x, S32 y1, S32 y2);
-    void (*drawHline)(struct GuiDc dc, S32 x1, S32 x2, S32 y);
-    void (*fillRect)(struct GuiDc dc, P_GuiRect rect);
+    void (*draw_point)(struct cogui_dc *dc, S32 x, S32 y);
+    void (*draw_color_point)(struct cogui_dc *dc, S32 x, S32 y, cogui_color_t color);
+    void (*draw_vline)(struct cogui_dc *dc, S32 x, S32 y1, S32 y2);
+    void (*draw_hline)(struct cogui_dc *dc, S32 x1, S32 x2, S32 y);
+    void (*fill_rect)(struct cogui_dc *dc, cogui_rect_t *rect);
 
-    StatusType (*fini)(struct GuiDc dc);
-}GuiDcEng,*P_GuiDcEng;
-
-typedef struct dc
-{
-    /* type of device context */
-    enum guiDcType type;
-
-    /* dc engine */
-    const P_GuiDcEng engine;
-}GuiDc,*P_GuiDc;
-
-struct dcHw
-{
-    GuiDc parent;
-    struct GuiWidget *owner;
-    const P_GuiGD hwDriver;
+    StatusType (*fini)(struct cogui_dc * dc);
 };
 
-struct dcBuffer
+struct cogui_dc
 {
-    GuiDc parent;
+    /* type of device context */
+    enum cogui_dc_type type;
+
+    /* dc engine */
+    struct cogui_dc_engine *engine;
+};
+typedef struct cogui_dc cogui_dc_t;
+
+struct cogui_dc_hw
+{
+    cogui_dc_t parent;
+    struct cogui_widget *owner;
+    cogui_graphic_driver_t *hw_driver;
+};
+
+struct cogui_dc_buffer
+{
+    cogui_dc_t parent;
 
     /* graphic context */
-    struct GuiGc gc;
+    struct cogui_gc gc;
 
     /* pixel format */
     U8 pixelFormat;
@@ -217,43 +240,44 @@ struct dcBuffer
 };
 
 /*---------------------------- application -----------------------------------*/
-enum appFlag
+enum cogui_app_flag
 {
-    GUI_APP_FLAG_EXITED  = 0x04,
-    GUI_APP_FLAG_SHOWN   = 0x08,
-    GUI_APP_FLAG_KEEP    = 0x80,
+    COGUI_APP_FLAG_EXITED  = 0x04,
+    COGUI_APP_FLAG_SHOWN   = 0x08,
+    COGUI_APP_FLAG_KEEP    = 0x80,
 };
 
-typedef struct GuiApp
+typedef struct cogui_app
 {
     U8      id;
     char   *name;
 
-    enum appFlag flag;
+    enum cogui_app_flag flag;
 
-    U16     refCnt;
-    U16     exitCode;
+    U16     ref_cnt;
+    U16     exit_code;
 
     /* Task id */
     OS_TID tid;
     /* Message queue */
     OS_EventID   mq;
 
-    U32     winCnt;
+    U32     win_cnt;
     /* window activate count */
-    U32     winActiCnt;
+    U32     win_acti_cnt;
 
     /* the event handler */
     StatusType (*handler)(struct GuiEvent *event);
 
-    void    *userData;
-}GuiApp,*P_GuiApp;
+    void    *user_tata;
+};
+typedef struct cogui_app cogui_app_t;
 
 /*---------------------------- widget ----------------------------------------*/
-typedef struct GuiWidget
+typedef struct cogui_widget
 {
     /* the widget that contains this widget */
-    struct GuiWidget *parent;
+    struct cogui_widget *parent;
     /* the window that contains this widget */
     struct window *topLevel;
     /* the widget children and sibling */
@@ -263,17 +287,17 @@ typedef struct GuiWidget
     
     /* hardware device context */
     U64 dcType;
-    const P_GuiDc dc_engine;
+    const cogui_dc_t dc_engine;
 
     /* the graphic context of widget */
-    struct GuiGc gc;
+    cogui_graphic_driver_t *gc;
 
     /* the widget extent */
-    GuiRect extent;
+    cogui_rect_t extent;
     /* the visiable extent */
-    GuiRect extentVisiable;
+    cogui_rect_t extentVisiable;
     /* the rect clip information */
-    GuiRegion clip;
+    cogui_region_t clip;
 
     /* minimal width and height of widget */
     S16 minWidth, minHeight;
@@ -283,16 +307,16 @@ typedef struct GuiWidget
     U16 borderStyle;
 
     /* call back */
-    StatusType  (*onFocusIn)(struct GuiWidget *widget, struct GuiEvent *event);
-    StatusType (*onFocusOut)(struct GuiWidget *widget, struct GuiEvent *event);
+    StatusType  (*onFocusIn)(struct cogui_widget *widget, struct GuiEvent *event);
+    StatusType (*onFocusOut)(struct cogui_widget *widget, struct GuiEvent *event);
 
     /* the event handler */
-    StatusType (*handler)(struct GuiWidget widget ,struct GuiEvent *event);
+    StatusType (*handler)(struct cogui_widget *widget ,struct GuiEvent *event);
 
     /* user private data */
     U32 userData;
 
-}GuiWidget,*P_GuiWidget;
+}cogui_widget_t;
 
 /*---------------------------- window ----------------------------------------*/
 enum guiWinFlag
@@ -326,18 +350,18 @@ typedef struct window
 
     /* drawing count */
     S64 drawing;
-    GuiRect drawingRect;
+    cogui_rect_t drawingRect;
 
     /* parent window. Co_NULL if the window is a top level window */
     struct window *parentWindow;
 
-    GuiRegion outerClip;
-    GuiRect outerExtent;
+    cogui_region_t outerClip;
+    cogui_rect_t outerExtent;
 
-    P_GuiWidget foucsWidget;
+    cogui_widget_t *focusWidget;
 
     /* which app I belong */
-    P_GuiApp app;
+    cogui_app_t *app;
 
     /* window style */
     U16 style;
@@ -346,18 +370,18 @@ typedef struct window
     enum guiWinFlag flag;
 
     /* last mouse event handled widget */
-    P_GuiWidget lastMeventWidget;
+    cogui_widget_t *lastMeventWidget;
 
     /* window title */
     U8 *title;
-    P_GuiWidget _titleWgt;
+    cogui_widget_t *_titleWgt;
 
     /* call back */
-    StatusType (*onActivate)(P_GuiWidget widget, struct GuiEvent *event);
-    StatusType (*onDeactivate)(P_GuiWidget widget, struct GuiEvent *event);
-    StatusType (*onClose)(P_GuiWidget widget, struct GuiEvent *event);
+    StatusType (*onActivate)(cogui_widget_t * widget, struct GuiEvent *event);
+    StatusType (*onDeactivate)(cogui_widget_t * widget, struct GuiEvent *event);
+    StatusType (*onClose)(cogui_widget_t * widget, struct GuiEvent *event);
 
-    StatusType (*onKey)(P_GuiWidget widget, struct GuiEvent *event);
+    StatusType (*onKey)(cogui_widget_t * widget, struct GuiEvent *event);
 
     /* reserved user data */
     void *userData;
@@ -382,7 +406,7 @@ typedef struct topwin
     P_GuiWin *wid;
 
     /* which app belong */
-    P_GuiApp *app;
+    cogui_app_t **app;
 
 }TopWin,*P_TopWin;
 
@@ -397,14 +421,14 @@ typedef struct box
 
 typedef struct GuiContainer
 {
-    GuiWidget parent;
+    cogui_widget_t *parent;
 
     StatusType (*handler)(struct GuiEvent *event);
 
     /* layout box */
     P_GuiBox layoutBox;
 
-    CoSList children;
+    CoList children;
 
 }GuiContainer,*P_GuiContainer;
 

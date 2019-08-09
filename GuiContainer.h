@@ -14,6 +14,6 @@
 P_GuiContainer ContainerVreate(void);
 void ContainerDele(P_GuiContainer container);
 
-StatusType ContainerEventHandler(P_GuiWidget widget, struct GuiEvent *event);
+StatusType ContainerEventHandler(cogui_widget_t * widget, struct GuiEvent *event);
 
 #endif /* _GUI_CONTAINER_H */

@@ -18,7 +18,7 @@ GuiRect guiEmptyRect = {0, 0, 0, 0};
 GuiPoint guiEmptyPoint = {0, 0};
 
 
-static StatusType RegionBreak(P_GuiRegion region)
+static StatusType RegionBreak(cogui_region_t *region)
 {
     if(region->data && region->data->size){
         GuiFree(region->data);
@@ -29,7 +29,7 @@ static StatusType RegionBreak(P_GuiRegion region)
     return GUI_REGION_STATUS_FAILURE;
 }
 
-StatusType RegionCopy(P_GuiRegion dst, P_GuiRegion src)
+StatusType RegionCopy(cogui_region_t *dst, cogui_region_t *src)
 {
     if(dst==Co_NULL || src==Co_NULL){
         return GUI_REGION_STATUS_FAILURE;
@@ -68,13 +68,13 @@ StatusType RegionCopy(P_GuiRegion dst, P_GuiRegion src)
     return GUI_REGION_STATUS_SUCCESS;
 }
 
-void RegionInitWithExtents(P_GuiRegion region, const P_GuiRect extents)
+void RegionInitWithExtents(cogui_region_t *region, const cogui_rect_t *extents)
 {
     region->extent = *extents;
     region->data = Co_NULL;
 }
 
-void RegionReset(P_GuiRegion region, P_GuiRect rect)
+void RegionReset(cogui_region_t *region, cogui_rect_t *rect)
 {
     if(region==Co_NULL){
         return;
@@ -87,7 +87,7 @@ void RegionReset(P_GuiRegion region, P_GuiRect rect)
     RegionInitWithExtents(region, rect);
 }
 
-void RectIntersect(P_GuiRect src, P_GuiRect dest)
+void RectIntersect(cogui_rect_t *src, cogui_rect_t *dest)
 {
     if (dest->x1 < src->x1) dest->x1 = src->x1;
     if (dest->y1 < src->y1) dest->y1 = src->y1;
@@ -95,9 +95,9 @@ void RectIntersect(P_GuiRect src, P_GuiRect dest)
     if (dest->y2 > src->y2) dest->y2 = src->y2;
 }
 
-StatusType RegionIntersectRect(P_GuiRegion newReg,P_GuiRegion reg1, P_GuiRect rect)
+StatusType RegionIntersectRect(cogui_region_t *newReg,cogui_region_t *reg1, cogui_rect_t *rect)
 {
-    P_GuiRegion region;
+    cogui_region_t *region;
 
     region.data = RT_NULL;
     region.extent.x1 = rect->x1;
@@ -108,7 +108,7 @@ StatusType RegionIntersectRect(P_GuiRegion newReg,P_GuiRegion reg1, P_GuiRect re
     return RectIntersect(newReg, reg1, &region);
 }
 
-StatusType RegionUnion(P_GuiRegion newReg, P_GuiRegion reg1, P_GuiRegion reg2)
+StatusType RegionUnion(cogui_region_t *newReg, cogui_region_t *reg1, cogui_region_t *reg2)
 {
     if(newReg==Co_NULL || reg1==Co_NULL || reg2==Co_NULL){
         return GUI_REGION_STATUS_FAILURE;
@@ -171,17 +171,17 @@ StatusType RegionUnion(P_GuiRegion newReg, P_GuiRegion reg1, P_GuiRegion reg2)
     return GUI_REGION_STATUS_SUCCESS;
 }
 
-StatusType RegionSubtract(P_GuiRegion regD, P_GuiRegion regM, P_GuiRegion regS)
+StatusType RegionSubtract(cogui_region_t *regD, cogui_region_t *regM, cogui_region_t *regS)
 {
 
 }
 
-StatusType RegionSubtractRect(P_GuiRegion regD, P_GuiRegion regM, P_GuiRect rect)
+StatusType RegionSubtractRect(cogui_region_t *regD, cogui_region_t *regM, cogui_rect_t *rect)
 {
 
 }
 
-void RectMove(P_GuiRect rect, S32 x, S32 y)
+void RectMove(cogui_rect_t *rect, S32 x, S32 y)
 {
     rect->x1 += x;
     rect->x2 += x;
@@ -191,7 +191,7 @@ void RectMove(P_GuiRect rect, S32 x, S32 y)
 }
 
 
-void RectInflate(P_GuiRect rect, S32 d)
+void RectInflate(cogui_rect_t *rect, S32 d)
 {
     rect->x1 -= d;
     rect->x2 += d;

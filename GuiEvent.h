@@ -7,74 +7,74 @@
  *******************************************************************************
  */ 
 
-#ifndef _GUI_EVENT_H
-#define _GUI_EVENT_H
+#ifndef _COGUI_EVENT_H
+#define _COGUI_EVENT_H
 
 /*---------------------------- Include ---------------------------------------*/
 #include "cogui.h"
 
-enum eventType
+enum cogui_event_type
 {
     /* applications event */
-    GUI_EVENT_APP_CREATE=0,            /* create an application */
-    GUI_EVENT_APP_DELE,           /* destroy an application */
-    GUI_EVENT_APP_ACTIVATE,          /* activate an application */
+    COGUI_EVENT_APP_CREATE = 0,        /* create an application */
+    COGUI_EVENT_APP_DELE,              /* destroy an application */
+    COGUI_EVENT_APP_ACTIVATE,          /* activate an application */
 
     /* window event */
-    GUI_EVENT_WIN_CREATE,            /* create a window       */
-    GUI_EVENT_WIN_DELE,           /* destroy a window      */
-    GUI_EVENT_WIN_SHOW,              /* show a window         */
-    GUI_EVENT_WIN_HIDE,              /* hide a window         */
-    GUI_EVENT_WIN_ACTIVATE,          /* activate a window     */
-    GUI_EVENT_WIN_DEACTIVATE,        /* deactivate a window   */
-    GUI_EVENT_WIN_CLOSE,             /* close a window        */
-    GUI_EVENT_WIN_MOVE,              /* move a window         */
-    GUI_EVENT_WIN_RESIZE,            /* resize a window       */
-    GUI_EVENT_WIN_TITLE,             /* set window title      */
-    GUI_EVENT_WIN_UPDATE_END,        /* update done for window */
+    COGUI_EVENT_WIN_CREATE,            /* create a window       */
+    COGUI_EVENT_WIN_DELE,              /* destroy a window      */
+    COGUI_EVENT_WIN_SHOW,              /* show a window         */
+    COGUI_EVENT_WIN_HIDE,              /* hide a window         */
+    COGUI_EVENT_WIN_ACTIVATE,          /* activate a window     */
+    COGUI_EVENT_WIN_DEACTIVATE,        /* deactivate a window   */
+    COGUI_EVENT_WIN_CLOSE,             /* close a window        */
+    COGUI_EVENT_WIN_MOVE,              /* move a window         */
+    COGUI_EVENT_WIN_RESIZE,            /* resize a window       */
+    COGUI_EVENT_WIN_TITLE,             /* set window title      */
+    COGUI_EVENT_WIN_UPDATE_END,        /* update done for window */
 
     /* mouse and keyboard event */
-    GUI_EVENT_MOUSE_MOTION,          /* mouse motion          */
-    GUI_EVENT_MOUSE_BUTTON,          /* mouse button info     */
-    GUI_EVENT_KBD,                   /* keyboard info         */
+    COGUI_EVENT_MOUSE_MOTION,          /* mouse motion          */
+    COGUI_EVENT_MOUSE_BUTTON,          /* mouse button info     */
+    COGUI_EVENT_KBD,                   /* keyboard info         */
 		
 		/* user command event. It should always be the last command type. */
-    GUI_EVENT_COMMAND,      /* user command          */
+    COGUI_EVENT_COMMAND,               /* user command          */
 };
 
 /*---------------------------- structure -------------------------------------*/
-struct GuiEvent {
+struct cogui_event {
     /* the event type */
-    enum eventType type;
+    enum cogui_event_type type;
 
     /* the event sender */
-    P_GuiApp sender;
+    cogui_app_t *sender;
 
     /* mailbox to acknowledge request */
     OS_EventID ack;
 };
 
-#define _GUI_EVENT_ELEMENT                  \
-    struct GuiEvent parent;                 \
-    P_GuiWin *win;                          \
+#define _COGUI_EVENT_ELEMENT           \
+    struct cogui_event parent;         \
+    P_GuiWin *win;                     \
 
-#define GUI_EVENT_INIT(e,t,s)   \
-{                               \
-    (e)->type   = (t);          \
-    (e)->sender = (s);    			\
-    (e)->ack    = 0;      			\
-}                               \
+#define COGUI_EVENT_INIT(e,t,s)        \
+{                                      \
+    (e)->type   = (t);                 \
+    (e)->sender = cogui_app_self();    \
+    (e)->ack    = 0;      			   \
+}                                      \
 
-struct eventApp
+struct cogui_event_app
 {
-    struct GuiEvent parent; 
+    struct cogui_event parent; 
 
-    P_GuiApp app;
+    cpgui_app_t *app;
 };
 
-struct eventMouse
+struct cogui_event_mouse
 {
-    _GUI_EVENT_ELEMENT
+    _COGUI_EVENT_ELEMENT
 
     U16 x, y;
     U16 button;
@@ -83,62 +83,62 @@ struct eventMouse
     U32 id;
 
     /* window activate count */
-    U32 winActiCnt;
+    U32 win_acti_cnt;
 
-    P_GuiApp app;
+    cpgui_app_t *app;
 };
 
-#define GUI_MOUSE_BUTTON_LEFT         0x01
-#define GUI_MOUSE_BUTTON_RIGHT        0x02
-#define GUI_MOUSE_BUTTON_MIDDLE       0x03
-#define GUI_MOUSE_BUTTON_WHEELUP      0x04
-#define GUI_MOUSE_BUTTON_WHEELDOWN    0x08
+#define COGUI_MOUSE_BUTTON_LEFT         0x01
+#define COGUI_MOUSE_BUTTON_RIGHT        0x02
+#define COGUI_MOUSE_BUTTON_MIDDLE       0x03
+#define COGUI_MOUSE_BUTTON_WHEELUP      0x04
+#define COGUI_MOUSE_BUTTON_WHEELDOWN    0x08
 
-#define GUI_MOUSE_BUTTON_DOWN         0x10
-#define GUI_MOUSE_BUTTON_UP           0x20
+#define COGUI_MOUSE_BUTTON_DOWN         0x10
+#define COGUI_MOUSE_BUTTON_UP           0x20
 
-struct eventKbd
+struct cogui_event_kbd
 {
-    _GUI_EVENT_ELEMENT
+    _COGUI_EVENT_ELEMENT
 
     /* window activate count */
-    U32 winActiCnt;
+    U32 win_acti_cnt;
 
     U16 type;         /* key up or down */
     U16 key;          /* current key */
     U16 mod;          /* current key modifiers */
-    U16 asciiCode;    /* character */
+    U16 ascii_code;   /* character */
 
-    P_GuiApp app;
+    cogui_app_t *app;
 };
 
-struct eventWin
+struct cogui_event_win
 {
-    _GUI_EVENT_ELEMENT
+    _COGUI_EVENT_ELEMENT
 };
 
 
-struct eventWinCreate
+struct cogui_event_win_create
 {
-    _GUI_EVENT_ELEMENT
+    _COGUI_EVENT_ELEMENT
     P_GuiWin parentWinow;
 };
 
-struct eventWinMove
+struct cogui_event_win_move
 {
-    _GUI_EVENT_ELEMENT
+    _COGUI_EVENT_ELEMENT
     S16 x, y;
 };
 
-struct eventWinResize
+struct cogui_event_win_resize
 {
-    _GUI_EVENT_ELEMENT
+    _COGUI_EVENT_ELEMENT
     GuiRect rect;
 };
 
-struct eventWinSetTitle
+struct cogui_event_win_set_title
 {
-    _GUI_EVENT_ELEMENT
+    _COGUI_EVENT_ELEMENT
     U8 *title;
 };
 

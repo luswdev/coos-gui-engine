@@ -10,13 +10,13 @@
 #include "cogui.h"
 
 /*---------------------------- Function declare ------------------------------*/
-static void DcBufferDrawPoint(P_GuiDc dc, S32 x, S32 y);
-static void DcBufferDrawColorPoint(P_GuiDc dc, S32 x, S32 y, rtgui_color_t color);
-static void DcBufferDrawVline(P_GuiDc dc, S32 x, S32 y1, S32 y2);
-static void DcBufferDrawHline(P_GuiDc dc, S32 x1, S32 x2, S32 y);
-static void DcBufferFillRect(P_GuiDc dc, P_GuiRect rect);
+static void DcBufferDrawPoint(cogui_dc_t *dc, S32 x, S32 y);
+static void DcBufferDrawColorPoint(cogui_dc_t *dc, S32 x, S32 y, cogui_color_t color);
+static void DcBufferDrawVline(cogui_dc_t *dc, S32 x, S32 y1, S32 y2);
+static void DcBufferDrawHline(cogui_dc_t *dc, S32 x1, S32 x2, S32 y);
+static void DcBufferFillRect(cogui_dc_t *dc, P_GuiRect rect);
 
-static StatusType DcBufferFini(P_GuiDc dc);
+static StatusType DcBufferFini(cogui_dc_t *dc);
 
 const GuiDcEng dcBufferEngine =
 {

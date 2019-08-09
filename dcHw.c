@@ -10,22 +10,22 @@
 #include "cogui.h"
 
 /*---------------------------- Function declare ------------------------------*/
-static void DcHwDrawPoint(P_GuiDc dc, S32 x, S32 y);
-static void DcHwDrawColorPoint(P_GuiDc dc, S32 x, S32 y, GUI_COLOR color);
-static void DcHwDrawVline(P_GuiDc dc, S32 x, S32 y1, S32 y2);
-static void DcHwDrawHline(P_GuiDc dc, S32 x1, S32 x2, S32 y);
-static void DcHwFillRect(P_GuiDc dc, P_GuiRect rect);
-static StatusType DcHwFini(P_GuiDc dc);
+static void cogui_dc_hw_draw_point(cogui_dc_t *dc, S32 x, S32 y);
+static void cogui_dc_hw_draw_color_point(cogui_dc_t *dc, S32 x, S32 y, cogui_color_t color);
+static void cogui_dc_hw_draw_vline(cogui_dc_t *dc, S32 x, S32 y1, S32 y2);
+static void cogui_dc_hw_draw_hline(cogui_dc_t *dc, S32 x1, S32 x2, S32 y);
+static void cogui_dc_hw_fill_rect(cogui_dc_t *dc, P_GuiRect rect);
+static StatusType cogui_dc_hw_fini(cogui_dc_t *dc);
 
-const GuiDcEng dcHwEngine =
+struct cogui_dc_engine dc_hw_engine =
 {
-    DcHwDrawPoint,
-    DcHwDrawColorPoint,
-    DcHwDrawVline,
-    DcHwDrawHline,
-    DcHwFillRect,
+    cogui_dc_hw_draw_point,
+    cogui_dc_hw_draw_color_point,
+    cogui_dc_hw_draw_vline,
+    cogui_dc_hw_draw_hline,
+    cogui_dc_hw_fill_rect,
 
-    DcHwFini,
+    cogui_dc_hw_fini,
 };
 
 /**
@@ -40,25 +40,25 @@ const GuiDcEng dcHwEngine =
  * @details    This function is called to create a dc engine (hw).
  *******************************************************************************
  */
-P_GuiDc DcHwCreate(P_GuiWidget owner)
+cogui_dc_t *cogui_dc_hw_create(cogui_widget_t *owner)
 {
-    struct dcHw *dc;
+    struct cogui_dc_hw *dc;
 
     /* adjudge owner */
-    if (owner==Co_NULL || owner->toplevel==Co_NULL){
+    if (owner==Co_NULL){
         return Co_NULL;
     }
 
     /* create DC */
-    dc = (struct dcHw *) GuiMalloc(sizeof(struct dcHw));
+    dc = (struct cogui_dc_hw *) cogui_malloc(sizeof(struct cogui_dc_hw));
     if (dc)
     {
-        dc->parent.type = GUI_DC_HW;
+        dc->parent.type = COGUI_DC_HW;
         dc->parent.engine = &dc_hw_engine;
         dc->owner = owner;
-        dc->hwDriver = GraphiDriverGetDefault();
-
-        return &(dc->parent);
+        dc->hw_driver = cogui_graphic_driver_get_default();
+		
+        return (cogui_dc_t *)dc;
     }
 
     return Co_NULL;
@@ -76,11 +76,10 @@ P_GuiDc DcHwCreate(P_GuiWidget owner)
  * @details    This function is called to free a dc engine (hw).
  *******************************************************************************
  */
-static StatusType DcHwFini(P_GuiDc dc)
+static StatusType cogui_dc_hw_fini(cogui_dc_t *dc)
 {
-    if (dc==Co_NULL || dc->type!=GUI_DC_HW){
+    if (dc == Co_NULL || dc->type != COGUI_DC_HW)
         return Co_FALSE;
-    }
 
     /* release hardware dc */
     GuiFree(dc);
@@ -101,31 +100,27 @@ static StatusType DcHwFini(P_GuiDc dc)
  * @details    This function is called to draw a point.
  *******************************************************************************
  */
-static void DcHwDrawPoint(P_GuiDc self, S32 x, S32 y)
+static void cogui_dc_hw_draw_point(cogui_dc_t *self, S32 x, S32 y)
 {
-    struct dcHw *dc;
+    struct cogui_dc_hw *dc;
 
-    if(self==Co_NULL){
+    COGUI_ASSERT(self != Co_NULL);
+
+    dc = (struct cogui_dc_hw *) self;
+
+    if (x < 0 || y < 0)
         return;
-    }
-
-    dc = (struct dcHw *) self;
-
-    if (x < 0 || y < 0){
-        return;
-    }
 
     x = x + dc->owner->extent.x1;
-    if (x >= dc->owner->extent.x2){
+    if (x >= dc->owner->extent.x2) 
         return;
-    }
+    
     y = y + dc->owner->extent.y1;
-    if (y >= dc->owner->extent.y2){
+    if (y >= dc->owner->extent.y2) 
         return;
-    }
 
     /* draw this point */
-    dc->hw_driver->ops->setPixel(&(dc->owner->gc.foreground), x, y);
+    dc->hwDriver->ops->set_pixel(&(dc->owner->gc.foreground), x, y);
 }
 
 /**
@@ -142,31 +137,28 @@ static void DcHwDrawPoint(P_GuiDc self, S32 x, S32 y)
  * @details    This function is called to draw a color point.
  *******************************************************************************
  */
-static void DcHwDrawColorPoint(P_GuiDc self, S32 x, S32 y, GUI_COLOR color)
+static void cogui_dc_hw_draw_color_point(cogui_dc_t *self, S32 x, S32 y, cogui_color_t color)
 {
-    struct dcHw *dc;
+    struct cogui_dc_hw *dc;
 
-    if(self==Co_NULL){
+    COGUI_ASSERT(self != Co_NULL);
+
+    dc = (struct cogui_dc_hw *) self;
+
+    if (x < 0 || y < 0)
         return;
-    }
-
-    dc = (struct dcHw *) self;
-
-    if (x < 0 || y < 0){
-        return;
-    }
 
     x = x + dc->owner->extent.x1;
-    if (x >= dc->owner->extent.x2){
+    if (x >= dc->owner->extent.x2)
         return;
-    }
+    
     y = y + dc->owner->extent.y1;
-    if (y >= dc->owner->extent.y2){
+    if (y >= dc->owner->extent.y2)
         return;
-    }
+    
 
     /* draw this point */
-    dc->hw_driver->ops->setPixel(&color, x, y);
+    dc->hwDriver->ops->set_pixel(&color, x, y);
 }
 
 /**
@@ -183,43 +175,39 @@ static void DcHwDrawColorPoint(P_GuiDc self, S32 x, S32 y, GUI_COLOR color)
  * @details    This function is called to draw a vertical line.
  *******************************************************************************
  */
-static void DcHwDrawVline(P_GuiDc self, S32 x, S32 y1, S32 y2)
+static void cogui_dc_hw_draw_vline(cogui_dc_t *self, S32 x, S32 y1, S32 y2)
 {
-    struct dcHw *dc;
+    struct cogui_dc_hw *dc;
 
-    if(self==Co_NULL){
-        return;
-    }
+    COGUI_ASSERT(self != Co_NULL);
 
-    dc = (struct dcHw *) self;
+    dc = (struct cogui_dc_hw *) self;
 
     if (x < 0){
         return;
     }
 
     x = x + dc->owner->extent.x1;
-    if (x >= dc->owner->extent.x2){
+    if (x >= dc->owner->extent.x2)
         return;
-    }
+    
     y1 = y1 + dc->owner->extent.y1;
     y2 = y2 + dc->owner->extent.y1;
 
-    if (y1 > y2){
+    if (y1 > y2)
         _intSwap(y1, y2);
-    }
-    if (y1 > dc->owner->extent.y2 || y2 < dc->owner->extent.y1){
+    
+    if (y1 > dc->owner->extent.y2 || y2 < dc->owner->extent.y1)
         return;
-    }
 
-    if (y1 < dc->owner->extent.y1){
+    if (y1 < dc->owner->extent.y1)
         y1 = dc->owner->extent.y1;
-    }
-    if (y2 > dc->owner->extent.y2){
+    
+    if (y2 > dc->owner->extent.y2)
         y2 = dc->owner->extent.y2;
-    }
 
     /* draw vline */
-    dc->hw_driver->ops->drawVline(&(dc->owner->gc.foreground), x, y1, y2);
+    dc->hwDriver->ops->draw_vline(&(dc->owner->gc.foreground), x, y1, y2);
 }
 
 /**
@@ -236,43 +224,39 @@ static void DcHwDrawVline(P_GuiDc self, S32 x, S32 y1, S32 y2)
  * @details    This function is called to draw a horizontal line.
  *******************************************************************************
  */
-static void DcHwDrawHline(P_GuiDc self, S32 x1, S32 x2, S32 y)
+static void cogui_dc_hw_draw_hline(cogui_dc_t *self, S32 x1, S32 x2, S32 y)
 {
-    struct dcHw *dc;
+    struct cogui_dc_hw *dc;
 
-    if(self==Co_NULL){
+    COGUI_ASSERT(self != Co_NULL);
+	
+    dc = (struct cogui_dc_hw *) self;
+
+    if (y < 0)
         return;
-    }
-
-    dc = (struct dcHw *) self;
-
-    if (y < 0){
-        return;
-    }
+    
     y = y + dc->owner->extent.y1;
-    if (y >= dc->owner->extent.y2){
+    if (y >= dc->owner->extent.y2)
         return;
-    }
 
     /* convert logic to device */
     x1 = x1 + dc->owner->extent.x1;
     x2 = x2 + dc->owner->extent.x1;
-    if (x1 > x2){
+    if (x1 > x2)
         _int_swap(x1, x2);
-    }
-    if (x1 > dc->owner->extent.x2 || x2 < dc->owner->extent.x1){
+    
+    if (x1 > dc->owner->extent.x2 || x2 < dc->owner->extent.x1)
         return;
-    }
 
-    if (x1 < dc->owner->extent.x1){
+    if (x1 < dc->owner->extent.x1)
         x1 = dc->owner->extent.x1;
-    }
-    if (x2 > dc->owner->extent.x2){
+    
+    if (x2 > dc->owner->extent.x2)
         x2 = dc->owner->extent.x2;
-    }
+    
 
     /* draw hline */
-    dc->hw_driver->ops->drawHline(&(dc->owner->gc.foreground), x1, x2, y);
+    dc->hwDriver->ops->draw_hline(&(dc->owner->gc.foreground), x1, x2, y);
 }
 
 /**
@@ -287,55 +271,54 @@ static void DcHwDrawHline(P_GuiDc self, S32 x1, S32 x2, S32 y)
  * @details    This function is called to fill a rectangle.
  *******************************************************************************
  */
-static void DcHwFillRect(P_GuiDc self, P_GuiRect rect)
+static void cogui_dc_hw_fill_rect(cogui_dc_t *self, P_GuiRect rect)
 {
-    GUI_COLOR color;
-    register U64 y1, y2, x1, x2;
-    struct dcHw *dc;
+    cogui_color_t color;
+    S32 y1, y2, x1, x2;
+    struct cogui_dc_hw *dc;
 
-    if(self==Co_NULL || !rect){
-        return;
-    }
+    COGUI_ASSERT(self != Co_NULL);
+	COGUI_ASSERT(rect);
     
-    dc = (struct dcHw *) self;
+    dc = (struct cogui_dc_hw *) self;
 
     /* get background color */
     color = dc->owner->gc.background;
 
     /* convert logic to device */
     x1 = rect->x1 + dc->owner->extent.x1;
-    if (x1 > dc->owner->extent.x2){
+    if (x1 > dc->owner->extent.x2)
         return;
-    }
-    if (x1 < dc->owner->extent.x1){
-        x1 = dc->owner->extent.x1;\
-    }
+    
+    if (x1 < dc->owner->extent.x1)
+        x1 = dc->owner->extent.x1;
+    
     x2 = rect->x2 + dc->owner->extent.x1;
-    if (x2 < dc->owner->extent.x1){
+    if (x2 < dc->owner->extent.x1)
         return;
-    }
-    if (x2 > dc->owner->extent.x2){
+    
+    if (x2 > dc->owner->extent.x2)
         x2 = dc->owner->extent.x2;        
-    }
+    
 
     y1 = rect->y1 + dc->owner->extent.y1;
-    if (y1 > dc->owner->extent.y2){
+    if (y1 > dc->owner->extent.y2)
         return;
-    }
-    if (y1 < dc->owner->extent.y1){
+    
+    if (y1 < dc->owner->extent.y1)
         y1 = dc->owner->extent.y1;
-    }
+    
     y2 = rect->y2 + dc->owner->extent.y1;
-    if (y2 < dc->owner->extent.y1){
+    if (y2 < dc->owner->extent.y1)
         return;
-    }
-    if (y2 > dc->owner->extent.y2){
+    
+    if (y2 > dc->owner->extent.y2)
         y2 = dc->owner->extent.y2;
-    }
+    
 
     /* fill rect */
     for (; y1 < y2; y1++)
     {
-        dc->hw_driver->ops->drawHline(&color, x1, x2, y1);
+        dc->hwDriver->ops->draw_hline(&color, x1, x2, y1);
     }
 }

@@ -7,24 +7,35 @@
  *******************************************************************************
  */ 
 
-#ifndef _GUI_DC_H
-#define _GUI_DC_H
+#ifndef _COGUI_DC_H
+#define _COGUI_DC_H
 
-#define _intSwap(x, y) {x ^= y; y ^= x; x ^= y;}
+#define COGUI_DC(dc)	((cogui_dc_t *)(dc))
+
+#define _int_swap(x, y) {x ^= y; y ^= x; x ^= y;}
+#define _int_comp(x, y) { if (x>y) _intSwap(x, y); }
+
+#define COGUI_DC_FC(dc) (cogui_dc_get_gc(COGUI_DC(dc))->foreground)
+#define COGUI_DC_BC(dc) (cogui_dc_get_gc(COGUI_DC(dc))->background)
 
 /*---------------------------- Function declare ------------------------------*/
 
 /* create a hardware dc */
-P_GuiDc DcHwCreate(P_GuiWidget owner);
+cogui_dc_t *cogui_dc_hw_create(cogui_widget_t * owner);
 
-void DcDrawLine(P_GuiDc dc, S32 x1, S32 y1, S32 x2, S32 y2);
-void DcDrawRect(P_GuiDc dc, P_GuiRect rect);
-void DcFillRectForecolor(P_GuiDc dc, P_GuiRect rect);
-//void DcDrawRoundRect(P_GuiDc dc, P_GuiRect rect, S32 r);
-//void DcFillRoundRect(P_GuiDc dc, P_GuiRect rect, S32 r);
+void cogui_dc_draw_line(cogui_dc_t *dc, S32 x1, S32 y1, S32 x2, S32 y2);
+void cogui_dc_draw_rect(cogui_dc_t *dc, P_GuiRect rect);
+void cogui_dc_draw_shaded_rect(cogui_dc_t *dc, P_GuiRect rect, cogui_color_t c1, cogui_color_t c2);
+void cogui_dc_fill_rect_forecolor(cogui_dc_t *dc, P_GuiRect rect);
+//void cogui_dc_draw_round_rect(cogui_dc_t *dc, P_GuiRect rect, S32 r);
+//void cogui_dc_fill_round_rect(cogui_dc_t *dc, P_GuiRect rect, S32 r);
 
-void DcDrawHorizontalLine(P_GuiDc dc, S32 x1, S32 x2, S32 y);
-void DcDrawVerticalLine(P_GuiDc dc, S32 x, S32 y1, S32 y2);
+void cogui_dc_draw_horizontal_line(cogui_dc_t *dc, S32 x1, S32 x2, S32 y);
+void rtgui_dc_draw_vertical_line(cogui_dc_t *dc, S32 x, S32 y1, S32 y2);
+
+void cogui_dc_draw_border(cogui_dc_t *dc, P_GuiRect rect, int flag);
+
+struct cogui_gc *cogui_dc_get_gc(cogui_dc_t *dc);
 
 
-#endif /* _GUI_DC_H */
+#endif /* _COGUI_DC_H */

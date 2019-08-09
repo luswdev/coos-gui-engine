@@ -14,7 +14,7 @@
 #define TASK_STK_SIZE		128	/*!< Define stack size.	              */
 
 /*---------------------------- Variable declare ------------------------------*/
-P_GuiApp serverApp = Co_NULL;
+cogui_app_t *server_app = Co_NULL;
 
 OS_STK   server_Stk[TASK_STK_SIZE];	     /*!< Stack of 'task_init' task.      */
 
@@ -32,12 +32,12 @@ OS_STK   server_Stk[TASK_STK_SIZE];	     /*!< Stack of 'task_init' task.      */
  * @details    This function is called to handle a mouse button event
  *******************************************************************************
  */
-void SHandlerMouseBtn(struct eventMouse *event)
+void cogui_server_handler_mouse_btn(struct cogui_event_mouse *event)
 {
     /* the topwin contains current mouse */
     //P_TopWin win    = Co_NULL;
 
-    GUI_EVENT_INIT((struct GuiEvent *)event, GUI_EVENT_MOUSE_BUTTON, serverApp);
+    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_MOUSE_BUTTON);
 
     /* set cursor position */
     //MouseSetPos(event->x, event->y);
@@ -49,7 +49,7 @@ void SHandlerMouseBtn(struct eventMouse *event)
 
     event->win = win->wid;*/
 
-    while(GuiSend(event->app, (struct GuiEvent *)event) != E_OK){
+    while(cogui_send(event->app, &event.parent) != E_OK){
         CoTickDelay(50);
     }
 }
@@ -65,12 +65,12 @@ void SHandlerMouseBtn(struct eventMouse *event)
  * @details    This function is called to handle a mouse motion event
  *******************************************************************************
  */
-void SHandlerMouseMotion(struct eventMouse *event)
+void cogui_server_handler_mouse_motion(struct cogui_event_mouse *event)
 {
     /* the topwin contains current mouse */
     //P_TopWin win    = Co_NULL;
 
-    GUI_EVENT_INIT((struct GuiEvent *)event, GUI_EVENT_MOUSE_MOTION, serverApp);
+    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_MOUSE_MOTION);
 
     /*win = GetTopWin(event->x, event->y);
     if(win == Co_NULL){
@@ -78,7 +78,7 @@ void SHandlerMouseMotion(struct eventMouse *event)
     }
 
     event->win = win->wid;*/
-    GuiSend(event->app, (struct GuiEvent *)event);
+    cogui_send(event->app, &event.parent);
 
     //MouseMoveTo(event->x, event->y);
 }
@@ -94,12 +94,12 @@ void SHandlerMouseMotion(struct eventMouse *event)
  * @details    This function is called to handle a keyboard event
  *******************************************************************************
  */
-void SHandlerKbd(struct eventKbd *event)
+void cogui_server_event_kbd(struct cogui_event_kbd *event)
 {
     /* the topwin contains current mouse */
     //P_TopWin win = Co_NULL;
 
-    GUI_EVENT_INIT((struct GuiEvent *)event, GUI_EVENT_KBD, serverApp);
+    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_KBD);
 
     /*win = GetTopWinFocus();
     if(win == Co_NULL){
@@ -108,7 +108,7 @@ void SHandlerKbd(struct eventKbd *event)
 
     event->win = win->wid;*/
 
-    GuiSend(event->app, (struct GuiEvent *)event);
+    cogui_send(event->app, &event.parent);
 }
 
 /**
@@ -123,46 +123,37 @@ void SHandlerKbd(struct eventKbd *event)
  * @details    This function is server app handler function
  *******************************************************************************
  */
-StatusType SEventHandler(struct GuiEvent *event)
+StatusType cogui_server_event_handler(struct GuiEvent *event)
 {
-    if(event==Co_NULL){
-        return Co_FALSE;
-    }
-		
-		printf("[guiServer]Handle a event, type no.%d\n", (int)event->type);
+    COGUI_ASSERT(event != Co_NULL);
 
     switch (event->type)
     {
-		case GUI_EVENT_APP_CREATE:
-    case GUI_EVENT_APP_DELE:
-				printf("[guiServer]Handle app function\n");
-				GuiAck(event, E_OK);
-				break;
+	case COGUI_EVENT_APP_CREATE:
+    case COGUI_EVENT_APP_DELE:
+		cogui_ack(event, E_OK);
+		break;
 		
     /* mouse and keyboard event */
-    case GUI_EVENT_MOUSE_BUTTON:
+    case COGUI_EVENT_MOUSE_BUTTON:
         /* handle mouse button */
-				printf("[guiServer]Handle mouse button\n");
 		
-        //SHandlerMouseBtn((struct eventMouse *)event);
+        //cogui_server_event_handler_mouse_btn((struct cogui_event_mouse *)event);
         break;
 
-    case GUI_EVENT_MOUSE_MOTION:
+    case COGUI_EVENT_MOUSE_MOTION:
         /* handle mouse motion event */
-				printf("[guiServer]Handle mouse motion\n");
 		
-        //SHandlerMouseMotion((struct eventMouse *)event);
+        //cogui_server_event_handler_mouse_motion((struct cogui_event_mouse *)event);
         break;
 
-    case GUI_EVENT_KBD:
+    case COGUI_EVENT_KBD:
         /* handle keyboard event */
-				printf("[guiServer]Handle keyboard event\n");
 		
-        //SHandlerKbd((struct eventKbd *)event);
+        //cogui_server_event_handler_kbd((struct cogui_event_kbd *)event);
         break;
 
     default:
-				printf("[guiServer]bad event\n");
         return Co_FALSE;
     }
 
@@ -180,20 +171,19 @@ StatusType SEventHandler(struct GuiEvent *event)
  * @details    This function is called to start the server
  *******************************************************************************
  */
-void ServerEntry(void *parameter)
+void cogui_server_entry(void *parameter)
 {
-    serverApp = CreateApp("guiServer");
-    if(serverApp == Co_NULL){
-        printf("[server]Create app failed.\n");
+    server_app = cogui_app_create("gui_server");
+    if(server_app == Co_NULL){
         return;
     }
 
-    serverApp->handler = SEventHandler;
+    server_app->handler = cogui_server_event_handler;
 
-    RunApp(serverApp);
+    cogui_app_run(server_app);
 
-    DeleteApp(serverApp);
-    serverApp = Co_NULL;
+    cogui_app_delete(server_app);
+    server_app = Co_NULL;
 }
 
 /**
@@ -209,12 +199,12 @@ void ServerEntry(void *parameter)
  * @details    This function is called to post a event via server
  *******************************************************************************
  */
-StatusType ServerPostEvent(struct GuiEvent *event)
+StatusType cogui_server_post_event(struct cogui_event *event)
 {
     StatusType result;
 
-    if (serverApp != Co_NULL){
-        result = GuiSend(serverApp, event);
+    if (server_app != Co_NULL){
+        result = cougui_send(server_pp, event);
     }
     else{
         result = E_NOSYS;
@@ -234,16 +224,16 @@ StatusType ServerPostEvent(struct GuiEvent *event)
  * @details    This function is called to get server ptr
  *******************************************************************************
  */
-P_GuiApp GetServer(void)
+cogui_app_t *GetServer(void)
 {
-    return serverApp;
+    return server_app;
 }
 
 
 void ServerInit(void)
 {
-		printf("Create a task \"ServerEntry\"...\n");
-    CoCreateTask(ServerEntry, 0, 10,&server_Stk[TASK_STK_SIZE-1], TASK_STK_SIZE);
-	
-		CoExitTask();
+	printf("Create a task \"server_entry\"...\r\n");
+    CoCreateTask(cogui_server_entry, (void *)0, 15,&server_Stk[TASK_STK_SIZE-1], TASK_STK_SIZE);
+	printf("[OK]\r\n");
+	CoExitTask();
 }

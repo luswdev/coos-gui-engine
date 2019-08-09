@@ -17,20 +17,20 @@
 
 /*---------------------------- Variable Define -------------------------------*/
 extern OSTCB    TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
-extern ECB  EventTbl[CFG_MAX_EVENT]; 
+extern ECB      EventTbl[CFG_MAX_EVENT]; 
 
 /*---------------------------- Function declare ------------------------------*/
-P_GuiApp CreateApp(char *name);
-void _InitApp(P_GuiApp app);
-void DeleteApp(P_GuiApp app);
+cogui_app_t *cogui_app_create(char *name);
+void _cogui_app_init(cogui_app_t *app);
+void cogui_app_delete(cogui_app_t *app);
 
-StatusType AppEventHandler(struct GuiEvent *event);
+StatusType cogui_app_event_handler(struct cogui_event *event);
 
-void RunApp(P_GuiApp app);
-void ExitApp(P_GuiApp app, U16 code);
-void CloseApp(P_GuiApp app);
-void SleepApp(P_GuiApp app, U32 sleepTick);
+void cogui_app_run(cogui_app_t *app);
+void cogui_app_exit(cogui_app_t *app, U16 code);
+void cogui_app_close(cogui_app_t *app);
+void cogui_app_sleep(cogui_app_t *app, U32 sleepTick);
 
-P_GuiApp AppSelf(void);
+cogui_app_t *cogui_app_self(void);
 
 #endif /* _GUI_APP_H */
