@@ -7,8 +7,8 @@
  *******************************************************************************
  */ 
 
-#ifndef _GUI_DRIVER_H
-#define _GUI_DRIVER_H
+#ifndef _COGUI_DRIVER_H
+#define _COGUI_DRIVER_H
 
 enum
 {
@@ -31,5 +31,5 @@ enum
 cogui_graphic_driver_t *cogui_graphic_driver_get_default(void);
 void cogui_set_graphic_driver(cogui_graphic_driver_t *driver);
 
-#endif /* _GUI_DRIVER_H */
+#endif /* _COGUI_DRIVER_H */
 

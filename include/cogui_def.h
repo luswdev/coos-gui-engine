@@ -7,15 +7,15 @@
  *******************************************************************************
  */ 
 
-#ifndef _GUI_DEF_H
-#define _GUI_DEF_H
+#ifndef _COGUI_DEF_H
+#define _COGUI_DEF_H
 
 #include <coocox.h>
 
 struct cogui_widget;
 struct window;
 struct GuiContainer;
-struct GuiEvent;
+struct cogui_event;
 struct cogui_dc;
 
 /**
@@ -25,7 +25,7 @@ struct cogui_dc;
  */
 
 typedef U64 cogui_color_t;
-typedef StatusType  (*EventHandlerPtr)(struct cogui_widget *widget, struct GuiEvent *event);
+typedef StatusType  (*event_handler_ptr)(struct cogui_widget *widget, struct cogui_event *event);
 
 
 /**
@@ -44,7 +44,7 @@ struct cogui_list_node
     struct list_node *prev;
     struct list_node *next;
 };
-typedef struct cogui_list_node coogui_list_node_t;
+typedef struct cogui_list_node cogui_list_t;
 
 /**
  * single linked list
@@ -53,7 +53,7 @@ struct cogui_slist_node
 {
     struct cogui_slist_node *next;
 };
-typedef struct cogui_slist_node cogui_slist_node_t;
+typedef struct cogui_slist_node cogui_slist_t;
 
 /*---------------------------- region ----------------------------------------*/
 
@@ -247,7 +247,7 @@ enum cogui_app_flag
     COGUI_APP_FLAG_KEEP    = 0x80,
 };
 
-typedef struct cogui_app
+struct cogui_app
 {
     U8      id;
     char   *name;
@@ -267,26 +267,26 @@ typedef struct cogui_app
     U32     win_acti_cnt;
 
     /* the event handler */
-    StatusType (*handler)(struct GuiEvent *event);
+    StatusType (*handler)(struct cogui_event *event);
 
-    void    *user_tata;
+    void    *user_data;
 };
 typedef struct cogui_app cogui_app_t;
 
 /*---------------------------- widget ----------------------------------------*/
-typedef struct cogui_widget
+struct cogui_widget
 {
     /* the widget that contains this widget */
     struct cogui_widget *parent;
     /* the window that contains this widget */
-    struct window *topLevel;
+    struct window *top_level;
     /* the widget children and sibling */
-    CoList sibling;
+    cogui_list_t sibling;
 
     S32 flag;
     
     /* hardware device context */
-    U64 dcType;
+    U64 dc_type;
     const cogui_dc_t dc_engine;
 
     /* the graphic context of widget */
@@ -295,28 +295,28 @@ typedef struct cogui_widget
     /* the widget extent */
     cogui_rect_t extent;
     /* the visiable extent */
-    cogui_rect_t extentVisiable;
+    cogui_rect_t extent_visiable;
     /* the rect clip information */
     cogui_region_t clip;
 
     /* minimal width and height of widget */
-    S16 minWidth, minHeight;
+    S16 min_width, min_height;
     /* widget align */
     S32 align;
     U16 border;
-    U16 borderStyle;
+    U16 border_style;
 
     /* call back */
-    StatusType  (*onFocusIn)(struct cogui_widget *widget, struct GuiEvent *event);
-    StatusType (*onFocusOut)(struct cogui_widget *widget, struct GuiEvent *event);
+    StatusType  (*on_focus_in)(struct cogui_widget *widget, struct cogui_event *event);
+    StatusType (*on_focus_out)(struct cogui_widget *widget, struct cogui_event *event);
 
     /* the event handler */
-    StatusType (*handler)(struct cogui_widget *widget ,struct GuiEvent *event);
+    StatusType (*handler)(struct cogui_widget *widget ,struct cogui_event *event);
 
     /* user private data */
-    U32 userData;
-
-}cogui_widget_t;
+    U32 user_data;
+};
+typedef struct cogui_widget cogui_widget_t;
 
 /*---------------------------- window ----------------------------------------*/
 enum guiWinFlag
@@ -377,11 +377,11 @@ typedef struct window
     cogui_widget_t *_titleWgt;
 
     /* call back */
-    StatusType (*onActivate)(cogui_widget_t * widget, struct GuiEvent *event);
-    StatusType (*onDeactivate)(cogui_widget_t * widget, struct GuiEvent *event);
-    StatusType (*onClose)(cogui_widget_t * widget, struct GuiEvent *event);
+    StatusType (*onActivate)(cogui_widget_t * widget, struct cogui_event *event);
+    StatusType (*onDeactivate)(cogui_widget_t * widget, struct cogui_event *event);
+    StatusType (*onClose)(cogui_widget_t * widget, struct cogui_event *event);
 
-    StatusType (*onKey)(cogui_widget_t * widget, struct GuiEvent *event);
+    StatusType (*onKey)(cogui_widget_t * widget, struct cogui_event *event);
 
     /* reserved user data */
     void *userData;
@@ -423,7 +423,7 @@ typedef struct GuiContainer
 {
     cogui_widget_t *parent;
 
-    StatusType (*handler)(struct GuiEvent *event);
+    StatusType (*handler)(struct cogui_event *event);
 
     /* layout box */
     P_GuiBox layoutBox;
@@ -432,4 +432,4 @@ typedef struct GuiContainer
 
 }GuiContainer,*P_GuiContainer;
 
-#endif /* _GUI_DEF_H */
+#endif /* _COGUI_DEF_H */

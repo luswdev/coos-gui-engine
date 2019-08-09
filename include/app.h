@@ -7,8 +7,8 @@
  *******************************************************************************
  */ 
 
-#ifndef _GUI_APP_H
-#define _GUI_APP_H
+#ifndef _COGUI_APP_H
+#define _COGUI_APP_H
 
 /*---------------------------- Include ---------------------------------------*/
 #include <CoOS.h>
@@ -33,4 +33,4 @@ void cogui_app_sleep(cogui_app_t *app, U32 sleepTick);
 
 cogui_app_t *cogui_app_self(void);
 
-#endif /* _GUI_APP_H */
+#endif /* _COGUI_APP_H */
