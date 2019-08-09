@@ -494,7 +494,7 @@ cogui_widget_t *cogui_widget_get_next_sibling(cogui_widget_t *widget)
     return sibling;
 }
 
-cogui_widget_t * WidgetGetPrevSibling(cogui_widget_t *widget)
+cogui_widget_t *cogui_widget_get_prev_sibling(cogui_widget_t *widget)
 {
     cogui_widget_t * sibling;
 
