@@ -9,22 +9,22 @@
 
 #include "../include/cogui.h"
 
-static void DcBufferDrawPoint(cogui_dc_t *dc, S32 x, S32 y);
-static void DcBufferDrawColorPoint(cogui_dc_t *dc, S32 x, S32 y, cogui_color_t color);
-static void DcBufferDrawVline(cogui_dc_t *dc, S32 x, S32 y1, S32 y2);
-static void DcBufferDrawHline(cogui_dc_t *dc, S32 x1, S32 x2, S32 y);
-static void DcBufferFillRect(cogui_dc_t *dc, P_GuiRect rect);
+static void cogui_dc_buffer_draw_point(cogui_dc_t *dc, S32 x, S32 y);
+static void coggui_dc_buffer_draw_color_point(cogui_dc_t *dc, S32 x, S32 y, cogui_color_t color);
+static void cogui_dc_buffer_draw_vline(cogui_dc_t *dc, S32 x, S32 y1, S32 y2);
+static void cogui_dc_buffer_draw_hline(cogui_dc_t *dc, S32 x1, S32 x2, S32 y);
+static void cogui_dc_buffer_fill_rect(cogui_dc_t *dc, P_GuiRect rect);
 
-static StatusType DcBufferFini(cogui_dc_t *dc);
+static StatusType cogui_dc_buffer_fini(cogui_dc_t *dc);
 
-const GuiDcEng dcBufferEngine =
+const cogui_dc_engine cogui_dc_buffer_engine =
 {
-    DcBufferDrawPoint,
-    DcBufferDrawColorPoint,
-    DcBufferDrawVline,
-    DcBufferDrawHline,
-    DcBufferFillRect,
+    cogui_dc_buffer_draw_point,
+    coggui_dc_buffer_draw_color_point,
+    cogui_dc_buffer_draw_vline,
+    cogui_dc_buffer_draw_hline,
+    cogui_dc_buffer_fill_rect,
 
-    DcBufferFini,
+    cogui_dc_buffer_fini,
 };
 

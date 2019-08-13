@@ -24,7 +24,6 @@ struct cogui_dc;
  *******************************************************************************
  */
 
-typedef U64 cogui_color_t;
 typedef StatusType  (*event_handler_ptr)(struct cogui_widget *widget, struct cogui_event *event);
 
 
@@ -80,7 +79,6 @@ struct cogui_region
 {
     cogui_rect_t extent;
     cogui_region_data_t *data;
-
 };
 typedef struct cogui_region cogui_region_t;
 

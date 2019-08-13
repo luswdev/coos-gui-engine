@@ -9,8 +9,8 @@
 
 #include "../include/cogui.h"
 
-const cogui_color_t default_foreground = 0xFFFF;
-const cogui_color_t default_background = 0x0000;
+const cogui_color_t default_foreground = COGUI_GREEN;
+const cogui_color_t default_background = COGUI_BLACK;
 
 void _cogui_widget_init(cogui_widget_t *widget)
 {

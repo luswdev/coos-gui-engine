@@ -12,6 +12,7 @@
 
 #include "stdio.h"
 
+#include "color.h"
 #include "cogui_def.h"
 #include "system.h"
 #include "region.h"

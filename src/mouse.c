@@ -11,7 +11,9 @@
 
 struct cogui_cursor *_cursor;
 
-void cogui_mouse_init();
+void _cogui_mouse_init()
+{
+}
 
 void cogui_mouse_set_pos(S32 x, S32 y)
 {

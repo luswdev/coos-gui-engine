@@ -2,7 +2,7 @@
  *******************************************************************************
  * @file       region.h
  * @version    V0.0.1   
- * @date       2019.5.27
+ * @date       2019.8.10
  * @brief      This is a file for GUI region.	
  *******************************************************************************
  */ 
@@ -13,33 +13,22 @@
 #include <coocox.h>
 #include "cogui.h"
 
-/* true iff Box r1 contains Box r2 */
-#define SUBSUMES(r1,r2) \
-      ( ((r1)->x1 <= (r2)->x1) && \
-        ((r1)->x2 >= (r2)->x2) && \
-        ((r1)->y1 <= (r2)->y1) && \
-        ((r1)->y2 >= (r2)->y2) )
+#define free_region_data(reg)               \
+    if((reg)->data && (reg)->data->size)    \
+        cogui_free((reg)->data);            \
 
-#define GUI_MIN(a,b) ((a) < (b) ? (a) : (b))
-#define GUI_MAX(a,b) ((a) > (b) ? (a) : (b))
+enum cogui_region_status
+{
+    COGUI_REGION_STATUS_SUCCESS,
+    COGUI_REGION_STATUS_FAILURE
+};
 
-/*---------------------------- Function Define -------------------------------*/
-static StatusType RegionBreak(cogui_region_t *region);
-StatusType RegionCopy(cogui_region_t *dest, cogui_region_t *src);
+void cogui_region_init(cogui_region_t *region);
+void cogui_region_init_rect(cogui_region_t *region, S32 x, S32 y, U32 width, U32 height);
+void cogui_region_init_extent(cogui_region_t *region, const cogui_rect_t *extent);
+void cogui_region_fini(cogui_region_t *region);
 
-void RegionInitWithExtents(cogui_region_t *region, cogui_rect_t *extents);
+enum cogui_region_status cogui_region_copy(cogui_region_t *dest, cogui_region_t *src);
 
-void RegionReset(cogui_region_t *region, cogui_rect_t *rect);
-
-void RectIntersect(cogui_rect_t *src, cogui_rect_t *dest);
-StatusType RegionIntersectRect(cogui_region_t *newReg,cogui_region_t *reg1, cogui_rect_t *rect);
-
-StatusType RegionUnion(cogui_region_t *newReg, cogui_region_t *reg1, cogui_region_t *reg2);
-
-StatusType RegionSubtract(cogui_region_t *regD, cogui_region_t *regM, cogui_region_t *regS);
-StatusType RegionSubtractRect(cogui_region_t *regD, cogui_region_t *regM, cogui_rect_t *rect);
-
-void RectMove(cogui_rect_t *rect, S32 x, S32 y);
-void RectInflate(cogui_rect_t *rect, S32 d);
 
 #endif /* _COGUI_REGION_H */

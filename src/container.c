@@ -9,23 +9,18 @@
 
 #include "../include/cogui.h"
 
-void _InitContainer(P_GuiContainer container)
+void _cogui_container_init(cogui_container_t *container)
 {
-    container->handler = ContainerEventHandler;
-
-    container->children.next = 0;
-    container->layoutBox = Co_NULL;
-
-    (P_GuiWidget)container->flag |= GUI_WIDGET_FLAG_FOCUSABLE;
 }
 
-P_GuiContainer ContainerCreate(void)
+cogui_container_t *cogui_container_create(void)
 {
-    P_GuiContainer container;
-
 }
 
-void ContainerDele(P_GuiContainer container)
+void cogui_container_delete(cogui_container_t *container)
 {
+}
 
+StatusType cogui_container_event_handler(cogui_widget_t *widget, struct cogui_event *event)
+{
 }
