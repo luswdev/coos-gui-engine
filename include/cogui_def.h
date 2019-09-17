@@ -59,11 +59,11 @@ typedef struct cogui_slist_node cogui_slist_t;
 /**
  * rectangle
  */
-struct cogui_rect_t
+struct cogui_rect
 {
     S16 x1, x2, y1, y2;
 };
-typedef struct cogui_rect_t cogui_rect_t;
+typedef struct cogui_rect cogui_rect_t;
 
 /**
  * region

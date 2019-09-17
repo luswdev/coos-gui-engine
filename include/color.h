@@ -59,6 +59,7 @@ typedef U64 cogui_color_t;
 #define COGUI_YELLOW            COGUI_RGB(0xfb, 0xc0, 0x2d)
 #define COGUI_PURPLE            COGUI_RGB(0x51, 0x35, 0xb1)
 #define COGUI_CYAN              COGUI_RGB(0x26, 0xc6, 0xda)
+#define COGUI_HIGH_LIGHT        COGUI_RGB(0xf5, 0xf5, 0xf5)
 #define COGUI_LIGHT_GRAY        COGUI_RGB(0x9e, 0x9e, 0x9e)
 #define COGUI_DARK_GRAY         COGUI_RGB(0x42, 0x42, 0x42)
 #define COGUI_WHITE             COGUI_RGB(0xff, 0xff, 0xff)

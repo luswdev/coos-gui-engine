@@ -30,5 +30,7 @@ void cogui_region_fini(cogui_region_t *region);
 
 enum cogui_region_status cogui_region_copy(cogui_region_t *dest, cogui_region_t *src);
 
+void cogui_rect_inflate(cogui_rect_t *rect, S32 d);
+
 
 #endif /* _COGUI_REGION_H */

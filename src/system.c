@@ -1,17 +1,19 @@
 /**
  *******************************************************************************
  * @file       system.c
- * @version    V0.1.0   
- * @date       2019.8.9
+ * @version    V0.1.1   
+ * @date       2019.9.17
  * @brief      Some system function for GUI engine.	
  *******************************************************************************
  */ 
 
 #include "../include/cogui.h"
+#include "../include/screen.h"
 
 void cogui_system_init(void *par)
 {
     cogui_server_init();
+    init_screen_list();
 
     return;
 }

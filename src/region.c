@@ -32,7 +32,7 @@ void cogui_region_init_rect(cogui_region_t *region, S32 x, S32 y, U32 width, U32
 
 void cogui_region_init_extent(cogui_region_t *region, const cogui_rect_t *extent)
 {
-    region->extent = extent;
+    region->extent = *extent;
     region->data   = Co_NULL;
 }
 
@@ -58,7 +58,7 @@ enum cogui_region_status cogui_region_copy(cogui_region_t *dest, cogui_region_t 
     COGUI_ASSERT(src);
     COGUI_ASSERT(dest);
 
-    if (dest = src)
+    if (dest == src)
         return COGUI_REGION_STATUS_SUCCESS;
 
     dest->extent = src->extent;
@@ -71,7 +71,7 @@ enum cogui_region_status cogui_region_copy(cogui_region_t *dest, cogui_region_t 
     if (!dest->data || (dest->data->size < src->data->num_rects)) {
         free_region_data(dest);
 
-        dest->data = cogui_malloc(sizeof(cogui_region_t) + (num_rects)*sizeof(cogui_rect_t));
+        dest->data = cogui_malloc(sizeof(cogui_region_t) + (src->data->num_rects)*sizeof(cogui_rect_t));
         if (!dest->data)
             return cogui_region_break(dest);
 
@@ -82,4 +82,12 @@ enum cogui_region_status cogui_region_copy(cogui_region_t *dest, cogui_region_t 
     //memmove
 
     return COGUI_REGION_STATUS_SUCCESS;
+}
+
+void cogui_rect_inflate(cogui_rect_t *rect, S32 d)
+{
+    rect->x1 -= d;
+    rect->x2 += d;
+    rect->y1 -= d;
+    rect->y2 += d;
 }

@@ -57,7 +57,7 @@ void cogui_dc_draw_shaded_rect(cogui_dc_t *dc, cogui_rect_t *rect, cogui_color_t
 	
 	COGUI_DC_FC(dc) = c2;
 	dc->engine->draw_vline(dc, rect->x2-1, rect->y1, rect->y2);
-	dc->engine->draw_hline(dc, rect->x1, rect->y1, rect->y2-1);
+	dc->engine->draw_hline(dc, rect->x1, rect->x2, rect->y2-1);
 }
 
 void cogui_dc_fill_rect_forecolor(cogui_dc_t *dc, cogui_rect_t *rect)
@@ -88,22 +88,37 @@ void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect, int flag)
 	r = *rect;
 	switch(flag)
 	{
+        case COGUI_BORDER_STATIC:
+            cogui_dc_draw_shaded_rect(dc, &r, COGUI_LIGHT_GRAY, COGUI_DARK_GRAY);
+			break;
+
 		case COGUI_BORDER_SIMPLE:
-			COGUI_DC_FC(dc) = 0xFFFF;
+			COGUI_DC_FC(dc) = COGUI_LIGHT_GRAY;
 			cogui_dc_draw_rect(dc, &r);
 			break;
+
 		case COGUI_BORDER_EXTRA:
-			COGUI_DC_FC(dc) = 0xF7DE;
+			COGUI_DC_FC(dc) = COGUI_WHITE;
 			cogui_dc_draw_rect(dc, &r);
 			break;
-		case COGUI_BORDER_SUNKEN:
+
+        case COGUI_BORDER_SUNKEN:
+            cogui_dc_draw_shaded_rect(dc, &r, COGUI_DARK_GRAY, COGUI_HIGH_LIGHT);
+            cogui_rect_inflate(&r, -1);
+            cogui_dc_draw_shaded_rect(dc, &r, COGUI_LIGHT_GRAY, COGUI_LIGHT_GRAY);
+			break;
+
+		case COGUI_BORDER_RAISE:
+            cogui_dc_draw_shaded_rect(dc, &r, COGUI_WHITE, COGUI_DARK_GRAY);
+            cogui_rect_inflate(&r, -1);
+            cogui_dc_draw_shaded_rect(dc, &r, COGUI_HIGH_LIGHT, COGUI_WHITE);
 			break;
 		case COGUI_BORDER_BOX:
+            cogui_dc_draw_shaded_rect(dc, &r, COGUI_HIGH_LIGHT, COGUI_DARK_GRAY);
+            cogui_rect_inflate(&r, -1);
+            cogui_dc_draw_shaded_rect(dc, &r, COGUI_DARK_GRAY, COGUI_HIGH_LIGHT);
 			break;
-		case COGUI_BORDER_STATIC:
-			break;
-		case COGUI_BORDER_RAISE:
-			break;
+		
 		default:
 			break;
 	}
@@ -134,4 +149,22 @@ struct cogui_gc *cogui_dc_get_gc(cogui_dc_t *dc)
 	}
 	
 	return gc;
+}
+
+cogui_dc_t *cogui_dc_begin_drawing(cogui_widget_t *owner)
+{
+    cogui_dc_t *dc;
+
+    COGUI_ASSERT(owner != Co_NULL);
+
+    dc = cogui_dc_hw_create(owner);
+
+    return dc;
+}
+
+void cogui_dc_end_drawing(cogui_dc_t *dc)
+{
+    COGUI_ASSERT(dc != Co_NULL);
+
+    dc->engine->fini(dc);
 }

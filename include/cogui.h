@@ -12,6 +12,8 @@
 
 #include "stdio.h"
 
+#include "cogui_config.h"
+
 #include "color.h"
 #include "cogui_def.h"
 #include "system.h"

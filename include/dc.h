@@ -37,5 +37,7 @@ void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect, int flag);
 
 struct cogui_gc *cogui_dc_get_gc(cogui_dc_t *dc);
 
+cogui_dc_t *cogui_dc_begin_drawing(cogui_widget_t *owner);
+void cogui_dc_end_drawing(cogui_dc_t *dc);
 
 #endif /* _COGUI_DC_H */
