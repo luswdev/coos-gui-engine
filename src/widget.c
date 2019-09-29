@@ -30,6 +30,8 @@ static void _cogui_widget_init(cogui_widget_t *widget)
 
     widget->handler = cogui_widget_event_handler;
 
+    widget->flag = 0;
+
     widget->user_data = 0;
 }
 
@@ -266,14 +268,10 @@ void cogui_widget_show(cogui_widget_t *widget)
 
     widget->flag |= COGUI_WIDGET_FLAG_SHOWN;
 
-    if (widget->top_level != Co_NULL) {
-        // update clip
+    COGUI_EVENT_INIT(&event, COGUI_EVENT_WIDGET_SHOW);
 
-        COGUI_EVENT_INIT(&event, COGUI_EVENT_WIN_SHOW);
-
-        if (widget->handler != Co_NULL)
-            widget->handler(widget, &event);
-    }
+    if (widget->handler != Co_NULL)
+        widget->handler(widget, &event);
 }
 
 void cogui_widget_hide(cogui_widget_t *widget)
@@ -284,21 +282,21 @@ void cogui_widget_hide(cogui_widget_t *widget)
     if (!(widget->flag & COGUI_WIDGET_FLAG_SHOWN))
         return;
 
-    if (widget->top_level != Co_NULL) {
-        COGUI_EVENT_INIT(&event, COGUI_EVENT_WIN_HIDE);
-
-        if (widget->handler != Co_NULL)
-            widget->handler(widget, &event);
-    }
-
     widget->flag &= ~COGUI_WIDGET_FLAG_SHOWN;
+
+    COGUI_EVENT_INIT(&event, COGUI_EVENT_WIDGET_HIDE);
+
+    if (widget->handler != Co_NULL)
+        widget->handler(widget, &event);
 }
 
 StatusType cogui_widget_onshow(cogui_widget_t *widget, struct cogui_event *event)
 {
-    //if (!(widget->flag & COGUI_WIDGET_FLAG_SHOWN))
-        //return Co_FALSE;
-    
+    if (!(widget->flag & COGUI_WIDGET_FLAG_SHOWN)){
+        printf("no need to show\r\n");
+        return Co_FALSE;
+    }
+        
     cogui_screen_t *my_node = cogui_get_screen_node(widget->screen_node_id);
     COGUI_ENABLE_SCREEN_NODE(my_node);
     cogui_widget_focus(widget);
@@ -313,8 +311,8 @@ StatusType cogui_widget_onshow(cogui_widget_t *widget, struct cogui_event *event
 
 StatusType cogui_widget_onhide(cogui_widget_t *widget, struct cogui_event *event)
 {
-    //if (widget->flag & COGUI_WIDGET_FLAG_SHOWN)
-        //return Co_FALSE;
+    if (widget->flag & COGUI_WIDGET_FLAG_SHOWN)
+        return Co_FALSE;
 
     cogui_screen_t *my_node = cogui_get_screen_node(widget->screen_node_id);
     COGUI_DISABLE_SCREEN_NODE(my_node);
@@ -333,6 +331,17 @@ StatusType cogui_widget_event_handler(cogui_widget_t *widget, struct cogui_event
 {
     COGUI_ASSERT(widget != Co_NULL);
     COGUI_ASSERT(event != Co_NULL);
+
+    switch (event->type)
+    {
+    case COGUI_EVENT_WIDGET_SHOW:
+        cogui_widget_onshow(widget, event);
+        break;
+
+     case COGUI_EVENT_WIDGET_HIDE:
+        cogui_widget_onhide(widget, event);
+        break;
+    }
 
 	return Co_FALSE;
 }

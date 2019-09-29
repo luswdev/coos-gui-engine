@@ -12,10 +12,13 @@
 
 void cogui_system_init(void *par)
 {
-    cogui_server_init();
-    //cogui_screen_list_init();
+    printf("initial screen list...\r\n");
+    cogui_screen_list_init();
 
-    return;
+    printf("starting server...\r\n");
+    cogui_server_init();
+
+    printf("end of initial.\r\n");
 }
 
 void *cogui_malloc(U32 size)
@@ -81,11 +84,11 @@ StatusType cogui_send(cogui_app_t *app, struct cogui_event *event)
 struct cogui_event *cogui_recv(OS_EventID mq, StatusType *result)
 {
     struct cogui_event * event;
-    //cogui_app_t *app;
+    cogui_app_t *app;
 
-    //app = TCBTbl[CoGetCurTaskID()].userData;
+    app = TCBTbl[CoGetCurTaskID()].userData;
 
-    COGUI_ASSERT(event != Co_NULL);
+    COGUI_ASSERT(app != Co_NULL);
 
     event = CoPendMail(mq, 50,result);
 

@@ -85,11 +85,6 @@ void cogui_screen_list_insert(cogui_screen_t *node)
     COGUI_GET_LIST_NEXT((cogui_screen_t *)COGUI_GET_LIST_PREV(screen_list)) = COGUI_LIST(node);
     COGUI_GET_LIST_PREV(screen_list) = COGUI_LIST(node);
 
-    /* if this node is disabled, enable it */
-    if (!COGUI_SCREEN_NODE_IS_ENABLE(node)){
-         COGUI_ENABLE_SCREEN_NODE(node);
-    }
-
     cogui_screen_refresh();
 }
 
@@ -168,11 +163,6 @@ void cogui_screen_node_update(S32 id, cogui_screen_t *update_data)
     }
     else if (COGUI_SCREEN_NODE_IS_TRIANGLE(screen_node)) {
         //COGUI_SCREEN_NODE_TRIANGLE(screen_node)  = COGUI_SCREEN_NODE_TRIANGLE(update_data);
-    }
-
-    /* if this node is disabled, enable it */
-    if (!COGUI_SCREEN_NODE_IS_ENABLE(screen_node)){
-         COGUI_ENABLE_SCREEN_NODE(screen_node);
     }
 
     /* pop the node and insert to rear */

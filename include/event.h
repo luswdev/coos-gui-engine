@@ -20,6 +20,10 @@ enum cogui_event_type
     COGUI_EVENT_APP_DELE,
     COGUI_EVENT_APP_ACTIVATE,
 
+    /* widget event */
+    COGUI_EVENT_WIDGET_SHOW,    
+    COGUI_EVENT_WIDGET_HIDE,
+
     /* window event */
     COGUI_EVENT_WIN_CREATE,
     COGUI_EVENT_WIN_DELE,

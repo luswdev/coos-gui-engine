@@ -120,6 +120,7 @@ void cogui_server_entry(void *parameter)
 
     server_app->handler = cogui_server_event_handler;
 
+    printf("starting server app...\r\n");
     cogui_app_run(server_app);
 
     cogui_app_delete(server_app);
