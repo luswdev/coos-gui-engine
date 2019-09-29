@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       cogui.h
- * @version    V0.0.1   
- * @date       2019.5.27
+ * @version    V0.1.0  
+ * @date       2019.9.29
  * @brief      This is a file for GUI engine.	
  *******************************************************************************
  */ 
@@ -10,23 +10,43 @@
 #ifndef _COGUI_H
 #define _COGUI_H
 
+/* standard library */
 #include "stdio.h"
 
+/* CooCox CoOS library */
+#include "coocox.h"
+
+/* configuation */
 #include "cogui_config.h"
 
-#include "color.h"
-#include "cogui_def.h"
-#include "system.h"
-#include "region.h"
-#include "app.h"
-#include "server.h"
+/* widget */
 #include "widget.h"
+
+/* application */
+#include "app.h"
+
+/* system define */
+#include "system.h"
+
+/* darwing */
+#include "color.h"
+#include "region.h"
+#include "driver.h"
+#include "dc.h"
+#include "screen.h"
+
+/* server */
+#include "server.h"
+
+/* window */
 #include "window.h"
 #include "topwin.h"
 #include "container.h"
-#include "dc.h"
-#include "driver.h"
+
+/* event */
 #include "event.h"
+
+/* in/output */
 #include "mouse.h"
 #include "kbddef.h"
 

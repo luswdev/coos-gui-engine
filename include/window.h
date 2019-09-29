@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       window.h
- * @version    V0.0.1   
- * @date       2019.5.23
+ * @version    V0.0.2  
+ * @date       2019.9.29
  * @brief      Some system function for GUI engine's event.	
  *******************************************************************************
  */ 
@@ -27,6 +27,85 @@
 #define COWINTITLE_CB_WIDTH       16
 #define COWINTITLE_CB_HEIGHT      16
 #define COWINTITLE_BORDER_SIZE    2
+
+enum cogui_win_flag
+{
+    COGUI_WIN_FLAG_INIT        = 0x00,  /* init state              */
+    COGUI_WIN_FLAG_MODAL       = 0x01,  /* modal mode window       */
+    COGUI_WIN_FLAG_CLOSED      = 0x02,  /* window is closed        */
+    COGUI_WIN_FLAG_ACTIVATE    = 0x04,  /* window is activated     */
+    COGUI_WIN_FLAG_UNDER_MODAL = 0x08,  /* window is under modal
+                                           show(modaled by other)  */
+    COGUI_WIN_FLAG_CONNECTED   = 0x10,  /* connected to server */
+    /* window is event_key dispatcher(dispatch it to the focused widget in
+     * current window) _and_ a key handler(it should be able to handle keys
+     * such as ESC). Both of dispatching and handling are in the same
+     * function(rtgui_win_event_handler). So we have to distinguish between the
+     * two modes.
+     *
+     * If this flag is set, we are in key-handling mode.
+     */
+    COGUI_WIN_FLAG_HANDLE_KEY  = 0x20,
+
+    COGUI_WIN_FLAG_CB_PRESSED  = 0x40,
+};
+
+struct cogui_window
+{
+    struct GuiContainer *parent;
+
+    /* update count */
+    S64 update;
+
+    /* drawing count */
+    S64 drawing;
+    cogui_rect_t drawing_rect;
+
+    /* parent window. Co_NULL if the window is a top level window */
+    struct cogui_window *parent_window;
+
+    cogui_region_t outer_clip;
+    cogui_rect_t outer_extent;
+
+    cogui_widget_t *focus_widget;
+
+    /* which app I belong */
+    cogui_app_t *app;
+
+    /* window style */
+    U16 style;
+
+    /* window state flag */
+    enum cogui_win_flag flag;
+
+    /* last mouse event handled widget */
+    cogui_widget_t *last_mouse_event_widget;
+
+    /* window title */
+    U8 *title;
+    cogui_widget_t *_title_wgt;
+
+    /* call back */
+    StatusType (*on_activate)(cogui_widget_t * widget, struct cogui_event *event);
+    StatusType (*on_deactivate)(cogui_widget_t * widget, struct cogui_event *event);
+    StatusType (*on_close)(cogui_widget_t * widget, struct cogui_event *event);
+
+    StatusType (*on_key)(cogui_widget_t * widget, struct cogui_event *event);
+
+    /* reserved user data */
+    void *user_data;
+
+    /* Private data */
+    S64 (*_do_show)(struct cogui_window *win);
+
+    /* app ref_count */
+    U16 app_ref_cnt;
+
+    /* win magic flag, magic value is 0xA5A55A5A */
+    U32	magic;
+};
+typedef struct cogui_window cogui_window_t;
+
 
 cogui_window_t *WinCreate(cogui_window_t *parentWindow, U8 *title, cogui_rect_t *rect, U16 style);
 void WinDele(cogui_window_t *win);

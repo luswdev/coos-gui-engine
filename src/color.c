@@ -1,6 +1,6 @@
 /**
  *******************************************************************************
- * @file       app.c
+ * @file       color.c
  * @version    V0.0.2 
  * @date       2019.8.9
  * @brief      This is a file for GUI engine's color.

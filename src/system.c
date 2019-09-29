@@ -13,7 +13,7 @@
 void cogui_system_init(void *par)
 {
     cogui_server_init();
-    init_screen_list();
+    //cogui_screen_list_init();
 
     return;
 }
@@ -23,7 +23,10 @@ void *cogui_malloc(U32 size)
     void *ptr;
     
     ptr = CoKmalloc(size);
-
+	if(ptr == Co_NULL){
+		printf("out of memory\r\n");
+	}
+	
     return ptr;
 }
 
@@ -78,9 +81,9 @@ StatusType cogui_send(cogui_app_t *app, struct cogui_event *event)
 struct cogui_event *cogui_recv(OS_EventID mq, StatusType *result)
 {
     struct cogui_event * event;
-    cogui_app_t *app;
+    //cogui_app_t *app;
 
-    app = TCBTbl[CoGetCurTaskID()].userData;
+    //app = TCBTbl[CoGetCurTaskID()].userData;
 
     COGUI_ASSERT(event != Co_NULL);
 

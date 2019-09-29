@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       app.h
- * @version    V0.0.2  
- * @date       2019.8.9
+ * @version    V0.1.0  
+ * @date       2019.9.29
  * @brief      This is a file for GUI engine's app.	
  *******************************************************************************
  */ 
@@ -14,8 +14,41 @@
 #include <OsTime.h>
 #include <OsTask.h>
 
+struct cogui_event;
+
 extern OSTCB    TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
 extern ECB      EventTbl[CFG_MAX_EVENT]; 
+
+#define COGUI_APP_FLAG_EXITED  0x04
+#define COGUI_APP_FLAG_SHOWN   0x08
+#define COGUI_APP_FLAG_KEEP    0x80
+
+
+struct cogui_app
+{
+    U8      id;
+    char   *name;
+
+    U32 flag;
+
+    U16     ref_cnt;
+    U16     exit_code;
+
+    /* Task id */
+    OS_TID tid;
+    /* Message queue */
+    OS_EventID   mq;
+
+    U32     win_cnt;
+    /* window activate count */
+    U32     win_acti_cnt;
+
+    /* the event handler */
+    StatusType (*handler)(struct cogui_event *event);
+
+    void    *user_data;
+};
+typedef struct cogui_app cogui_app_t;
 
 cogui_app_t *cogui_app_create(char *name);
 void _cogui_app_init(cogui_app_t *app);

@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       region.h
- * @version    V0.0.1   
- * @date       2019.8.10
+ * @version    V0.0.2   
+ * @date       2019.9.29
  * @brief      This is a file for GUI region.	
  *******************************************************************************
  */ 
@@ -22,6 +22,32 @@ enum cogui_region_status
     COGUI_REGION_STATUS_SUCCESS,
     COGUI_REGION_STATUS_FAILURE
 };
+
+/**
+ * rectangle
+ */
+struct cogui_rect
+{
+    S16 x1, x2, y1, y2;
+};
+typedef struct cogui_rect cogui_rect_t;
+
+/**
+ * region
+ */
+struct cogui_region_data
+{
+    U32 size;
+    U32 num_rects;
+};
+typedef struct cogui_region_data cogui_region_data_t;
+
+struct cogui_region
+{
+    cogui_rect_t extent;
+    cogui_region_data_t *data;
+};
+typedef struct cogui_region cogui_region_t;
 
 void cogui_region_init(cogui_region_t *region);
 void cogui_region_init_rect(cogui_region_t *region, S32 x, S32 y, U32 width, U32 height);

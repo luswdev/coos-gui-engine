@@ -1,14 +1,16 @@
 /**
  *******************************************************************************
  * @file       system.h
- * @version    V0.0.2
- * @date       2019.8.9
+ * @version    V0.0.3
+ * @date       2019.9.29
  * @brief      This is a file for GUI engine.	
  *******************************************************************************
  */ 
 
 #ifndef _COGUI_SYSTEM_H
 #define _COGUI_SYSTEM_H
+
+#include "app.h"
 
 #include <coocox.h>
 #include <CoOS.h>
@@ -32,7 +34,55 @@ if(!(EX)){											    \
 #define COGUI_GET_LIST_PREV(l)  ((l)->list.prev)
 #define COGUI_GET_SLIST_NEXT(l) ((l)->slist.next)
 
+#define COGUI_LIST(s) (struct list_node *)(s)
+
 extern OSTCB TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
+
+/**
+ * double linked list
+ */
+struct cogui_list_node
+{
+    struct list_node *prev;
+    struct list_node *next;
+};
+typedef struct cogui_list_node cogui_list_t;
+
+/**
+ * single linked list
+ */
+struct cogui_slist_node
+{
+    struct cogui_slist_node *next;
+};
+typedef struct cogui_slist_node cogui_slist_t;
+
+/**
+ * 2D point
+ */
+struct cogui_point
+{
+    S16 x, y;
+};
+typedef struct cogui_point cogui_point_t;
+
+/**
+ * Border style
+ */
+enum cogui_border_style
+{
+    COGUI_BORDER_NONE = 0,
+    COGUI_BORDER_SIMPLE,
+    COGUI_BORDER_RAISE,
+    COGUI_BORDER_SUNKEN,
+    COGUI_BORDER_BOX,
+    COGUI_BORDER_STATIC,
+    COGUI_BORDER_EXTRA,
+    COGUI_BORDER_UP,
+    COGUI_BORDER_DOWN
+};
+#define COGUI_BORDER_DEFAULT_WIDTH  2
+#define COGUI_WIDGET_DEFAULT_MARGIN 3
 
 void cogui_system_init(void *par);
 

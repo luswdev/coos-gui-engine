@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       widget.c
- * @version    V0.0.2  
- * @date       2019.8.9
+ * @version    V0.1.0  
+ * @date       2019.9.29
  * @brief      Some widget function for GUI engine's event.	
  *******************************************************************************
  */ 
@@ -12,14 +12,17 @@
 extern const cogui_color_t default_foreground;
 extern const cogui_color_t default_background;
 
-void _cogui_widget_init(cogui_widget_t *widget)
+static void _cogui_widget_init(cogui_widget_t *widget)
 {
+    /* set default fore/background */
 	widget->gc.foreground = default_foreground;
 	widget->gc.background = default_background;
 	
+    /* initial parent and top level */
     widget->parent   = Co_NULL;
     widget->top_level = Co_NULL;
 
+    /* set size equal to 0 */
     widget->min_width = widget->min_height = 0;
 
     widget->on_focus_in  = Co_NULL;
@@ -48,58 +51,50 @@ void cogui_widget_delete(cogui_widget_t *widget)
     cogui_free(widget);
 }
 
-void WidgetSetFocus(cogui_widget_t *widget, event_handler_ptr handler)
+void cogui_widget_set_focus(cogui_widget_t *widget, event_handler_ptr handler)
 {
     COGUI_ASSERT(widget != Co_NULL);
 
     widget->on_focus_in = handler;
 }
 
-void WidgetSetUnFocus(cogui_widget_t *widget, event_handler_ptr handler)
+void cogui_widget_set_unfocus(cogui_widget_t *widget, event_handler_ptr handler)
 {
     COGUI_ASSERT(widget != Co_NULL);
     
     widget->on_focus_out = handler;
 }
 
-void WidgetFocus(cogui_widget_t *widget)
+void cogui_widget_focus(cogui_widget_t *widget)
 {
-    cogui_widget_t *old_focus;
-
     COGUI_ASSERT(widget != Co_NULL);
-    COGUI_ASSERT(widget->top_level != Co_NULL);
-
-    if (!(widget->flag & COGUI_WIDGET_FLAG_FOCUSABLE) || 
-       (widget->flag & COGUI_WIDGET_FLAG_DISABLE))
-        return;
-
-    old_focus = widget->top_level->focus_widget;
-    if (old_focus == widget)
-	    return;
-
-    if (old_focus != Co_NULL)
-        cogui_widget_unfocus(old_focus);
 
     widget->flag |= COGUI_WIDGET_FLAG_FOCUS;
-    widget->top_level->focus_widget = widget;
 
-    if (widget->on_focus_in != Co_NULL)
-        widget->on_focus_in(widget, Co_NULL);
+    cogui_screen_t *my_node = cogui_get_screen_node(widget->screen_node_id);
+
+    COGUI_ASSERT(my_node != Co_NULL);
+
+    /* put this node into last of the list */
+    cogui_screen_list_pop(widget->screen_node_id);
+    cogui_screen_list_insert(my_node);
 }
 
 void cogui_widget_unfocus(cogui_widget_t *widget)
 {
     COGUI_ASSERT(widget != Co_NULL);
 
-    if (!widget->top_level || !(widget->flag & COGUI_WIDGET_FLAG_FOCUS))
-	    return;
-
     widget->flag &= ~COGUI_WIDGET_FLAG_FOCUS;
 
-    if (widget->on_focus_out != Co_NULL)
-        widget->on_focus_out(widget, Co_NULL);
+    cogui_screen_t *my_node = cogui_get_screen_node(widget->screen_node_id);
+    cogui_screen_t *new_focus = (cogui_screen_t *)COGUI_GET_LIST_PREV(my_node);
 
-    widget->top_level->focus_widget = Co_NULL;
+    COGUI_ASSERT(my_node != Co_NULL);
+    COGUI_ASSERT(new_focus != Co_NULL);
+
+    /* let new focus node insert into the list of the last */
+    cogui_screen_list_pop(new_focus->node_id);
+    cogui_screen_list_insert(new_focus);
 }
 
 void cogui_widget_get_rect(cogui_widget_t *widget, cogui_rect_t *rect)
@@ -111,6 +106,59 @@ void cogui_widget_get_rect(cogui_widget_t *widget, cogui_rect_t *rect)
         rect->x2 = widget->extent.x2 - widget->extent.x1;
         rect->y2 = widget->extent.y2 - widget->extent.y1;
     }
+}
+
+void cogui_widget_get_extent(cogui_widget_t *widget, cogui_rect_t *rect)
+{
+    COGUI_ASSERT(widget != Co_NULL);
+    COGUI_ASSERT(rect != Co_NULL);
+
+    *rect = widget->extent;
+}
+
+static void cogui_widget_set_rect(cogui_widget_t *widget, cogui_rect_t *rect)
+{
+    if (widget == Co_NULL || rect == Co_NULL)
+	    return;
+
+    widget->extent = *rect;
+
+    widget->min_width  = widget->extent.x2 - widget->extent.x1;
+    widget->min_height = widget->extent.y2 - widget->extent.y1;
+}
+
+void cogui_widget_set_rectangle(cogui_widget_t *widget, S32 x, S32 y, S32 width, S32 height)
+{
+    cogui_rect_t rect;
+
+    rect.x1 = x;
+    rect.x2 = x + width;
+    rect.y1 = y;
+    rect.y2 = y + height;
+
+    cogui_widget_set_rect(widget, &rect);
+}
+
+void cogui_widget_set_minsize(cogui_widget_t *widget, S32 width, S32 height)
+{
+    COGUI_ASSERT(widget != Co_NULL);
+
+    widget->min_width = width;
+    widget->min_height = height;
+}
+
+void cogui_widget_set_minwidth(cogui_widget_t *widget, S32 width)
+{
+    COGUI_ASSERT(widget != Co_NULL);
+
+    widget->min_width = width;
+}
+
+void cogui_widget_set_mingheight(cogui_widget_t *widget, S32 height)
+{
+    COGUI_ASSERT(widget != Co_NULL);
+
+    widget->min_height = height;
 }
 
 void cogui_widget_set_border(cogui_widget_t *widget, U32 style)
@@ -143,189 +191,23 @@ void cogui_widget_set_border(cogui_widget_t *widget, U32 style)
     }
 }
 
-void cogui_widget_set_rect(cogui_widget_t *widget, cogui_rect_t *rect)
+static void _cogui_widget_move(cogui_widget_t *widget, S32 dx, S32 dy)
 {
-    if (widget == Co_NULL || rect == Co_NULL)
-	    return;
-
-    widget->extent = *rect;
-
-    widget->extent_visiable = *rect;
-
-    widget->min_width  = widget->extent.x2 - widget->extent.x1;
-    widget->min_height = widget->extent.y2 - widget->extent.y1;
-
-    // update clip
-}
-
-void cogui_widget_set_rectangle(cogui_widget_t *widget, S32 x, S32 y, S32 width, S32 height)
-{
-    cogui_rect_t rect;
-
-    rect.x1 = x;
-    rect.x2 = x + width;
-    rect.y1 = y;
-    rect.y2 = y + height;
-
-    cogui_widget_set_rect(widget, &rect);
-}
-
-void cogui_widget_get_extent(cogui_widget_t *widget, cogui_rect_t *rect)
-{
-    COGUI_ASSERT(widget != Co_NULL);
-    COGUI_ASSERT(rect != Co_NULL);
-
-    *rect = widget->extent;
-}
-
-void cogui_widget_set_minsize(cogui_widget_t *widget, S32 width, S32 height)
-{
-    COGUI_ASSERT(widget != Co_NULL);
-
-    widget->min_width = width;
-    widget->min_height = height;
-}
-
-void cogui_widget_set_minwidth(cogui_widget_t *widget, S32 width)
-{
-    COGUI_ASSERT(widget != Co_NULL);
-
-    widget->min_width = width;
-}
-
-void cogui_widget_set_mingheight(cogui_widget_t *widget, S32 height)
-{
-    COGUI_ASSERT(widget != Co_NULL);
-
-    widget->min_height = height;
-}
-
-void cogui_widget_update_clip(cogui_widget_t *widget)
-{
-    //GuiRect rect;
-    //P_CoList node;
-    //cogui_widget_t * parent, child;
-
-    /* no widget or widget is hide, no update clip */
-    //if(widget == Co_NULL || !(widget->flag&COGUI_WIDGET_FLAG_SHOWN) || widget->parent == Co_NULL)
-	//{
-    //    return;
-    //}
-
-    //parent = widget->parent;
-    /* reset visiable extent */
-    //widget->extentVisiable = widget->extent;
-    //RectIntersect(&(parent->extentVisiable), &(widget->extentVisiable));
-
-    //rect = parent->extentVisiable;
-    /* reset clip to extent */
-    //RegionReset(&(widget->clip), &(widget->extent));
-    /* limit widget extent in parent extent */
-    //RegionIntersectRect(&(widget->clip), &(widget->clip), &rect);
-
-    /* get the no transparent parent */
-    //while(parent != Co_NULL && parent->flag & COGUI_WIDGET_FLAG_TRANSPARENT)
-	//{
-    //    parent = parent->parent;
-    //}
-    //if(parent != Co_NULL)
-	//{
-    //    /* give my clip back to parent */
-    //    RegionUnion(&(parent->clip), &(parent->clip), &(widget->clip));
-
-    //    /* subtract widget clip in parent clip */
-    //    if(!(widget->flag & COGUI_WIDGET_FLAG_TRANSPARENT) && parent->flag & COGUI_WIDGET_FLAG_IS_CONTAINER)
-	//	{
-    //        RegionSubtractRect(&(parent->clip), &(parent->clip), &(widget->extentVisiable));
-    //    }
-    //}
-
-    /* if it's a container object, update the clip info of children */
-    //if(widget->flag & COGUI_WIDGET_FLAG_IS_CONTAINER)
-	//{
-    //    for(node=&((P_GuiContainer)widget)->children; node!=Co_NULL; node=node->next)
-	//	{
-    //        child = (cogui_widget_t *)(&((cogui_widget_t *)node)->sibling);
-
-    //        WidgetUpdateClip(child);
-    //    }   
-    //}
-}
-
-void _cogui_widget_move(cogui_widget_t *widget, S32 dx, S32 dy)
-{
-//    P_CoList node; 
-//    cogui_widget_t * child, parent;
-
     widget->extent.x1 += dx;
     widget->extent.x2 += dx;
 
     widget->extent.y1 += dy;
     widget->extent.y2 += dy;
 
-    /* handle visiable extent */
-    widget->extent_visiable = widget->extent;
-//    parent = widget->parent;
-
-    /* we should find out the none-transparent parent *
-    while(parent != Co_NULL && parent->flag & COGUI_WIDGET_FLAG_TRANSPARENT)
-	{
-        parent = parent->parent;
-    }
-
-    if(widget->parent)
-	{
-        RectIntersect(&(widget->parent->extentVisiable), &(widget->extentVisiable));
-    }*/
-
-    /* reset clip info *
-    RegionInitWithExtents(&(widget->clip), &(widget->extent));
-
-    if(widget->flag & COGUI_WIDGET_FLAG_IS_CONTAINER)
-	{
-        for(node=&((P_GuiContainer)widget)->children; node!=Co_NULL; node=node->next)
-		{
-            child = (cogui_widget_t *)(&((cogui_widget_t *)node)->sibling);
-
-            _WidgetMove(child, dx, dy);
-        }   
-    }*/
+	cogui_screen_refresh();
 }
 
 void cogui_widget_move_to_logic(cogui_widget_t *widget, S32 dx, S32 dy)
 {
-    //GuiRect rect;
-    cogui_widget_t *parent;
-
     if (widget == Co_NULL)
         return;
-
-    /* give clip of this widget back to parent */
-    parent = widget->parent;
-    if (parent != Co_NULL) {
-        /* get the parent rect, even if it's a transparent parent. */
-        //rect = parent->extentVisiable;
-    }
-
-    /* we should find out the none-transparent parent *
-    while(parent!=Co_NULL && parent->flag & COGUI_WIDGET_FLAG_TRANSPARENT)
-	{
-        parent = parent->parent;
-    }*/
-
-    /*if(parent != Co_NULL)
-    {
-        * reset clip info *
-        RegionInitWithExtents(&(widget->clip), &(widget->extent));
-        RegionIntersectRect(&(widget->clip), &(widget->clip), &rect);
-
-        * give back the extent *
-        RegionUnion(&(parent->clip), &(parent->clip), &(widget->clip));
-    }
-
-    _WidgetMove(widget, dx, dy);*/
-
-    // update clip
+	
+	_cogui_widget_move(widget, dx, dy);
 }
 
 void cogui_widget_point_to_device(cogui_widget_t *widget, cogui_point_t *point)
@@ -414,63 +296,35 @@ void cogui_widget_hide(cogui_widget_t *widget)
 
 StatusType cogui_widget_onshow(cogui_widget_t *widget, struct cogui_event *event)
 {
-    if (!(widget->flag & COGUI_WIDGET_FLAG_SHOWN))
-        return Co_FALSE;
+    //if (!(widget->flag & COGUI_WIDGET_FLAG_SHOWN))
+        //return Co_FALSE;
+    
+    cogui_screen_t *my_node = cogui_get_screen_node(widget->screen_node_id);
+    COGUI_ENABLE_SCREEN_NODE(my_node);
+    cogui_widget_focus(widget);
     
 
-    if (widget->parent!=Co_NULL && !(widget->flag & COGUI_WIDGET_FLAG_TRANSPARENT)) {
+    /*if (widget->parent!=Co_NULL && !(widget->flag & COGUI_WIDGET_FLAG_TRANSPARENT)) {
         cogui_widget_clip_parent(widget);
-    }
+    }*/
 
     return Co_FALSE;
 }
 
 StatusType cogui_widget_onhide(cogui_widget_t *widget, struct cogui_event *event)
 {
-    if (widget->flag & COGUI_WIDGET_FLAG_SHOWN)
-        return Co_FALSE;
+    //if (widget->flag & COGUI_WIDGET_FLAG_SHOWN)
+        //return Co_FALSE;
 
-    if (widget->parent != Co_NULL) {
+    cogui_screen_t *my_node = cogui_get_screen_node(widget->screen_node_id);
+    COGUI_DISABLE_SCREEN_NODE(my_node);
+    cogui_screen_refresh();
+
+    /*if (widget->parent != Co_NULL) {
         cogui_widget_clip_return(widget);
-    }
+    }*/
 
     return Co_FALSE;
-}
-
-void cogui_widget_clip_parent(cogui_widget_t *widget)
-{
-//    cogui_widget_t * parent;
-
-//    parent = widget->parent;
-    /* get the no transparent parent *
-    while(parent!=Co_NULL && parent->flag & COGUI_WIDGET_FLAG_TRANSPARENT)
-	{
-        parent = parent->parent;
-    }
-
-    * clip the widget extern from parent *
-    if(parent != Co_NULL)
-	{
-        RegionSubtract(&(parent->clip), &(parent->clip), &(widget->clip));
-    }*/
-}
-
-void cogui_widget_clip_return(cogui_widget_t *widget)
-{
-//    cogui_widget_t * parent;
-
-//    parent = widget->parent;
-    /* get the no transparent parent *
-    while(parent != Co_NULL && parent->flag & COGUI_WIDGET_FLAG_TRANSPARENT)
-	{
-        parent = parent->parent;
-    }
-
-    * give clip back to parent *
-    if(parent != Co_NULL)
-	{
-        RegionUnion(&(parent->clip), &(parent->clip), &(widget->clip));
-    }*/
 }
 
 void cogui_widget_update(cogui_widget_t *widget);

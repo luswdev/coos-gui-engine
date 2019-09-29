@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       event.h
- * @version    V0.0.2   
- * @date       2019.8.9
+ * @version    V0.0.3   
+ * @date       2019.9.29
  * @brief      Some system function for GUI engine's event.	
  *******************************************************************************
  */ 
@@ -10,7 +10,8 @@
 #ifndef _COGUI_EVENT_H
 #define _COGUI_EVENT_H
 
-#include "cogui.h"
+#include "widget.h"
+#include "app.h"
 
 enum cogui_event_type
 {

@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       widget.h
- * @version    V0.0.2
- * @date       2019.8.9
+ * @version    V0.1.0
+ * @date       2019.9.29
  * @brief      Some widget function for GUI engine's widget.	
  *******************************************************************************
  */ 
@@ -10,16 +10,64 @@
 #ifndef _COGUI_WIDGET_H
 #define _COGUI_WIDGET_H
 
+#include "region.h"
+#include "system.h"
+#include "dc.h"
+
+struct cogui_dc;
+struct cogui_gc;
+struct cogui_event;
+struct cogui_widget;
+
 /* widget flag */
-#define COGUI_WIDGET_FLAG_DEFAULT       0x0000
 #define COGUI_WIDGET_FLAG_SHOWN         0x0001
-#define COGUI_WIDGET_FLAG_DISABLE       0x0002
-#define COGUI_WIDGET_FLAG_FOCUS         0x0004
-#define COGUI_WIDGET_FLAG_TRANSPARENT   0x0008
-#define COGUI_WIDGET_FLAG_FOCUSABLE     0x0010
-#define COGUI_WIDGET_FLAG_DC_VISIBLE    0x0100
-#define COGUI_WIDGET_FLAG_IN_ANIM       0x0200
-#define COGUI_WIDGET_FLAG_IS_CONTAINER  0x0400
+#define COGUI_WIDGET_FLAG_FOCUS         0x0002
+#define COGUI_WIDGET_FLAG_FOCUSABLE     0x0008
+
+typedef StatusType  (*event_handler_ptr)(struct cogui_widget *widget, struct cogui_event *event);
+
+struct cogui_widget
+{
+    /* the widget that contains this widget */
+    struct cogui_widget *parent;
+    /* the window that contains this widget */
+    struct cogui_window *top_level;
+    /* the widget children and sibling */
+    struct cogui_list_node sibling;
+
+    S32 flag;
+    
+    /* hardware device context */
+    U64 dc_type;
+    const struct cogui_dc dc_engine;
+
+    /* the graphic context of widget */
+    struct cogui_gc gc;
+
+    /* the widget extent */
+    struct cogui_rect extent;
+
+    /* minimal width and height of widget */
+    S16 min_width, min_height;
+    /* widget align */
+    S32 align;
+    U16 border;
+    U16 border_style;
+    
+    /* the screen node id */
+    S32 screen_node_id;
+
+    /* call back */
+    StatusType  (*on_focus_in)(struct cogui_widget *widget, struct cogui_event *event);
+    StatusType (*on_focus_out)(struct cogui_widget *widget, struct cogui_event *event);
+
+    /* the event handler */
+    StatusType (*handler)(struct cogui_widget *widget ,struct cogui_event *event);
+
+    /* user private data */
+    U32 user_data;
+};
+typedef struct cogui_widget cogui_widget_t;
 
 /*---------------------------- Function Define -------------------------------*/
 cogui_widget_t *cogui_widget_create(void);
@@ -61,12 +109,6 @@ void cogui_widget_rect_to_logic(cogui_widget_t *widget, cogui_rect_t *rect);
 
 /* move widget and its children to a logic point */
 void cogui_widget_move_to_logic(cogui_widget_t *widget, S32 dx, S32 dy);
-
-void cogui_widget_clip_parent(cogui_widget_t *widget);
-void cogui_widget_clip_return(cogui_widget_t *widget);
-
-/* update the clip info of widget */
-void cogui_widget_update_clip(cogui_widget_t *widget);
 
 /* get the next sibling of widget */
 cogui_widget_t *cogui_widget_get_next_sibling(cogui_widget_t *widget);

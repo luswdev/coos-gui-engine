@@ -1,16 +1,23 @@
 /**
  *******************************************************************************
  * @file       screen.h
- * @version    V0.0.1
- * @date       2019.9.17
+ * @version    V0.1.0
+ * @date       2019.9.29 
  * @brief      This is a file for refresh screen.	
  *******************************************************************************
  */ 
 
 #ifndef _COGUI_SCREEN_H
 #define _COGUI_SCREEN_H
-
+      
+#define COGUI_SCREEN_NODE_RECT(n)           ((n)->r)        
+#define COGUI_SCREEN_NODE_CIRCLE(n)         ((n)->c)        
+#define COGUI_SCREEN_NODE_TRIANGLE(n)       ((n)->t)      
 #define COGUI_SCREEN_NODE_FLAG(n)           ((n)->flag)        
+#define COGUI_SCREEN_NODE_COLOR(n)          ((n)->color)
+#define COGUI_SCREEN_NODE_ID(n)             ((n)->node_id)
+#define COGUI_SCREEN_NODE_OWNER(n)          ((n)->owner)
+#define COGUI_SCREEN_NODE_DC(n)             ((n)->dc)
 
 #define COGUI_SCREEN_NODE_FLAG_VAILD        0x001
 #define COGUI_SCREEN_NODE_FLAG_FILLED       0x004
@@ -32,6 +39,9 @@
 #define COGUI_SCREEN_NODE_TYPE_RECT(n)      COGUI_SCREEN_NODE_FLAG(n) |= COGUI_SCREEN_NODE_FLAG_RECT
 #define COGUI_SCREEN_NODE_TYPE_CIRCLE(n)    COGUI_SCREEN_NODE_FLAG(n) |= COGUI_SCREEN_NODE_FLAG_CIRCLE
 #define COGUI_SCREEN_NODE_TYPE_TRIANGLE(n)  COGUI_SCREEN_NODE_FLAG(n) |= COGUI_SCREEN_NODE_FLAG_TRIANGLE
+#define COGUI_SCREEN_NODE_IS_RECT(n)        (COGUI_SCREEN_NODE_FLAG(n) & COGUI_SCREEN_NODE_FLAG_RECT)
+#define COGUI_SCREEN_NODE_IS_CIRCLE(n)      (COGUI_SCREEN_NODE_FLAG(n) & COGUI_SCREEN_NODE_FLAG_CIRCLE)
+#define COGUI_SCREEN_NODE_IS_TRIANGLE(n)    (COGUI_SCREEN_NODE_FLAG(n) & COGUI_SCREEN_NODE_FLAG_TRIANGLE)
 
 #define COGUI_SCREEN_NODE_HEADER(n)         COGUI_SCREEN_NODE_FLAG(n) |= COGUI_SCREEN_NODE_FLAG_HEADER
 #define COGUI_SCREEN_NODE_IS_HEADER(n)      (COGUI_SCREEN_NODE_FLAG(n) & COGUI_SCREEN_NODE_FLAG_HEADER)
@@ -40,24 +50,37 @@
 
 
 struct cogui_screen {
-    union shape {
-        cogui_rect_t     r;
-        //struct circle   c;
-        //struct triangle t;
-    };
+   cogui_rect_t     r;
+   //struct circle   c;
+   //struct triangle t;
 
     S32 flag;
     
     cogui_color_t color;
 
     S32 node_id;
-    cogui_app_t *owner
+    cogui_widget_t *owner;
+    cogui_dc_t *dc;
 
     cogui_list_t list;
 };
-typedef cogui_screen cogui_screen_t;
+typedef struct cogui_screen cogui_screen_t;
 
-void init_screen_list(void);
-cogui_screen_t * init_screen_node(cogui_app_t *owner);
+void cogui_screen_list_init(void);
+
+cogui_screen_t *cogui_screen_node_create(cogui_widget_t *owner, cogui_dc_t *dc);
+void cogui_screen_node_delete(cogui_screen_t *node);
+void cogui_screen_list_insert(cogui_screen_t *node);
+void cogui_screen_list_remove(S32 id);
+void cogui_screen_list_pop(S32 id);
+
+void cogui_screen_node_update(S32 id, cogui_screen_t *update_data);
+
+void cogui_screen_node_set_rectangle(cogui_screen_t *node, S32 x, S32 y, S32 width, S32 height);
+void cogui_screen_node_set_rect(cogui_screen_t *node, cogui_rect_t *rect);
+
+cogui_screen_t *cogui_get_screen_node(S32 id);
+
+void cogui_screen_refresh(void);
 
 #endif /* _COGUI_SCREEN_H */
