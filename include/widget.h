@@ -20,9 +20,17 @@ struct cogui_event;
 struct cogui_widget;
 
 /* widget flag */
-#define COGUI_WIDGET_FLAG_SHOWN         0x0001
-#define COGUI_WIDGET_FLAG_FOCUS         0x0002
-#define COGUI_WIDGET_FLAG_FOCUSABLE     0x0008
+#define COGUI_WIDGET_FLAG_INIT          0x00
+#define COGUI_WIDGET_FLAG_SHOWN         0x01
+#define COGUI_WIDGET_FLAG_FOCUS         0x02
+#define COGUI_WIDGET_FLAG_FOCUSABLE     0x08
+
+/* widget type */
+#define COGUI_WIDGET_TYPE_INIT          0x00
+#define COGUI_WIDGET_TYPE_WIDGET        0x01
+#define COGUI_WIDGET_TYPE_WINDOW        0x02
+
+#define COGUI_WIDGET(w) (struct cogui_widget *)(w)
 
 typedef StatusType  (*event_handler_ptr)(struct cogui_widget *widget, struct cogui_event *event);
 
@@ -35,11 +43,12 @@ struct cogui_widget
     /* the widget children and sibling */
     struct cogui_list_node sibling;
 
-    S32 flag;
+    S16 flag;
+    S16 type;
     
     /* hardware device context */
     U64 dc_type;
-    const struct cogui_dc dc_engine;
+    struct cogui_dc *dc_engine;
 
     /* the graphic context of widget */
     struct cogui_gc gc;

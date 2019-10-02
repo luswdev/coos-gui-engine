@@ -120,7 +120,7 @@ void cogui_server_entry(void *parameter)
 
     server_app->handler = cogui_server_event_handler;
 
-    printf("starting server app...\r\n");
+    cogui_printf("starting server app...\r\n");
     cogui_app_run(server_app);
 
     cogui_app_delete(server_app);
@@ -148,8 +148,8 @@ cogui_app_t *cogui_get_server(void)
 
 void cogui_server_init(void)
 {
-	printf("Create a task \"server_entry\"...\r\n");
+	cogui_printf("Create a task \"server_entry\"...");
     CoCreateTask(cogui_server_entry, (void *)0, 15,&server_Stk[TASK_STK_SIZE-1], TASK_STK_SIZE);
-	printf("[OK]\r\n");
+	cogui_printf("[OK]\r\n");
 	CoExitTask();
 }

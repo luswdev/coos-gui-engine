@@ -30,7 +30,8 @@ static void _cogui_widget_init(cogui_widget_t *widget)
 
     widget->handler = cogui_widget_event_handler;
 
-    widget->flag = 0;
+    widget->flag = COGUI_WIDGET_FLAG_INIT;
+    widget->type = COGUI_WIDGET_TYPE_INIT;
 
     widget->user_data = 0;
 }
@@ -44,6 +45,8 @@ cogui_widget_t *cogui_widget_create(void)
         return Co_NULL;
     
     _cogui_widget_init(widget);
+
+    widget->type = COGUI_WIDGET_TYPE_WIDGET;
 
     return widget;
 }
@@ -292,10 +295,8 @@ void cogui_widget_hide(cogui_widget_t *widget)
 
 StatusType cogui_widget_onshow(cogui_widget_t *widget, struct cogui_event *event)
 {
-    if (!(widget->flag & COGUI_WIDGET_FLAG_SHOWN)){
-        printf("no need to show\r\n");
+    if (!(widget->flag & COGUI_WIDGET_FLAG_SHOWN))
         return Co_FALSE;
-    }
         
     cogui_screen_t *my_node = cogui_get_screen_node(widget->screen_node_id);
     COGUI_ENABLE_SCREEN_NODE(my_node);

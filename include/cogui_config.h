@@ -17,4 +17,7 @@
 /* 0 for hardware engine, 1 for buffer engine */
 #define COGUI_SCREEN_TYPE       0
 
+/* debug output (serial) */
+#define COGUI_DEBUG_PRINT       1
+
 #endif /* _COGUI_CONFIG_H */

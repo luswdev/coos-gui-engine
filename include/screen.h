@@ -13,12 +13,13 @@
 #define COGUI_SCREEN_NODE_RECT(n)           ((n)->r)        
 #define COGUI_SCREEN_NODE_CIRCLE(n)         ((n)->c)        
 #define COGUI_SCREEN_NODE_TRIANGLE(n)       ((n)->t)      
-#define COGUI_SCREEN_NODE_FLAG(n)           ((n)->flag)        
-#define COGUI_SCREEN_NODE_COLOR(n)          ((n)->color)
+#define COGUI_SCREEN_NODE_FLAG(n)           ((n)->flag)    
 #define COGUI_SCREEN_NODE_ID(n)             ((n)->node_id)
 #define COGUI_SCREEN_NODE_OWNER(n)          ((n)->owner)
-#define COGUI_SCREEN_NODE_DC(n)             ((n)->dc)
+#define COGUI_SCREEN_NODE_DC(n)             ((n)->owner->dc_engine)
 
+/* screen node flag */
+#define COGUI_SCREEN_NODE_FLAG_INIT         0x000
 #define COGUI_SCREEN_NODE_FLAG_VAILD        0x001
 #define COGUI_SCREEN_NODE_FLAG_FILLED       0x004
 #define COGUI_SCREEN_NODE_FLAG_SHAPE_MASK   0x038    /* B0011 1000*/
@@ -46,8 +47,6 @@
 #define COGUI_SCREEN_NODE_HEADER(n)         COGUI_SCREEN_NODE_FLAG(n) |= COGUI_SCREEN_NODE_FLAG_HEADER
 #define COGUI_SCREEN_NODE_IS_HEADER(n)      (COGUI_SCREEN_NODE_FLAG(n) & COGUI_SCREEN_NODE_FLAG_HEADER)
 
-#define COGUI_SCREEN_NODE_SET_COLOR(n, c)   (n)->color = (c)
-
 
 struct cogui_screen {
    cogui_rect_t     r;
@@ -56,11 +55,8 @@ struct cogui_screen {
 
     S32 flag;
     
-    cogui_color_t color;
-
     S32 node_id;
     cogui_widget_t *owner;
-    cogui_dc_t *dc;
 
     cogui_list_t list;
 };
@@ -68,7 +64,7 @@ typedef struct cogui_screen cogui_screen_t;
 
 void cogui_screen_list_init(void);
 
-cogui_screen_t *cogui_screen_node_create(cogui_widget_t *owner, cogui_dc_t *dc);
+cogui_screen_t *cogui_screen_node_create(cogui_widget_t *owner);
 void cogui_screen_node_delete(cogui_screen_t *node);
 void cogui_screen_list_insert(cogui_screen_t *node);
 void cogui_screen_list_remove(S32 id);

@@ -38,9 +38,7 @@ if(!(EX)){											    \
 
 extern OSTCB TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
 
-/**
- * double linked list
- */
+/* double linked list */
 struct cogui_list_node
 {
     struct list_node *prev;
@@ -48,23 +46,12 @@ struct cogui_list_node
 };
 typedef struct cogui_list_node cogui_list_t;
 
-/**
- * single linked list
- */
+/* single linked list */
 struct cogui_slist_node
 {
     struct cogui_slist_node *next;
 };
 typedef struct cogui_slist_node cogui_slist_t;
-
-/**
- * 2D point
- */
-struct cogui_point
-{
-    S16 x, y;
-};
-typedef struct cogui_point cogui_point_t;
 
 /**
  * Border style
@@ -86,17 +73,31 @@ enum cogui_border_style
 
 void cogui_system_init(void *par);
 
+/* memory manange from CoOS */
 void *cogui_malloc(U32 size);
 void cogui_free(void* memBuf);
 
-void *cogui_memmove(void *dest, const void *src, U64 n);
-
+/* sync function from CoOS */
 StatusType cogui_ack(struct cogui_event *event, StatusType status);
-
 StatusType cogui_send(cogui_app_t *app, struct cogui_event *event);
 StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event);
 struct cogui_event *cogui_recv(OS_EventID mq, StatusType *result);
 
+/* math function for cogui */
+U64 cogui_pow(S32 x, S32 y);
+
+/* mem function for cogui */
+void *cogui_memcpy(void *dest, const void *src, U64 size);
+void *cogui_memmove(void *dest, const void *src, U64 size);
+S32 cogui_memcmp(const void *str1, const void *str2, U64 size);
+
+/* string function for cogui */
+char *cogui_strdup(const char *str);
+U64 cogui_strlen(const char *str);
+S32 cogui_strcmp(const char *str1, const char *str2);
+
+/* debug function */
+int cogui_printf(const char *str, ...);
 void cogui_assert_handler(const char *ex_string, const char *func, U32 line);
 
 #endif /* _COGUI_SYSTEM_H */

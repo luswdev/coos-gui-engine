@@ -10,9 +10,6 @@
 #ifndef _COGUI_H
 #define _COGUI_H
 
-/* standard library */
-#include "stdio.h"
-
 /* CooCox CoOS library */
 #include "coocox.h"
 

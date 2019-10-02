@@ -8,7 +8,6 @@
  */ 
 
 #include "../include/cogui.h"
-#include "stdio.h"
 #include "string.h"
 
 void _cogui_app_init(cogui_app_t *app)

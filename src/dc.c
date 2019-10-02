@@ -157,7 +157,13 @@ cogui_dc_t *cogui_dc_begin_drawing(cogui_widget_t *owner)
 
     COGUI_ASSERT(owner != Co_NULL);
 
+#if (COGUI_SCREEN_TYPE == 0)
     dc = cogui_dc_hw_create(owner);
+#else
+#endif
+
+    /* put dc pointer into owner structure */
+    owner->dc_engine = dc;
 
     return dc;
 }

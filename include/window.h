@@ -28,31 +28,17 @@
 #define COWINTITLE_CB_HEIGHT      16
 #define COWINTITLE_BORDER_SIZE    2
 
-enum cogui_win_flag
-{
-    COGUI_WIN_FLAG_INIT        = 0x00,  /* init state              */
-    COGUI_WIN_FLAG_MODAL       = 0x01,  /* modal mode window       */
-    COGUI_WIN_FLAG_CLOSED      = 0x02,  /* window is closed        */
-    COGUI_WIN_FLAG_ACTIVATE    = 0x04,  /* window is activated     */
-    COGUI_WIN_FLAG_UNDER_MODAL = 0x08,  /* window is under modal
-                                           show(modaled by other)  */
-    COGUI_WIN_FLAG_CONNECTED   = 0x10,  /* connected to server */
-    /* window is event_key dispatcher(dispatch it to the focused widget in
-     * current window) _and_ a key handler(it should be able to handle keys
-     * such as ESC). Both of dispatching and handling are in the same
-     * function(rtgui_win_event_handler). So we have to distinguish between the
-     * two modes.
-     *
-     * If this flag is set, we are in key-handling mode.
-     */
-    COGUI_WIN_FLAG_HANDLE_KEY  = 0x20,
+/* window flag */
+#define COGUI_WINDOW_FLAG_INIT        0x00
+#define COGUI_WINDOW_FLAG_MODAL       0x01
+#define COGUI_WINDOW_FLAG_CLOSED      0x02
+#define COGUI_WINDOW_FLAG_ACTIVATE    0x04
 
-    COGUI_WIN_FLAG_CB_PRESSED  = 0x40,
-};
+#define COGUI_WIN_FLAG_CONNECTED      0x10
 
 struct cogui_window
 {
-    struct GuiContainer *parent;
+    struct cogui_widget *parent;
 
     /* update count */
     S64 update;
@@ -76,7 +62,7 @@ struct cogui_window
     U16 style;
 
     /* window state flag */
-    enum cogui_win_flag flag;
+    U32 flag;
 
     /* last mouse event handled widget */
     cogui_widget_t *last_mouse_event_widget;
@@ -107,36 +93,34 @@ struct cogui_window
 typedef struct cogui_window cogui_window_t;
 
 
-cogui_window_t *WinCreate(cogui_window_t *parentWindow, U8 *title, cogui_rect_t *rect, U16 style);
-void WinDele(cogui_window_t *win);
+cogui_window_t *cogui_window_create(cogui_window_t *parentWindow, U8 *title, cogui_rect_t *rect, U16 style);
+void cogui_window_delete(cogui_window_t *win);
 
-StatusType WinClose(cogui_window_t *win);
+StatusType cogui_window_close(cogui_window_t *win);
 
-U64 WinShow(cogui_window_t *win);
-U64 WinDoShow(cogui_window_t *win);
+U64 cogui_window_show(cogui_window_t *win);
+U64 cogui_window_do_show(cogui_window_t *win);
 
-void WinHide(cogui_window_t *win);
+void cogui_window_hide(cogui_window_t *win);
 
-StatusType WinActivate(cogui_window_t *win);
-StatusType WinIsActivated(cogui_window_t *win);
+StatusType cogui_window_active(cogui_window_t *win);
+StatusType cogui_window_is_activated(cogui_window_t *win);
 
-void WinMove(cogui_window_t *win, S32 x, S32 y);
+void cogui_window_move(cogui_window_t *win, S32 x, S32 y);
 
-void WinSetRect(cogui_window_t *win, cogui_rect_t *rect);
-void WinUpdateClip(cogui_window_t *win);
+void cogui_window_set_rect(cogui_window_t *win, cogui_rect_t *rect);
 
-void WinSetOnactivate(cogui_window_t *win, event_handler_ptr handler);
-void WinSetOndeactivate(cogui_window_t *win, event_handler_ptr handler);
-void WinSetOnclose(cogui_window_t *win, event_handler_ptr handler);
-void WinSetOnkey(cogui_window_t *win, event_handler_ptr handler);
+void cogui_window_set_onactivate(cogui_window_t *win, event_handler_ptr handler);
+void cogui_window_set_ondeactive(cogui_window_t *win, event_handler_ptr handler);
+void cogui_window_set_onclose(cogui_window_t *win, event_handler_ptr handler);
+void cogui_window_set_onkey(cogui_window_t *win, event_handler_ptr handler);
 
-StatusType WinEventHandler(cogui_widget_t * win, struct cogui_event *event);
+StatusType cogui_window_event_handler(cogui_widget_t * win, struct cogui_event *event);
 
-void WinSetRect(cogui_window_t *win, cogui_rect_t *rect);
-void WinSetTitle(cogui_window_t *win, const U8 *title);
-U8 *WinGetTitle(cogui_window_t *win);
+void cogui_window_set_title(cogui_window_t *win, const U8 *title);
+U8 *cogui_window_get_title(cogui_window_t *win);
 
-cogui_window_t *WinGetTopmostShown(void);
-cogui_window_t *WinGetNextShown(void);
+cogui_window_t *cogui_window_top_most_shown(void);
+cogui_window_t *cogui_window_get_next_shown(void);
 
 #endif /* _COGUI_WINDOW_H */
