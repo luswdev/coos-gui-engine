@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       system.h
- * @version    V0.0.3
- * @date       2019.9.29
+ * @version    V0.0.4
+ * @date       2019.10.3
  * @brief      This is a file for GUI engine.	
  *******************************************************************************
  */ 
@@ -38,7 +38,9 @@ if(!(EX)){											    \
 
 extern OSTCB TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
 
-/* double linked list */
+/**
+ * double linked list
+ */
 struct cogui_list_node
 {
     struct list_node *prev;
@@ -46,12 +48,23 @@ struct cogui_list_node
 };
 typedef struct cogui_list_node cogui_list_t;
 
-/* single linked list */
+/**
+ * single linked list
+ */
 struct cogui_slist_node
 {
     struct cogui_slist_node *next;
 };
 typedef struct cogui_slist_node cogui_slist_t;
+
+/**
+ * 2D point
+ */
+struct cogui_point
+{
+    S16 x, y;
+};
+typedef struct cogui_point cogui_point_t;
 
 /**
  * Border style
@@ -87,13 +100,15 @@ struct cogui_event *cogui_recv(OS_EventID mq, StatusType *result);
 U64 cogui_pow(S32 x, S32 y);
 
 /* mem function for cogui */
-void *cogui_memcpy(void *dest, const void *src, U64 size);
-void *cogui_memmove(void *dest, const void *src, U64 size);
-S32 cogui_memcmp(const void *str1, const void *str2, U64 size);
+void *cogui_memset(void *s, int c, U64 cnt);
+void *cogui_memcpy(void *dest, const void *src, U64 cnt);
+void *cogui_memmove(void *dest, const void *src, U64 cnt);
+S32 cogui_memcmp(const void *str1, const void *str2, U64 cnt);
 
 /* string function for cogui */
 char *cogui_strdup(const char *str);
 U64 cogui_strlen(const char *str);
+S32 cogui_strncmp(const char *str1, const char *str2, U64 cnt);
 S32 cogui_strcmp(const char *str1, const char *str2);
 
 /* debug function */

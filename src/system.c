@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       system.c
- * @version    V0.1.1   
- * @date       2019.9.17
+ * @version    V0.1.2  
+ * @date       2019.10.3
  * @brief      Some system function for GUI engine.	
  *******************************************************************************
  */ 
@@ -20,7 +20,6 @@ void cogui_system_init(void *par)
 
     cogui_printf("Initial server...\r\n");
     cogui_server_init();
-
 }
 
 void *cogui_malloc(U32 size)
@@ -79,34 +78,116 @@ struct cogui_event *cogui_recv(OS_EventID mq, StatusType *result)
     return event;
 }
 
-void *cogui_memcpy(void *dest, const void *src, U64 size)
+void *cogui_memset(void *s, int c, U64 cnt)
 {
-    
+    char *ss = (char *)s;
+
+    while (cnt--)
+        *ss++ = c;
+
+    return s;
+}
+
+void *cogui_memcpy(void *dest, const void *src, U64 cnt)
+{
+    char *tar = (char *)dest, *s = (char *)src;
+
+    while (cnt--)
+        *tar++ = *s++;
+
+    return dest;    
 }
 
 
-U16 cogui_strlen(const char *str)
+void *cogui_memmove(void *dest, const void *src, U64 cnt)
+{
+    char *ds = (char *)dest, *ss = (char *)src;
+
+    if (ss < ds && ds < ss + cnt) {
+        ds += cnt;
+        ss += cnt;
+
+        while (cnt--)
+            *(--ds) = *(--ss);
+    }
+    else {
+        while (cnt--)
+            *ds++ = *ss++;
+    }
+
+    return dest;
+}
+
+
+S32 cogui_memcmp(const void *str1, const void *str2, U64 cnt)
+{
+    const U8 *s1, *s2;
+    int res = 0;
+
+    for (s1 = str1, s2 = str2; cnt > 0; ++s1, ++s2, --cnt)
+        if ((res = *s1 - *s2) != 0)
+            break;
+        
+    return res;
+}
+
+char *cogui_strstr(const char *src, const char *tar)
+{
+    int ls, lt;
+
+    lt = cogui_strlen(src);
+    if (!lt)
+        return (char *)src;
+
+    ls = cogui_strlen(tar);
+    while (ls >= lt) {
+        ls--;
+        if (!cogui_memcmp(src, tar, lt))
+            return (char *)src;
+        src++;
+    }     
+
+    return Co_NULL;
+}
+
+
+U64 cogui_strlen(const char *str)
 {
     const char *s;
-    U16 i;
 
-    for (s = str, i = 0; *s != '\0'; s++, i++)
+    for (s = str; *s != '\0'; ++s)
         ;
     
-    return i;
+    return s - str;
 }
 
 char *cogui_strdup(const char *str)
 {
     U64 len = cogui_strlen(str) + 1;
-    char *tmp = cogui_malloc(len);
+    char *tmp =  (char *)cogui_malloc(len);
 
     if (tmp == Co_NULL)
         return Co_NULL;
 
-    cogui_memcpy(tmp, str, len);
+    cogui_memmove(tmp, str, len);
 
     return tmp;
+}
+
+S32 cogui_strncmp(const char *str1, const char *str2, U64 cnt)
+{
+    for (; *str1 && *str1 == *str2 && cnt; str1++, str2++, cnt--)
+        ;
+
+    return (*str1 - *str2);
+}
+
+S32 cogui_strcmp(const char *str1, const char *str2)
+{
+    for (; *str1 && *str1 == *str2; str1++, str2++)
+        ;
+
+    return (*str1 - *str2);
 }
 
 
@@ -157,7 +238,17 @@ int cogui_printf(const char *str,...)
                     /* handle integer var */
                     case 'd':
                         val = va_arg(ap, int); 
- 			            r_val = val; 
+ 			            
+                        /* if val is negative or zero */
+                        if (val < 0) {
+                            cogui_putchar('-');
+                            val = 0 - val;
+                        }
+                        else if (val == 0) {
+                            cogui_putchar('0');
+                        }
+                        
+                        r_val = val; 
                         count = 0; 
 						while (r_val) {
                             count++;
@@ -175,7 +266,17 @@ int cogui_printf(const char *str,...)
 
                     /* handle integer var with hex output */
                     case 'x':
-                        val = va_arg(ap, int); 
+                        val = va_arg(ap, int);
+
+                        /* if val is negative or zero */
+                        if (val<0) {
+                            cogui_putchar('-');
+                            val = 0 - val;
+                        }
+                        else if (val == 0) {
+                            cogui_putchar('0');
+                        }
+                        
                         r_val = val; 
                         count = 0;
 						while (r_val) {

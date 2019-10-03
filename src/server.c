@@ -2,7 +2,7 @@
  *******************************************************************************
  * @file       server.c
  * @version    V0.0.2  
- * @date       2019.8.9
+ * @date       2019.10.3
  * @brief      The server for gui engine.	
  *******************************************************************************
  */ 
@@ -113,7 +113,7 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
 
 void cogui_server_entry(void *parameter)
 {
-    server_app = cogui_app_create("gui_server");
+    server_app = cogui_app_create("cogui");
     if(server_app == Co_NULL){
         return;
     }
@@ -149,7 +149,7 @@ cogui_app_t *cogui_get_server(void)
 void cogui_server_init(void)
 {
 	cogui_printf("Create a task \"server_entry\"...");
-    CoCreateTask(cogui_server_entry, (void *)0, 15,&server_Stk[TASK_STK_SIZE-1], TASK_STK_SIZE);
+    CoCreateTask(cogui_server_entry, (void *)0, 10,&server_Stk[TASK_STK_SIZE-1], TASK_STK_SIZE);
 	cogui_printf("[OK]\r\n");
 	CoExitTask();
 }

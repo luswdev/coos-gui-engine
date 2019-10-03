@@ -1,14 +1,13 @@
 /**
  *******************************************************************************
  * @file       app.c
- * @version    V0.0.2 
- * @date       2019.8.9
+ * @version    V0.1.0
+ * @date       2019.10.3
  * @brief      This is a file for GUI engine's app.	
  *******************************************************************************
  */ 
 
 #include "../include/cogui.h"
-#include "string.h"
 
 void _cogui_app_init(cogui_app_t *app)
 {
@@ -39,8 +38,7 @@ cogui_app_t *cogui_app_create(char *title)
 
     app->tid = tid;
 
-    app->name = cogui_malloc(sizeof(char)*(strlen(title)+1));
-    strcpy(app->name,title);
+    app->name = (U8 *)cogui_strdup((char *)title);
 
     app->mq = CoCreateMbox(EVENT_SORT_TYPE_FIFO);
 
