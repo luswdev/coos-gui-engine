@@ -9,10 +9,10 @@
 
 #include <cogui.h>
 
-S32 current_node_id   = 0;                      /*!< Record how much node have right now            */
-cogui_screen_t *screen_list = Co_NULL;          /*!< The REAL screen list                           */
+co_uint32_t current_node_id     = 0;                    /*!< Record how much node have right now            */
+cogui_screen_t *screen_list     = Co_NULL;              /*!< The REAL screen list                           */
 
-extern cogui_color_t default_background;        /*!< Default background uses to initial first node  */
+extern cogui_color_t default_background;                /*!< Default background uses to initial first node  */
 
 /**
  *******************************************************************************
@@ -32,10 +32,11 @@ void cogui_screen_list_init()
 	cogui_widget_t *screen_wgt = cogui_widget_create();
     cogui_dc_t *dc = cogui_dc_begin_drawing(screen_wgt);
 	
+    /* set full screen widget */
 	cogui_widget_set_rectangle(screen_wgt, 0, 0, 240, 320);
 	
     /* create header node */
-    cogui_screen_t *screen_node = cogui_screen_node_create(Co_NULL); /* TODO: should create a widget for it */
+    cogui_screen_t *screen_node = cogui_screen_node_create(screen_wgt);
     COGUI_ASSERT(screen_node != Co_NULL);
 
     /* let screen list be the header node */
