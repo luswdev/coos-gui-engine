@@ -1,22 +1,37 @@
 /**
  *******************************************************************************
  * @file       dc.c
- * @version    V0.1.0 
- * @date       2019.8.9
- * @brief      This is a file for GUI dc engine.	
+ * @version    V0.1.1
+ * @date       2019.10.4
+ * @brief      This is a file for GUI DC engine interface.	
  *******************************************************************************
  */ 
 
 #include <cogui.h>
 
-void cogui_dc_draw_line(cogui_dc_t *dc, S32 x1, S32 x2, S32 y1, S32 y2)
+/**
+ *******************************************************************************
+ * @brief      Draw a line
+ * @param[in]  *dc      Which DC we used
+ * @param[in]  x1       Rectangle coordinate x1
+ * @param[in]  x2       Rectangle coordinate x2
+ * @param[in]  y1       Rectangle coordinate y1
+ * @param[in]  y2       Rectangle coordinate y2
+ * @param[out] None
+ * @retval     None
+ *******************************************************************************
+ */
+void cogui_dc_draw_line(cogui_dc_t *dc, co_int32_t x1, co_int32_t x2, co_int32_t y1, co_int32_t y2)
 {
 	COGUI_ASSERT(dc != Co_NULL);
 	
+    /* this is a line width 1 */
 	if(x1==x2)
 		dc->engine->draw_vline(dc,x1,y1,y2);
+    /* this is a line height 2 */
 	else if(y1==y2)
 		dc->engine->draw_hline(dc,x1,x2,y1);
+    /* this is a line like rectangle */
 	else{
 		_int_comp(x1, x2);
 		_int_comp(y1, y2);
@@ -33,7 +48,7 @@ void cogui_dc_draw_rect(cogui_dc_t *dc, cogui_rect_t *rect)
 	if(rect==Co_NULL)
 		return;
 	
-	S32 x1,x2,y1,y2;
+	co_int32_t x1,x2,y1,y2;
 	
 	x1=rect->x1;
 	x2=rect->x2;
