@@ -142,7 +142,6 @@ struct cogui_gc *cogui_dc_get_gc(cogui_dc_t *dc)
 			break;
 		}
 
-		case COGUI_DC_CLIENT:
 		case COGUI_DC_BUFFER:
 		default:
 			break;

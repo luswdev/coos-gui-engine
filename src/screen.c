@@ -212,9 +212,6 @@ void cogui_screen_list_remove(co_uint32_t id)
  * @param[out] None
  * @retval     screen_node  The result we found
  * @retval     Co_NULL      Or we did not find it
- *
- * @par Description
- * @details    This function is used to find a screen node from id
  *******************************************************************************
  */
 cogui_screen_t *cogui_get_screen_node(co_uint32_t id)
@@ -281,7 +278,7 @@ void cogui_screen_node_update(co_uint32_t id, cogui_screen_t *update_data)
  * @retval     None
  *
  * @par Description
- * @details    This function is used to set node's retangle  by giving a real
+ * @details    This function is used to set node's retangle by giving a real
  *             rectangle.
  *******************************************************************************
  */
