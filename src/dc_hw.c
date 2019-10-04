@@ -3,7 +3,7 @@
  * @file       dc_hw.c
  * @version    V0.1.1
  * @date       2019.10.4
- * @brief      This is a file for GUI dc engine.	
+ * @brief      This is a file for GUI hardware DC engine.	
  *******************************************************************************
  */ 
 
