@@ -7,7 +7,7 @@
  *******************************************************************************
  */ 
 
-#include "../include/cogui.h"
+#include <cogui.h
 
 void _cogui_container_init(cogui_container_t *container)
 {

@@ -3,7 +3,7 @@
  * @file       screen.h
  * @version    V0.1.0
  * @date       2019.9.29 
- * @brief      This is a file for refresh screen.	
+ * @brief      Screen lists header file.	
  *******************************************************************************
  */ 
 
@@ -19,14 +19,14 @@
 #define COGUI_SCREEN_NODE_DC(n)             ((n)->owner->dc_engine)
 
 /* screen node flag */
-#define COGUI_SCREEN_NODE_FLAG_INIT         0x000
-#define COGUI_SCREEN_NODE_FLAG_VAILD        0x001
-#define COGUI_SCREEN_NODE_FLAG_FILLED       0x004
-#define COGUI_SCREEN_NODE_FLAG_SHAPE_MASK   0x038    /* B0011 1000*/
-#define COGUI_SCREEN_NODE_FLAG_RECT         0x008
-#define COGUI_SCREEN_NODE_FLAG_CIRCLE       0x010
-#define COGUI_SCREEN_NODE_FLAG_TRIANGLE     0x020
-#define COGUI_SCREEN_NODE_FLAG_HEADER       0x040
+#define COGUI_SCREEN_NODE_FLAG_INIT         0x000       /**< The initial state flag     */
+#define COGUI_SCREEN_NODE_FLAG_VAILD        0x001       /**< node is vaild              */
+#define COGUI_SCREEN_NODE_FLAG_FILLED       0x004       /**< node is needed to filled   */
+#define COGUI_SCREEN_NODE_FLAG_SHAPE_MASK   0x038       /**< B(0011 1000)               */
+#define COGUI_SCREEN_NODE_FLAG_RECT         0x008       /**< node is rectangle          */
+#define COGUI_SCREEN_NODE_FLAG_CIRCLE       0x010       /**< node is circle             */
+#define COGUI_SCREEN_NODE_FLAG_TRIANGLE     0x020       /**< node is triangle           */
+#define COGUI_SCREEN_NODE_FLAG_HEADER       0x040       /**< It is header node          */
 
 #define COGUI_ENABLE_SCREEN_NODE(n)         COGUI_SCREEN_NODE_FLAG(n) |= COGUI_SCREEN_NODE_FLAG_VAILD
 #define COGUI_DISABLE_SCREEN_NODE(n)        COGUI_SCREEN_NODE_FLAG(n) &= ~COGUI_SCREEN_NODE_FLAG_VAILD
@@ -47,18 +47,24 @@
 #define COGUI_SCREEN_NODE_HEADER(n)         COGUI_SCREEN_NODE_FLAG(n) |= COGUI_SCREEN_NODE_FLAG_HEADER
 #define COGUI_SCREEN_NODE_IS_HEADER(n)      (COGUI_SCREEN_NODE_FLAG(n) & COGUI_SCREEN_NODE_FLAG_HEADER)
 
-
+/**
+ * @struct   cogui_screen screen.h	
+ * @brief    screen list struct
+ * @details  This struct use to refresh screen node.
+ */
 struct cogui_screen {
-   cogui_rect_t     r;
-   //struct circle   c;
-   //struct triangle t;
+    /* screen shape */
+    cogui_rect_t        r;                          /**< Screen node shape type: rectangle   */
+    //struct circle     c;                          /**< Screen node shape type: circle      */
+    //struct triangle   t;                          /**< Screen node shape type: triangle    */
 
-    S32 flag;
-    
-    S32 node_id;
-    cogui_widget_t *owner;
+    /* node information */
+    co_uint32_t         flag;                       /**< Screen node flag                    */
+    co_uint32_t         node_id;                    /**< Screen node id                      */
+    cogui_widget_t      *owner;                     /**< Screen node owner                   */
 
-    cogui_list_t list;
+    /* double linked list */
+    cogui_list_t        list;                       /**< Screen node list                    */
 };
 typedef struct cogui_screen cogui_screen_t;
 
@@ -67,15 +73,13 @@ void cogui_screen_list_init(void);
 cogui_screen_t *cogui_screen_node_create(cogui_widget_t *owner);
 void cogui_screen_node_delete(cogui_screen_t *node);
 void cogui_screen_list_insert(cogui_screen_t *node);
-void cogui_screen_list_remove(S32 id);
-void cogui_screen_list_pop(S32 id);
+void cogui_screen_list_remove(co_uint32_t id);
+void cogui_screen_list_pop(co_uint32_t id);
 
-void cogui_screen_node_update(S32 id, cogui_screen_t *update_data);
-
-void cogui_screen_node_set_rectangle(cogui_screen_t *node, S32 x, S32 y, S32 width, S32 height);
+void cogui_screen_node_update(co_uint32_t id, cogui_screen_t *update_data);
 void cogui_screen_node_set_rect(cogui_screen_t *node, cogui_rect_t *rect);
 
-cogui_screen_t *cogui_get_screen_node(S32 id);
+cogui_screen_t *cogui_get_screen_node(co_uint32_t id);
 
 void cogui_screen_refresh(void);
 

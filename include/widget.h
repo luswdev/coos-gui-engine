@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       widget.h
- * @version    V0.1.0
- * @date       2019.9.29
+ * @version    V0.1.1
+ * @date       2019.10.4
  * @brief      Some widget function for GUI engine's widget.	
  *******************************************************************************
  */ 
@@ -107,14 +107,14 @@ StatusType cogui_widget_onhide(cogui_widget_t *widget, struct cogui_event *event
 void cogui_widget_update(cogui_widget_t *widget);
 
 /* get the physical position of a logic point on widget */
-void cogui_widget_point_to_device(cogui_widget_t *widget, cogui_point_t *point);
+void cogui_widget_point_l2p(cogui_widget_t *widget, cogui_point_t *point);
 /* get the physical position of a logic rect on widget */
-void cogui_widget_rect_to_device(cogui_widget_t *widget, cogui_rect_t *rect);
+void cogui_widget_rect_l2p(cogui_widget_t *widget, cogui_rect_t *rect);
 
 /* get the logic position of a physical point on widget */
-void cogui_widget_point_to_logic(cogui_widget_t *widget, cogui_point_t *point);
+void cogui_widget_point_p2l(cogui_widget_t *widget, cogui_point_t *point);
 /* get the logic position of a physical rect on widget */
-void cogui_widget_rect_to_logic(cogui_widget_t *widget, cogui_rect_t *rect);
+void cogui_widget_rect_p2l(cogui_widget_t *widget, cogui_rect_t *rect);
 
 /* move widget and its children to a logic point */
 void cogui_widget_move_to_logic(cogui_widget_t *widget, S32 dx, S32 dy);

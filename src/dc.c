@@ -7,7 +7,7 @@
  *******************************************************************************
  */ 
 
-#include "../include/cogui.h"
+#include <cogui.h>
 
 void cogui_dc_draw_line(cogui_dc_t *dc, S32 x1, S32 x2, S32 y1, S32 y2)
 {

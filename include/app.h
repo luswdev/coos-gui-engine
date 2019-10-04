@@ -11,8 +11,6 @@
 #define _COGUI_APP_H
 
 #include <CoOS.h>
-#include <OsTime.h>
-#include <OsTask.h>
 
 struct cogui_event;
 

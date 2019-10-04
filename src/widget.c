@@ -7,7 +7,7 @@
  *******************************************************************************
  */ 
 
-#include "../include/cogui.h"
+#include <cogui.h>
 
 extern const cogui_color_t default_foreground;
 extern const cogui_color_t default_background;
@@ -215,7 +215,7 @@ void cogui_widget_move_to_logic(cogui_widget_t *widget, S32 dx, S32 dy)
 	_cogui_widget_move(widget, dx, dy);
 }
 
-void cogui_widget_point_to_device(cogui_widget_t *widget, cogui_point_t *point)
+void cogui_widget_point_l2p(cogui_widget_t *widget, cogui_point_t *point)
 {
     COGUI_ASSERT(widget != Co_NULL);
 
@@ -225,7 +225,7 @@ void cogui_widget_point_to_device(cogui_widget_t *widget, cogui_point_t *point)
     }
 }
 
-void cogui_widget_rect_to_device(cogui_widget_t *widget, cogui_rect_t *rect)
+void cogui_widget_rect_l2p(cogui_widget_t *widget, cogui_rect_t *rect)
 {
     COGUI_ASSERT(widget != Co_NULL);
 
@@ -238,7 +238,7 @@ void cogui_widget_rect_to_device(cogui_widget_t *widget, cogui_rect_t *rect)
     }
 }
 
-void cogui_widget_point_to_logic(cogui_widget_t *widget, cogui_point_t *point)
+void cogui_widget_point_p2l(cogui_widget_t *widget, cogui_point_t *point)
 {
     COGUI_ASSERT(widget != Co_NULL);
 
@@ -248,7 +248,7 @@ void cogui_widget_point_to_logic(cogui_widget_t *widget, cogui_point_t *point)
     }    
 }
 
-void cogui_widget_rect_to_logic(cogui_widget_t *widget, cogui_rect_t *rect)
+void cogui_widget_rect_p2l(cogui_widget_t *widget, cogui_rect_t *rect)
 {
     COGUI_ASSERT(widget != Co_NULL);
     

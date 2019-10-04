@@ -93,7 +93,7 @@ struct cogui_window
 typedef struct cogui_window cogui_window_t;
 
 
-cogui_window_t *cogui_window_create(cogui_window_t *parentWindow, U8 *title, cogui_rect_t *rect, U16 style);
+cogui_window_t *cogui_window_create(cogui_window_t *parent_window, cogui_rect_t *rect, U16 style);
 void cogui_window_delete(cogui_window_t *win);
 
 StatusType cogui_window_close(cogui_window_t *win);

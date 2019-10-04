@@ -7,8 +7,7 @@
  *******************************************************************************
  */ 
 
-#include "../include/cogui.h"
-#include "string.h"
+#include <cogui.h>
 
 static void _cogui_window_init(cogui_window_t *window)
 {
@@ -22,8 +21,8 @@ static void _cogui_window_init(cogui_window_t *window)
     window->on_focus_out    = Co_NULL;
     window->on_key          = Co_NULL;
 
-    /* initial title */
-    //window->title       = app->name;
+    /* set title to app's name */
+    window->title       = app->name;
     window->_title_wgt  = Co_NULL;
 
     window->last_mouse_event_widget = Co_NULL;
@@ -39,7 +38,7 @@ static void _cogui_window_init(cogui_window_t *window)
     window->_do_show = cogui_window_do_show;
 }
 
-cogui_window_t *cogui_window_create(cogui_window_t *parentWindow, U8 *title, cogui_rect_t *rect, U16 style)
+cogui_window_t *cogui_window_create(cogui_window_t *parentWindow, cogui_rect_t *rect, U16 style)
 {
     cogui_window_t *window;
 

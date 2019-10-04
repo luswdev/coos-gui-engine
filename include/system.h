@@ -3,7 +3,7 @@
  * @file       system.h
  * @version    V0.0.4
  * @date       2019.10.3
- * @brief      This is a file for GUI engine.	
+ * @brief      GUI engine system header file.	
  *******************************************************************************
  */ 
 
@@ -22,6 +22,18 @@
 #define E_NOSYS                     (StatusType)24
 #define GUI_REGION_STATUS_FAILURE   (StatusType)25
 #define GUI_REGION_STATUS_SUCCESS   (StatusType)26
+
+/* Redefine data type define to current code style */
+typedef signed   char          co_int8_t;              
+typedef unsigned char          co_uint8_t;	
+typedef signed   short         co_int16_t;
+typedef unsigned short         co_uint16_t;
+typedef signed   int           co_int32_t;
+typedef unsigned int           co_uint32_t;
+typedef signed   long long     co_int64_t;
+typedef unsigned long long     co_uint64_t;
+
+typedef co_int8_t              co_bool_t;
 
 #define _UI_ABS(x)              ((x)>=0? (x):-(x))
 

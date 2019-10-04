@@ -7,7 +7,7 @@
  *******************************************************************************
  */ 
 
-#include "../include/cogui.h"
+#include <cogui.h>
 
 static cogui_graphic_driver_t _driver;
 static cogui_graphic_driver_t *_current_driver = &_driver;

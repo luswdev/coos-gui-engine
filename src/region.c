@@ -7,7 +7,7 @@
  *******************************************************************************
  */ 
 
-#include "../include/cogui.h"
+#include <cogui.h>
 
 static cogui_region_data_t cogui_region_empty_data = {0, 0};
 static cogui_region_data_t cogui_broken_data = {0, 0};

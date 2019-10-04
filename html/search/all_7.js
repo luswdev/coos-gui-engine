@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['gc_387',['gc',['../structcogui__dc__buffer.html#ad14f11ac0fd92c9d3d7bec5c6400012e',1,'cogui_dc_buffer::gc()'],['../structcogui__widget.html#a22c02cf85778d7d6501411ed93895129',1,'cogui_widget::gc()']]],
+  ['get_5fpixel_388',['get_pixel',['../structgraphic__driver__ops.html#a2d12de0a728b2981073463736e8cd1f8',1,'graphic_driver_ops']]],
+  ['gettopwin_389',['GetTopWin',['../topwin_8h.html#a2678e1922c0921a6bddd2f9ab738ae3b',1,'GetTopWin(S32 x, S32 y):&#160;topwin.c'],['../topwin_8c.html#a5d7f26e4cbd1374e68b1b759f0a934be',1,'GetTopWin(S32 x, S32 y):&#160;topwin.c']]],
+  ['gettopwinfocus_390',['GetTopWinFocus',['../topwin_8h.html#a53e5fcec881a9ac4980851fc762c9584',1,'GetTopWinFocus(void):&#160;topwin.c'],['../topwin_8c.html#a14cf8e3f0e944b93d5c5be120860bee1',1,'GetTopWinFocus():&#160;topwin.c']]],
+  ['graphic_5fdriver_5fops_391',['graphic_driver_ops',['../structgraphic__driver__ops.html',1,'']]],
+  ['graphic_5fext_5fops_392',['graphic_ext_ops',['../structgraphic__ext__ops.html',1,'']]],
+  ['graphic_5fpixel_5fformat_5fabgr888_393',['GRAPHIC_PIXEL_FORMAT_ABGR888',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba987f7550a59da6bf0ba661692e02b989',1,'driver.h']]],
+  ['graphic_5fpixel_5fformat_5falpha_394',['GRAPHIC_PIXEL_FORMAT_ALPHA',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55badcb020a25ec90a689d6be4a345f06615',1,'driver.h']]],
+  ['graphic_5fpixel_5fformat_5fargb565_395',['GRAPHIC_PIXEL_FORMAT_ARGB565',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba876176db9e9d05583df0cce308d3ffe5',1,'driver.h']]],
+  ['graphic_5fpixel_5fformat_5fargb888_396',['GRAPHIC_PIXEL_FORMAT_ARGB888',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba7567465f955c993eed2b234ae57fda26',1,'driver.h']]],
+  ['graphic_5fpixel_5fformat_5fbgr565_397',['GRAPHIC_PIXEL_FORMAT_BGR565',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55bafc7e50b3f7bc744f672490a076bc13ff',1,'driver.h']]],
+  ['graphic_5fpixel_5fformat_5fgray16_398',['GRAPHIC_PIXEL_FORMAT_GRAY16',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba2787faaf902ce68fb294fedefc51f701',1,'driver.h']]],
+  ['graphic_5fpixel_5fformat_5fgray4_399',['GRAPHIC_PIXEL_FORMAT_GRAY4',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba6b4dcc062ba645c1422f29fd46e91791',1,'driver.h']]],
+  ['graphic_5fpixel_5fformat_5fmono_400',['GRAPHIC_PIXEL_FORMAT_MONO',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba65d586db6251c41cbfd739c80a9454b2',1,'driver.h']]],
+  ['graphic_5fpixel_5fformat_5frgb332_401',['GRAPHIC_PIXEL_FORMAT_RGB332',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55bac4eb2258f633cfd017660b673de1d051',1,'driver.h']]],
+  ['graphic_5fpixel_5fformat_5frgb444_402',['GRAPHIC_PIXEL_FORMAT_RGB444',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55baa5f28dff682075592a32cd78b037b7be',1,'driver.h']]],
+  ['graphic_5fpixel_5fformat_5frgb565_403',['GRAPHIC_PIXEL_FORMAT_RGB565',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba9ed9ab1d9b6dd46676489a10006aa87e',1,'driver.h']]],
+  ['graphic_5fpixel_5fformat_5frgb565p_404',['GRAPHIC_PIXEL_FORMAT_RGB565P',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba55dfa463d687e318d4b4c83f229d5491',1,'driver.h']]],
+  ['graphic_5fpixel_5fformat_5frgb666_405',['GRAPHIC_PIXEL_FORMAT_RGB666',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55babb20eb39d805f368b7f510dec46bcbef',1,'driver.h']]],
+  ['graphic_5fpixel_5fformat_5frgb888_406',['GRAPHIC_PIXEL_FORMAT_RGB888',['../driver_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba08a5c32235b59a21ca7d0b63aab312b0',1,'driver.h']]],
+  ['gui_5fregion_5fstatus_5ffailure_407',['GUI_REGION_STATUS_FAILURE',['../system_8h.html#abbe13e7d238711b47f8408be765b7540',1,'system.h']]],
+  ['gui_5fregion_5fstatus_5fsuccess_408',['GUI_REGION_STATUS_SUCCESS',['../system_8h.html#a5989045bcd513e1d4870907cf919daa7',1,'system.h']]],
+  ['gui_20engine_20for_20coos_409',['GUI engine for CoOS',['../md_readme.html',1,'']]]
+];

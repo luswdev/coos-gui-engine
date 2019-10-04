@@ -10,9 +10,7 @@
 #ifndef _COGUI_COLOR_H
 #define _COGUI_COLOR_H
 
-#include "coocox.h"
-
-typedef U64 cogui_color_t;
+typedef co_int64_t cogui_color_t;
 
 #define COGUI_USING_RGB565
 //#define COGUI_USING_BGR565

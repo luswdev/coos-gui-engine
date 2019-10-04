@@ -7,10 +7,9 @@
  *******************************************************************************
  */ 
 
-#include "../include/cogui.h"
-#include "../include/screen.h"
-#include <stm32f4xx.h>
-#include <stdarg.h>
+#include <cogui.h>
+#include <stm32f4xx.h>      /* for UART setting */
+#include <stdarg.h>         /* for va function  */
 
 void cogui_system_init(void *par)
 {

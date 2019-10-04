@@ -7,7 +7,7 @@
  *******************************************************************************
  */ 
 
-#include "../include/cogui.h"
+#include <cogui.h>
 
 static void cogui_dc_buffer_draw_point(cogui_dc_t *dc, S32 x, S32 y);
 static void coggui_dc_buffer_draw_color_point(cogui_dc_t *dc, S32 x, S32 y, cogui_color_t color);
