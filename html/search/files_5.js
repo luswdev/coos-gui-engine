@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['mouse_2ec_543',['mouse.c',['../mouse_8c.html',1,'']]],
-  ['mouse_2eh_544',['mouse.h',['../mouse_8h.html',1,'']]]
+  ['mouse_2ec_541',['mouse.c',['../mouse_8c.html',1,'']]],
+  ['mouse_2eh_542',['mouse.h',['../mouse_8h.html',1,'']]]
 ];

@@ -9,10 +9,10 @@
 
 #include <cogui.h>
 
-static void cogui_dc_hw_draw_point(cogui_dc_t *dc, S32 x, S32 y);
-static void cogui_dc_hw_draw_color_point(cogui_dc_t *dc, S32 x, S32 y, cogui_color_t color);
-static void cogui_dc_hw_draw_vline(cogui_dc_t *dc, S32 x, S32 y1, S32 y2);
-static void cogui_dc_hw_draw_hline(cogui_dc_t *dc, S32 x1, S32 x2, S32 y);
+static void cogui_dc_hw_draw_point(cogui_dc_t *dc, co_int32_t x, co_int32_t y);
+static void cogui_dc_hw_draw_color_point(cogui_dc_t *dc, co_int32_t x, co_int32_t y, cogui_color_t color);
+static void cogui_dc_hw_draw_vline(cogui_dc_t *dc, co_int32_t x, co_int32_t y1, co_int32_t y2);
+static void cogui_dc_hw_draw_hline(cogui_dc_t *dc, co_int32_t x1, co_int32_t x2, co_int32_t y);
 static void cogui_dc_hw_fill_rect(cogui_dc_t *dc, cogui_rect_t *rect);
 static StatusType cogui_dc_hw_fini(cogui_dc_t *dc);
 
@@ -27,13 +27,23 @@ struct cogui_dc_engine dc_hw_engine =
     cogui_dc_hw_fini,
 };
 
+/**
+ *******************************************************************************
+ * @brief      Create a hardware DC 
+ * @param[in]  *owner   Widget which DC belone
+ * @param[out] None
+ * @retval     *dc		DC pointer which we create     
+ *
+ * @par Description
+ * @details    This function is used to create a hardware DC.  
+ *******************************************************************************
+ */
 cogui_dc_t *cogui_dc_hw_create(cogui_widget_t *owner)
 {
     struct cogui_dc_hw *dc;
 
-    if (owner==Co_NULL)
+    if (owner == Co_NULL)
         return Co_NULL;
-    
 
     dc = (struct cogui_dc_hw *) cogui_malloc(sizeof(struct cogui_dc_hw));
     if (dc) {
@@ -58,7 +68,7 @@ static StatusType cogui_dc_hw_fini(cogui_dc_t *dc)
     return Co_TRUE;
 }
 
-static void cogui_dc_hw_draw_point(cogui_dc_t *self, S32 x, S32 y)
+static void cogui_dc_hw_draw_point(cogui_dc_t *self, co_int32_t x, co_int32_t y)
 {
     struct cogui_dc_hw *dc;
 
@@ -80,7 +90,7 @@ static void cogui_dc_hw_draw_point(cogui_dc_t *self, S32 x, S32 y)
     dc->hw_driver->ops->set_pixel(&(dc->owner->gc.foreground), x, y);
 }
 
-static void cogui_dc_hw_draw_color_point(cogui_dc_t *self, S32 x, S32 y, cogui_color_t color)
+static void cogui_dc_hw_draw_color_point(cogui_dc_t *self, co_int32_t x, co_int32_t y, cogui_color_t color)
 {
     struct cogui_dc_hw *dc;
 
@@ -102,7 +112,7 @@ static void cogui_dc_hw_draw_color_point(cogui_dc_t *self, S32 x, S32 y, cogui_c
     dc->hw_driver->ops->set_pixel(&color, x, y);
 }
 
-static void cogui_dc_hw_draw_vline(cogui_dc_t *self, S32 x, S32 y1, S32 y2)
+static void cogui_dc_hw_draw_vline(cogui_dc_t *self, co_int32_t x, co_int32_t y1, co_int32_t y2)
 {
     struct cogui_dc_hw *dc;
 
@@ -135,7 +145,7 @@ static void cogui_dc_hw_draw_vline(cogui_dc_t *self, S32 x, S32 y1, S32 y2)
     dc->hw_driver->ops->draw_vline(&(dc->owner->gc.foreground), x, y1, y2);
 }
 
-static void cogui_dc_hw_draw_hline(cogui_dc_t *self, S32 x1, S32 x2, S32 y)
+static void cogui_dc_hw_draw_hline(cogui_dc_t *self, co_int32_t x1, co_int32_t x2, co_int32_t y)
 {
     struct cogui_dc_hw *dc;
 
@@ -170,7 +180,7 @@ static void cogui_dc_hw_draw_hline(cogui_dc_t *self, S32 x1, S32 x2, S32 y)
 static void cogui_dc_hw_fill_rect(cogui_dc_t *self, cogui_rect_t *rect)
 {
     cogui_color_t color;
-    S32 y1, y2, x1, x2;
+    co_int32_t y1, y2, x1, x2;
     struct cogui_dc_hw *dc;
 
     COGUI_ASSERT(self != Co_NULL);

@@ -19,5 +19,5 @@ var color_8h =
     [ "COGUI_DARK_GRAY", "color_8h.html#a28eb87c3d36f8a783efc2aaf10a89f48", null ],
     [ "COGUI_WHITE", "color_8h.html#ae57ec2949005e2df7a1bd1fd4237e319", null ],
     [ "COGUI_BLACK", "color_8h.html#a7d21a98cc1f2c886af6256a19d0f9907", null ],
-    [ "cogui_color_t", "color_8h.html#a1268f84f3aa6e127e93aad8498d92296", null ]
+    [ "cogui_color_t", "color_8h.html#a3ef0e0585bac28e27e7a236a6b42fc5c", null ]
 ];

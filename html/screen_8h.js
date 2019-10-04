@@ -33,13 +33,13 @@ var screen_8h =
     [ "COGUI_SCREEN_NODE_IS_HEADER", "screen_8h.html#a38947a08d2118ea5a1437512cd6a650b", null ],
     [ "cogui_screen_t", "screen_8h.html#aad63abe4d8233cd8388398b74dd24787", null ],
     [ "cogui_screen_list_init", "screen_8h.html#a436cab8d88aa7e85a5613dac4c6885c5", null ],
-    [ "cogui_screen_node_create", "screen_8h.html#a17a82f9b42df837e44fbf8fcd7bdf792", null ],
+    [ "cogui_screen_refresh", "screen_8h.html#aa528d66661e21ae9b52ea104f1b13cc7", null ],
     [ "cogui_screen_node_delete", "screen_8h.html#a1bd6b125b9a77f0dcc32e3eda7834f9b", null ],
     [ "cogui_screen_list_insert", "screen_8h.html#aabaa0825446e090271201ceb4f9565a8", null ],
     [ "cogui_screen_list_remove", "screen_8h.html#ac85e81d40d41f2cb7ec742fb92746ec0", null ],
     [ "cogui_screen_list_pop", "screen_8h.html#a7b7a1a91e418eb25b4d241cedb764daa", null ],
+    [ "cogui_screen_node_create", "screen_8h.html#a17a82f9b42df837e44fbf8fcd7bdf792", null ],
     [ "cogui_screen_node_update", "screen_8h.html#ac97d941a15a7d11a7e09515c3488608b", null ],
     [ "cogui_screen_node_set_rect", "screen_8h.html#ac43c206a08dfb6d118879411069f2e0b", null ],
-    [ "cogui_get_screen_node", "screen_8h.html#afd89a96364e80b11e3531dfc2bad034a", null ],
-    [ "cogui_screen_refresh", "screen_8h.html#aa528d66661e21ae9b52ea104f1b13cc7", null ]
+    [ "cogui_get_screen_node", "screen_8h.html#afd89a96364e80b11e3531dfc2bad034a", null ]
 ];

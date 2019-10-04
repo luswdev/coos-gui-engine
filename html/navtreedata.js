@@ -23,9 +23,7 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "CoOS GUI Engine", "index.html", [
-    [ "GUI engine for CoOS", "md_readme.html", [
-      [ "How?", "md_readme.html#autotoc_md1", null ]
-    ] ],
+    [ "GUI engine for CoOS", "md_readme.html", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -52,8 +50,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"screen_8h.html#a38503fcf81a4bfb8c04834986227471b",
-"system_8c.html#aebfc333c5aab3aceb25df4e74fd0bba8"
+"screen_8h.html#a38947a08d2118ea5a1437512cd6a650b",
+"system_8h.html#a0b4a2e6bf4e11c85e928368ea8828496"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

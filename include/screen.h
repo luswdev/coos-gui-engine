@@ -53,7 +53,7 @@
 
 /**
  * @struct   cogui_screen screen.h	
- * @brief    screen list struct
+ * @brief    Screen list struct
  * @details  This struct use to refresh screen node.
  */
 struct cogui_screen {

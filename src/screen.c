@@ -68,10 +68,10 @@ void cogui_screen_list_init()
 
 /**
  *******************************************************************************
- * @brief      create a screen node
- * @param[in]  *owner      the node's parent widget
+ * @brief      Create a screen node
+ * @param[in]  *owner      The node's parent widget
  * @param[out] None
- * @retval     screen_node the node which we just create 
+ * @retval     screen_node The node which we just create 
  *
  * @par Description
  * @details    This function is used to create a screen node which is belone
@@ -104,8 +104,8 @@ cogui_screen_t *cogui_screen_node_create(cogui_widget_t *owner)
 
 /**
  *******************************************************************************
- * @brief      insert a screen node into screen list
- * @param[in]  *node    which node we should insert
+ * @brief      Insert a screen node into screen list
+ * @param[in]  *node    Which node we should insert
  * @param[out] None
  * @retval     None 
  *
@@ -130,8 +130,8 @@ void cogui_screen_list_insert(cogui_screen_t *node)
 
 /**
  *******************************************************************************
- * @brief      pop out a screen node from screen list
- * @param[in]  id       which node we should pop
+ * @brief      Pop out a screen node from screen list
+ * @param[in]  id       Which node we should pop
  * @param[out] None
  * @retval     None 
  *
@@ -167,8 +167,8 @@ void cogui_screen_list_pop(co_uint32_t id)
 
 /**
  *******************************************************************************
- * @brief      remove a screen node from screen list
- * @param[in]  id which node we should remove
+ * @brief      Remove a screen node from screen list
+ * @param[in]  id       Which node we should remove
  * @param[out] None
  * @retval     None 
  *
@@ -207,11 +207,11 @@ void cogui_screen_list_remove(co_uint32_t id)
 
 /**
  *******************************************************************************
- * @brief      find a node from id
- * @param[in]  id    which node we want to find
+ * @brief      Find a node from id
+ * @param[in]  id           Which node we want to find
  * @param[out] None
- * @retval     screen_node the result we found
- * @retval     Co_NULL     or we did not find it
+ * @retval     screen_node  The result we found
+ * @retval     Co_NULL      Or we did not find it
  *
  * @par Description
  * @details    This function is used to find a screen node from id
@@ -238,9 +238,9 @@ cogui_screen_t *cogui_get_screen_node(co_uint32_t id)
 
 /**
  *******************************************************************************
- * @brief      update node information
- * @param[in]  id               which node we should update
- * @param[in]  *update_data     all we need to update's data
+ * @brief      Update node information
+ * @param[in]  id               Which node we should update
+ * @param[in]  *update_data     All we need to update's data
  * @param[out] None
  * @retval     None
  *
@@ -274,9 +274,9 @@ void cogui_screen_node_update(co_uint32_t id, cogui_screen_t *update_data)
 
 /**
  *******************************************************************************
- * @brief      set node's rectangle 
- * @param[in]  *node     which node we should set
- * @param[in]  *rect     the rectangle to set
+ * @brief      Set node's rectangle 
+ * @param[in]  *node     Which node we should set
+ * @param[in]  *rect     The rectangle to set
  * @param[out] None
  * @retval     None
  *
@@ -295,12 +295,12 @@ static void cogui_screen_node_set_rect(cogui_screen_t *node, cogui_rect_t *rect)
 
 /**
  *******************************************************************************
- * @brief      set node's rectangle 
- * @param[in]  *node     which node we should set
- * @param[in]  x         the coordinate x
- * @param[in]  y         the coordinate y
- * @param[in]  width     how width the rectangle is
- * @param[in]  height    how height the rectangle is
+ * @brief      Set node's rectangle 
+ * @param[in]  *node     Which node we should set
+ * @param[in]  x         The coordinate x
+ * @param[in]  y         The coordinate y
+ * @param[in]  width     How width the rectangle is
+ * @param[in]  height    How height the rectangle is
  * @param[out] None
  * @retval     None
  *
@@ -325,7 +325,7 @@ void cogui_screen_node_set_rectangle(cogui_screen_t *node, co_int32_t x, co_int3
 
 /**
  *******************************************************************************
- * @brief      refresh screen by list
+ * @brief      Refresh screen by list
  * @param[in]  None
  * @param[out] None
  * @retval     None

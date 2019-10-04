@@ -95,17 +95,15 @@ $(document).ready(function(){initNavTree('color_8h_source.html','');});
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef _COGUI_COLOR_H</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#define _COGUI_COLOR_H</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;coocox.h&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="color_8h.html#a1268f84f3aa6e127e93aad8498d92296">   15</a></span>&#160;<span class="keyword">typedef</span> U64 <a class="code" href="color_8h.html#a1268f84f3aa6e127e93aad8498d92296">cogui_color_t</a>;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="color_8h.html#a2bc5c20b1efb566cd57173dd33fa7d6b">   17</a></span>&#160;<span class="preprocessor">#define COGUI_USING_RGB565</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">//#define COGUI_USING_BGR565</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">//#define COGUI_USING_RGB888</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">//#define COGUI_USING_ARGB8888</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">//#define COGUI_USING_RGBA8888</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">//#define COGUI_USING_ABGR8888</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="color_8h.html#a3ef0e0585bac28e27e7a236a6b42fc5c">   13</a></span>&#160;<span class="keyword">typedef</span> <a class="code" href="system_8h.html#a86c6f87482df434f1939a17b6e63aca7">co_int64_t</a> <a class="code" href="color_8h.html#a3ef0e0585bac28e27e7a236a6b42fc5c">cogui_color_t</a>;   </div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="color_8h.html#a2bc5c20b1efb566cd57173dd33fa7d6b">   16</a></span>&#160;<span class="preprocessor">#define COGUI_USING_RGB565</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">//#define COGUI_USING_BGR565</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">//#define COGUI_USING_RGB888</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">//#define COGUI_USING_ARGB8888</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">//#define COGUI_USING_RGBA8888</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">//#define COGUI_USING_ABGR8888</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">/* rgb into integer by different style */</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="color_8h.html#a679ce37cc97617fd880408878652b2b9">   24</a></span>&#160;<span class="preprocessor">#define COGUI_RGB565(r,g,b)     ((cogui_color_t)((((r)&gt;&gt;3)&lt;&lt;11)|(((g)&gt;&gt;2)&lt;&lt;5)|((b)&gt;&gt;3)))</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="color_8h.html#abbb5929db5dd119992da28e5eb4a36ea">   25</a></span>&#160;<span class="preprocessor">#define COGUI_BGR565(b,g,r)     ((cogui_color_t)((((b)&gt;&gt;3)&lt;&lt;11)|(((g)&gt;&gt;2)&lt;&lt;5)|((r)&gt;&gt;3)))</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="color_8h.html#ac4002e20d41b395727cd74ce9989b4f1">   26</a></span>&#160;<span class="preprocessor">#define COGUI_RGB888(r,g,b)     ((cogui_color_t)(((r)&lt;&lt;16)|((g)&lt;&lt;8)|(b)))</span></div>
@@ -137,23 +135,23 @@ $(document).ready(function(){initNavTree('color_8h_source.html','');});
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#define COGUI_RGB(r,g,b) COGUI_ABGR8888(255,(b),(g),(r))</span></div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="color_8h.html#a0440bc03672f42cf3d62cc75164a488c">   56</a></span>&#160;<span class="preprocessor">#define COGUI_RED               COGUI_RGB(0xc6, 0x28, 0x28)</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="color_8h.html#a82983172ec06a7a5748a8de350162f60">   57</a></span>&#160;<span class="preprocessor">#define COGUI_GREEN             COGUI_RGB(0x38, 0x8e, 0x3c)</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="color_8h.html#ad1a49b5eecad6edfc734be6a93bef3d1">   58</a></span>&#160;<span class="preprocessor">#define COGUI_BLUE              COGUI_RGB(0x02, 0x77, 0xbd)</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="color_8h.html#a6f961c12affe3a2ad087bfeefb6c1e30">   59</a></span>&#160;<span class="preprocessor">#define COGUI_YELLOW            COGUI_RGB(0xfb, 0xc0, 0x2d)</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="color_8h.html#a3415ae2eba0953b8b11044952268b5fe">   60</a></span>&#160;<span class="preprocessor">#define COGUI_PURPLE            COGUI_RGB(0x51, 0x35, 0xb1)</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="color_8h.html#a09ca75a7bc9392b5183b36a58d4e70ab">   61</a></span>&#160;<span class="preprocessor">#define COGUI_CYAN              COGUI_RGB(0x26, 0xc6, 0xda)</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="color_8h.html#a9e560282461e1768e18539f0fa8d92ce">   62</a></span>&#160;<span class="preprocessor">#define COGUI_HIGH_LIGHT        COGUI_RGB(0xf5, 0xf5, 0xf5)</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="color_8h.html#a5759cf8ef901fa881abdb9e778cb06b4">   63</a></span>&#160;<span class="preprocessor">#define COGUI_LIGHT_GRAY        COGUI_RGB(0x9e, 0x9e, 0x9e)</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="color_8h.html#a28eb87c3d36f8a783efc2aaf10a89f48">   64</a></span>&#160;<span class="preprocessor">#define COGUI_DARK_GRAY         COGUI_RGB(0x42, 0x42, 0x42)</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="color_8h.html#ae57ec2949005e2df7a1bd1fd4237e319">   65</a></span>&#160;<span class="preprocessor">#define COGUI_WHITE             COGUI_RGB(0xff, 0xff, 0xff)</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="color_8h.html#a7d21a98cc1f2c886af6256a19d0f9907">   66</a></span>&#160;<span class="preprocessor">#define COGUI_BLACK             COGUI_RGB(0x00, 0x00, 0x00)</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">/* some default color scheme */</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="color_8h.html#a0440bc03672f42cf3d62cc75164a488c">   56</a></span>&#160;<span class="preprocessor">#define COGUI_RED               COGUI_RGB(0xc6, 0x28, 0x28)         </span></div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="color_8h.html#a82983172ec06a7a5748a8de350162f60">   57</a></span>&#160;<span class="preprocessor">#define COGUI_GREEN             COGUI_RGB(0x38, 0x8e, 0x3c)         </span></div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="color_8h.html#ad1a49b5eecad6edfc734be6a93bef3d1">   58</a></span>&#160;<span class="preprocessor">#define COGUI_BLUE              COGUI_RGB(0x02, 0x77, 0xbd)         </span></div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="color_8h.html#a6f961c12affe3a2ad087bfeefb6c1e30">   59</a></span>&#160;<span class="preprocessor">#define COGUI_YELLOW            COGUI_RGB(0xfb, 0xc0, 0x2d)         </span></div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="color_8h.html#a3415ae2eba0953b8b11044952268b5fe">   60</a></span>&#160;<span class="preprocessor">#define COGUI_PURPLE            COGUI_RGB(0x51, 0x35, 0xb1)         </span></div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="color_8h.html#a09ca75a7bc9392b5183b36a58d4e70ab">   61</a></span>&#160;<span class="preprocessor">#define COGUI_CYAN              COGUI_RGB(0x26, 0xc6, 0xda)         </span></div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="color_8h.html#a9e560282461e1768e18539f0fa8d92ce">   62</a></span>&#160;<span class="preprocessor">#define COGUI_HIGH_LIGHT        COGUI_RGB(0xf5, 0xf5, 0xf5)         </span></div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="color_8h.html#a5759cf8ef901fa881abdb9e778cb06b4">   63</a></span>&#160;<span class="preprocessor">#define COGUI_LIGHT_GRAY        COGUI_RGB(0x9e, 0x9e, 0x9e)         </span></div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="color_8h.html#a28eb87c3d36f8a783efc2aaf10a89f48">   64</a></span>&#160;<span class="preprocessor">#define COGUI_DARK_GRAY         COGUI_RGB(0x42, 0x42, 0x42)         </span></div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="color_8h.html#ae57ec2949005e2df7a1bd1fd4237e319">   65</a></span>&#160;<span class="preprocessor">#define COGUI_WHITE             COGUI_RGB(0xff, 0xff, 0xff)         </span></div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="color_8h.html#a7d21a98cc1f2c886af6256a19d0f9907">   66</a></span>&#160;<span class="preprocessor">#define COGUI_BLACK             COGUI_RGB(0x00, 0x00, 0x00)         </span></div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _COGUI_COLOR_H */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="acolor_8h_html_a1268f84f3aa6e127e93aad8498d92296"><div class="ttname"><a href="color_8h.html#a1268f84f3aa6e127e93aad8498d92296">cogui_color_t</a></div><div class="ttdeci">U64 cogui_color_t</div><div class="ttdef"><b>Definition:</b> color.h:15</div></div>
+<div class="ttc" id="asystem_8h_html_a86c6f87482df434f1939a17b6e63aca7"><div class="ttname"><a href="system_8h.html#a86c6f87482df434f1939a17b6e63aca7">co_int64_t</a></div><div class="ttdeci">signed long long co_int64_t</div><div class="ttdef"><b>Definition:</b> system.h:33</div></div>
+<div class="ttc" id="acolor_8h_html_a3ef0e0585bac28e27e7a236a6b42fc5c"><div class="ttname"><a href="color_8h.html#a3ef0e0585bac28e27e7a236a6b42fc5c">cogui_color_t</a></div><div class="ttdeci">co_int64_t cogui_color_t</div><div class="ttdef"><b>Definition:</b> color.h:13</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
