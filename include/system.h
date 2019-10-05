@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       system.h
- * @version    V0.0.4
- * @date       2019.10.3
+ * @version    V0.1.0
+ * @date       2019.10.5
  * @brief      GUI engine system header file.	
  *******************************************************************************
  */ 
@@ -11,47 +11,41 @@
 #define _COGUI_SYSTEM_H
 
 #include "app.h"
-
 #include <coocox.h>
-#include <CoOS.h>
-#include <OsKernelHeap.h>
-#include <OsTask.h>
-
-#define E_TITLE_NULL                (StatusType)22
-#define E_ERROR                     (StatusType)23
-#define E_NOSYS                     (StatusType)24
-#define GUI_REGION_STATUS_FAILURE   (StatusType)25
-#define GUI_REGION_STATUS_SUCCESS   (StatusType)26
 
 /* Redefine data type define to current code style */
-typedef signed   char          co_int8_t;              
-typedef unsigned char          co_uint8_t;	
-typedef signed   short         co_int16_t;
-typedef unsigned short         co_uint16_t;
-typedef signed   int           co_int32_t;
-typedef unsigned int           co_uint32_t;
-typedef signed   long long     co_int64_t;
-typedef unsigned long long     co_uint64_t;
+typedef signed   char          co_int8_t;           /**<  8-bit signed integer      */
+typedef unsigned char          co_uint8_t;	        /**<  8-bit unsigned integer    */
+typedef signed   short         co_int16_t;          /**< 16-bit signed integer      */
+typedef unsigned short         co_uint16_t;         /**< 16-bit unsigned integer    */
+typedef signed   int           co_int32_t;          /**< 32-bit signed integer      */
+typedef unsigned int           co_uint32_t;         /**< 32-bit unsigned integer    */
+typedef signed   long long     co_int64_t;          /**< 64-bit signed integer      */
+typedef unsigned long long     co_uint64_t;         /**< 64-bit unsigned integer    */
 
-typedef co_int8_t              co_bool_t;
+typedef co_int8_t              co_bool_t;           /**< Boolean type               */
 
-#define _UI_ABS(x)              ((x)>=0? (x):-(x))
+#define _UI_ABS(x)              ((x)>=0? (x): -(x)) /**< Simple abs function        */
 
+/** assert function */
 #define COGUI_ASSERT(EX) 								\
 if(!(EX)){											    \
 	cogui_assert_handler(#EX, __FUNCTION__, __LINE__);	\
 }													    \
 
-#define COGUI_GET_LIST_NEXT(l)  ((l)->list.next)
-#define COGUI_GET_LIST_PREV(l)  ((l)->list.prev)
-#define COGUI_GET_SLIST_NEXT(l) ((l)->slist.next)
+#define COGUI_GET_LIST_NEXT(l)  ((l)->list.next)        /**< Get double linked list's next node     */
+#define COGUI_GET_LIST_PREV(l)  ((l)->list.prev)        /**< Get double linked list's prev node     */
+#define COGUI_GET_SLIST_NEXT(l) ((l)->slist.next)       /**< Get single linked list's next node     */
 
-#define COGUI_LIST(s) (struct list_node *)(s)
+#define COGUI_LIST(s)  (struct list_node *)(s)          /**< Change type into double linked list    */
+#define COGUI_SLIST(s) (struct slist_node *)(s)         /**< Change type into single linked list    */
 
-extern OSTCB TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
+#define COGUI_BORDER_DEFAULT_WIDTH  2                   /**< Default border width                   */
 
 /**
- * double linked list
+ * @struct   cogui_list_node dc.h	
+ * @brief    Double linked list struct
+ * @details  This struct is double linked list.
  */
 struct cogui_list_node
 {
@@ -61,7 +55,9 @@ struct cogui_list_node
 typedef struct cogui_list_node cogui_list_t;
 
 /**
- * single linked list
+ * @struct   cogui_slist_node dc.h	
+ * @brief    Single linked list struct
+ * @details  This struct is single linked list.
  */
 struct cogui_slist_node
 {
@@ -70,31 +66,15 @@ struct cogui_slist_node
 typedef struct cogui_slist_node cogui_slist_t;
 
 /**
- * 2D point
+ * @struct   cogui_point dc.h	
+ * @brief    2D point struct
+ * @details  This struct is 2D point.
  */
 struct cogui_point
 {
     S16 x, y;
 };
 typedef struct cogui_point cogui_point_t;
-
-/**
- * Border style
- */
-enum cogui_border_style
-{
-    COGUI_BORDER_NONE = 0,
-    COGUI_BORDER_SIMPLE,
-    COGUI_BORDER_RAISE,
-    COGUI_BORDER_SUNKEN,
-    COGUI_BORDER_BOX,
-    COGUI_BORDER_STATIC,
-    COGUI_BORDER_EXTRA,
-    COGUI_BORDER_UP,
-    COGUI_BORDER_DOWN
-};
-#define COGUI_BORDER_DEFAULT_WIDTH  2
-#define COGUI_WIDGET_DEFAULT_MARGIN 3
 
 void cogui_system_init(void *par);
 

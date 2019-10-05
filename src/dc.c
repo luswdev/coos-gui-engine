@@ -2,7 +2,7 @@
  *******************************************************************************
  * @file       dc.c
  * @version    V0.1.1
- * @date       2019.10.4
+ * @date       2019.10.5
  * @brief      This is a file for GUI DC engine interface.	
  *******************************************************************************
  */ 
@@ -116,7 +116,7 @@ void cogui_dc_draw_shaded_rect(cogui_dc_t *dc, cogui_rect_t *rect, cogui_color_t
 	dc->engine->draw_hline(dc, rect->x1,   rect->x2, rect->y2-1);
 }
 
-void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect, int flag)
+void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect, co_uint16_t flag)
 {
 	cogui_rect_t r;
 	//cogui_color_t c;

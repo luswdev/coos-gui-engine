@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       system.c
- * @version    V0.1.2  
- * @date       2019.10.3
+ * @version    V0.1.3 
+ * @date       2019.10.5
  * @brief      Some system function for GUI engine.	
  *******************************************************************************
  */ 
@@ -68,8 +68,7 @@ struct cogui_event *cogui_recv(OS_EventID mq, StatusType *result)
     struct cogui_event * event;
     cogui_app_t *app;
 
-    app = TCBTbl[CoGetCurTaskID()].userData;
-
+    app = cogui_app_self();
     COGUI_ASSERT(app != Co_NULL);
 
     event = CoPendMail(mq, 50,result);

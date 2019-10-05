@@ -20,6 +20,17 @@
 #define COGUI_DC_FC(dc) (cogui_dc_get_gc(COGUI_DC(dc))->foreground)  /**< Get foreground    */
 #define COGUI_DC_BC(dc) (cogui_dc_get_gc(COGUI_DC(dc))->background)  /**< Get background    */
 
+/* Border style */
+#define COGUI_BORDER_NONE       0x00                        /**< Border style none      */
+#define COGUI_BORDER_SIMPLE     0x01                        /**< Border style simple    */
+#define COGUI_BORDER_RAISE      0x02                        /**< Border style raise     */
+#define COGUI_BORDER_SUNKEN     0x04                        /**< Border style sunken    */
+#define COGUI_BORDER_BOX        0x08                        /**< Border style box       */
+#define COGUI_BORDER_STATIC     0x10                        /**< Border style static    */
+#define COGUI_BORDER_EXTRA      0x20                        /**< Border style extra     */
+#define COGUI_BORDER_UP         0x40                        /**< Border style up        */
+#define COGUI_BORDER_DOWN       0x80                        /**< Border style down      */
+
 struct cogui_dc;
 struct cogui_widget;
 struct cogui_graphic_driver;
@@ -125,7 +136,7 @@ void cogui_dc_fill_rect_forecolor(cogui_dc_t *dc, cogui_rect_t *rect);
 void cogui_dc_draw_horizontal_line(cogui_dc_t *dc, co_int32_t x1, co_int32_t x2, co_int32_t y);
 void rtgui_dc_draw_vertical_line(cogui_dc_t *dc, co_int32_t x, co_int32_t y1, co_int32_t y2);
 
-void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect, int flag);
+void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect, co_uint16_t flag);
 
 /* get current graph context */
 struct cogui_gc *cogui_dc_get_gc(cogui_dc_t *dc);
