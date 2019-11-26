@@ -9,5 +9,5 @@
 
 #include <cogui.h>
 
-const cogui_color_t default_foreground = COGUI_GREEN;       /**< Set default foreground to green */
+const cogui_color_t default_foreground = COGUI_WHITE;       /**< Set default foreground to green */
 const cogui_color_t default_background = COGUI_BLACK;       /**< Set default background to black */

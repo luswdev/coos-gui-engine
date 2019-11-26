@@ -13,6 +13,7 @@
 #include <CoOS.h>
 
 struct cogui_event;
+struct cogui_window;
 
 extern OSTCB    TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
 extern ECB      EventTbl[CFG_MAX_EVENT]; 
@@ -32,6 +33,8 @@ struct cogui_app
     U16     ref_cnt;
     U16     exit_code;
 
+    struct cogui_window *win;
+
     /* Task id */
     OS_TID tid;
     /* Message queue */
@@ -43,6 +46,7 @@ struct cogui_app
 
     /* the event handler */
     StatusType (*handler)(struct cogui_event *event);
+    StatusType (*optional_handler)(struct cogui_event *event);
 
     void    *user_data;
 };

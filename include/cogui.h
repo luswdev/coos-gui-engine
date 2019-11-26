@@ -10,6 +10,8 @@
 #ifndef _COGUI_H
 #define _COGUI_H
 
+//#include "stdio.h"
+
 /* CooCox CoOS library */
 #include "coocox.h"
 
@@ -19,26 +21,26 @@
 /* widget */
 #include "widget.h"
 
+/* darwing */
+#include "color.h"
+#include "region.h"
+#include "driver.h"
+#include "dc.h"
+
+/* window */
+#include "title.h"
+#include "window.h"
+#include "topwin.h"
+#include "container.h"
+
 /* application */
 #include "app.h"
 
 /* system define */
 #include "system.h"
 
-/* darwing */
-#include "color.h"
-#include "region.h"
-#include "driver.h"
-#include "dc.h"
-#include "screen.h"
-
 /* server */
 #include "server.h"
-
-/* window */
-#include "window.h"
-#include "topwin.h"
-#include "container.h"
 
 /* event */
 #include "event.h"

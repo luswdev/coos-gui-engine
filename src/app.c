@@ -9,6 +9,8 @@
 
 #include <cogui.h>
 
+cogui_window_t *main_page       = Co_NULL;
+
 void _cogui_app_init(cogui_app_t *app)
 {
     app->name         = Co_NULL;
@@ -18,6 +20,7 @@ void _cogui_app_init(cogui_app_t *app)
     app->win_cnt      = 0;
     app->win_acti_cnt = 0;
 	app->handler      = cogui_app_event_handler;
+	app->optional_handler      = Co_NULL;
 }
 
 cogui_app_t *cogui_app_create(char *title)
@@ -40,7 +43,7 @@ cogui_app_t *cogui_app_create(char *title)
 
     app->name = (U8 *)cogui_strdup((char *)title);
 
-    app->mq = CoCreateMbox(EVENT_SORT_TYPE_FIFO);
+    app->mq = CoCreateMbox(EVENT_SORT_TYPE_PRIO);
 
     srv_app = cogui_get_server();
     if(srv_app == Co_NULL) {
@@ -51,7 +54,7 @@ cogui_app_t *cogui_app_create(char *title)
     COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_APP_CREATE);
     event.app = app;
 
-    if(cogui_send(srv_app, &event.parent) == E_OK) {
+    if(cogui_send_sync(srv_app, &event.parent) == E_OK) {
         TCBTbl[tid].userData = app;
         return app;
     }
@@ -79,7 +82,7 @@ void cogui_app_delete(cogui_app_t *app)
     COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_APP_DELE);
     event.app = app;
 
-    if(cogui_send(srv_app, &event.parent) != E_OK)
+    if(cogui_send_sync(srv_app, &event.parent) != E_OK)
        return;
 		
 	cogui_free(app);
@@ -89,12 +92,22 @@ StatusType cogui_app_event_handler(struct cogui_event *event)
 {
 	COGUI_ASSERT(event != Co_NULL);
 
+    cogui_printf("[%10s] Got event #%d.\r\n", cogui_app_self()->name, event->type);
+
 	switch (event->type)
     {
 	case COGUI_EVENT_APP_DELE:
 		cogui_app_exit(((struct cogui_event_app *)event)->app, 0);
 		break;
-				
+
+	case COGUI_EVENT_PAINT:
+        if (cogui_app_self()->optional_handler != Co_NULL) {
+            cogui_app_self()->optional_handler(event);
+            break;
+        }
+        else 
+            return Co_FALSE;
+
 	default:
 		return Co_FALSE;
 				
@@ -103,17 +116,20 @@ StatusType cogui_app_event_handler(struct cogui_event *event)
 	return Co_TRUE;
 }
 
-void _cogui_app_event_loop(cogui_app_t *app)
+static void _cogui_app_event_loop(cogui_app_t *app)
 {
-    StatusType result;
-    U16 current_ref;
-    struct cogui_event *event;
+    StatusType  result;
+    co_uint16_t current_ref;
+    co_int32_t loop_cnt = 0;
+    struct cogui_event event;
 
     current_ref = ++app->ref_cnt;
     while(current_ref <= app->ref_cnt) {
-        event = cogui_recv(app->mq, &result);
-        if(result == E_OK) {
-            app->handler(event);
+        cogui_printf("[%10s] App event loop #%d.\r\n", app->name, loop_cnt++);
+        result = cogui_recv(app->mq, &event, 0);
+
+        if(result == E_OK && &event != Co_NULL) {
+            app->handler(&event);
         }
     }
 }
@@ -123,6 +139,18 @@ void cogui_app_run(cogui_app_t *app)
     COGUI_ASSERT(app != Co_NULL);
     COGUI_ASSERT(app->tid);
     COGUI_ASSERT(TCBTbl[app->tid].userData);
+
+    if (app != cogui_get_server()){
+        struct cogui_event_app event;
+        COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_PAINT);
+        event.app = app;
+
+        cogui_send(cogui_get_server(), &event.parent);
+    }
+    else {
+        cogui_printf("[%10s] Create main window.\r\n", cogui_app_self()->name);
+        main_page = cogui_main_window_create();
+    }
 
     _cogui_app_event_loop(app);
 }

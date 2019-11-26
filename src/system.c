@@ -11,14 +11,11 @@
 #include <stm32f4xx.h>      /* for UART setting */
 #include <stdarg.h>         /* for va function  */
 
-void cogui_system_init(void *par)
+void cogui_system_init()
 {
-    cogui_printf("Initial screen list...");
-    cogui_screen_list_init();
-    cogui_printf("[OK]\r\n");
-
-    cogui_printf("Initial server...\r\n");
+    cogui_printf("[%10s] Initial server...", "system");
     cogui_server_init();
+    cogui_printf("[OK]\r\n");
 }
 
 void *cogui_malloc(U32 size)
@@ -57,24 +54,71 @@ StatusType cogui_send(cogui_app_t *app, struct cogui_event *event)
 
     COGUI_ASSERT(event != Co_NULL);
     COGUI_ASSERT(app != Co_NULL);
-		
+
     result = CoPostMail(app->mq, event);
 
     return result;
 }
 
-struct cogui_event *cogui_recv(OS_EventID mq, StatusType *result)
+StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event)
 {
-    struct cogui_event * event;
-    cogui_app_t *app;
+    StatusType result;
 
-    app = cogui_app_self();
+    COGUI_ASSERT(event != Co_NULL);
     COGUI_ASSERT(app != Co_NULL);
 
-    event = CoPendMail(mq, 50,result);
+    OS_EventID mq = CoCreateMbox(EVENT_SORT_TYPE_FIFO);
+	event->ack = mq;
 
-    return event;
+    result = CoPostMail(app->mq, event);
+
+    if (result != E_OK){
+        CoDelMbox(mq, OPT_DEL_ANYWAY);
+    }
+
+    /* wait forever for server ack */
+    event = CoPendMail(mq, 0, &result);
+
+    CoDelMbox(mq, OPT_DEL_ANYWAY);
+    return result;
 }
+
+static co_int32_t _cogui_get_event_size(struct cogui_event *event) {
+    if (event->type <= COGUI_EVENT_APP_ACTIVATE) {
+        return sizeof(struct cogui_event_app);
+    }
+
+    if (event->type <= COGUI_EVENT_MOUSE_BUTTON) {
+        return sizeof(struct cogui_event_mouse);
+    }
+
+    if (event->type <= COGUI_EVENT_KBD) {
+        return sizeof(struct cogui_event_kbd);
+    }
+
+    return sizeof(struct cogui_event);
+}
+
+StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, co_int32_t timeout)
+{
+    StatusType result;
+    cogui_app_t *app;
+    struct cogui_event* buf;
+
+    COGUI_ASSERT(event!=Co_NULL);
+
+    app = cogui_app_self();
+    if (app == Co_NULL) {
+        return E_ERROR;
+    }
+
+    buf = (struct cogui_event *)CoPendMail(mq, timeout, &result);
+    cogui_memcpy(event, buf, _cogui_get_event_size(buf));
+
+    return result;
+}
+
+
 
 void *cogui_memset(void *s, int c, U64 cnt)
 {
@@ -96,7 +140,6 @@ void *cogui_memcpy(void *dest, const void *src, U64 cnt)
     return dest;    
 }
 
-
 void *cogui_memmove(void *dest, const void *src, U64 cnt)
 {
     char *ds = (char *)dest, *ss = (char *)src;
@@ -115,7 +158,6 @@ void *cogui_memmove(void *dest, const void *src, U64 cnt)
 
     return dest;
 }
-
 
 S32 cogui_memcmp(const void *str1, const void *str2, U64 cnt)
 {
@@ -147,7 +189,6 @@ char *cogui_strstr(const char *src, const char *tar)
 
     return Co_NULL;
 }
-
 
 U64 cogui_strlen(const char *str)
 {
@@ -197,7 +238,7 @@ U64 cogui_pow(S32 x, S32 y)
         sum *= x;
 
     return sum;
- }
+}
 
 void cogui_putchar(const char ch)
 {
@@ -219,20 +260,26 @@ void cogui_putstr(const char *str)
 int cogui_printf(const char *str,...)
 {
 	va_list ap;
-    int val,r_val;
+    int val,r_val,space=0;
 	char count, ch;
 	char *s = Co_NULL;
     int res = 0;
 
-    CoSchedLock();
+    //CoSchedLock();
     va_start(ap,str);
     while ('\0' != *str) { 
           switch (*str)
           {
             case '%':
                 str++;
+                while (*str >= '0' && *str <= '9') {
+                    space *= 10;
+                    space += *str - '0';
+                    str++;
+                }
 
                 switch (*str) {
+
                     /* handle integer var */
                     case 'd':
                         val = va_arg(ap, int); 
@@ -297,6 +344,15 @@ int cogui_printf(const char *str,...)
                     /* handle string var */
                     case 's':
 						s = va_arg(ap, char *);
+                        
+                        if (space) {
+                            int len = cogui_strlen(s);
+                            while (len < space) {
+                                cogui_putchar(' ');
+                                space --;
+                            }
+                        }
+
 						cogui_putstr(s);
                         res += cogui_strlen(s);
 						break;
@@ -332,7 +388,7 @@ int cogui_printf(const char *str,...)
 		str++;
      }
     va_end(ap);
-	CoSchedUnlock();
+	//CoSchedUnlock();
 
 	return res;
 }

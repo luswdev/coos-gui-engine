@@ -23,24 +23,22 @@ enum cogui_event_type
     /* widget event */
     COGUI_EVENT_WIDGET_SHOW,    
     COGUI_EVENT_WIDGET_HIDE,
+    COGUI_EVENT_WIDGET_MOVE,
 
     /* window event */
-    COGUI_EVENT_WIN_CREATE,
-    COGUI_EVENT_WIN_DELE,
-    COGUI_EVENT_WIN_SHOW,
-    COGUI_EVENT_WIN_HIDE,
-    COGUI_EVENT_WIN_ACTIVATE,
-    COGUI_EVENT_WIN_DEACTIVATE,
-    COGUI_EVENT_WIN_CLOSE,
-    COGUI_EVENT_WIN_MOVE,
-    COGUI_EVENT_WIN_RESIZE,
-    COGUI_EVENT_WIN_TITLE,
-    COGUI_EVENT_WIN_UPDATE_END,
+    COGUI_EVENT_WINDOW_CREATE,
+    COGUI_EVENT_WINDOW_DELE,
+    COGUI_EVENT_WINDOW_SHOW,
+    COGUI_EVENT_WINDOW_HIDE,
+    COGUI_EVENT_WINDOW_CLOSE,
+    COGUI_EVENT_WINDOW_TITLE,
 
     /* mouse and keyboard event */
     COGUI_EVENT_MOUSE_MOTION,
     COGUI_EVENT_MOUSE_BUTTON,
     COGUI_EVENT_KBD,
+
+    COGUI_EVENT_PAINT,
 
     COGUI_EVENT_COMMAND,
 };
@@ -55,9 +53,9 @@ struct cogui_event {
 
 #define _COGUI_EVENT_ELEMENT           \
     struct cogui_event parent;         \
-    cogui_window_t *win;                     \
+    cogui_window_t *win;               \
 
-#define COGUI_EVENT_INIT(e,t)        \
+#define COGUI_EVENT_INIT(e,t)          \
 {                                      \
     (e)->type   = (t);                 \
     (e)->sender = cogui_app_self();    \

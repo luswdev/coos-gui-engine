@@ -23,13 +23,10 @@
 /* Border style */
 #define COGUI_BORDER_NONE       0x00                        /**< Border style none      */
 #define COGUI_BORDER_SIMPLE     0x01                        /**< Border style simple    */
-#define COGUI_BORDER_RAISE      0x02                        /**< Border style raise     */
-#define COGUI_BORDER_SUNKEN     0x04                        /**< Border style sunken    */
-#define COGUI_BORDER_BOX        0x08                        /**< Border style box       */
-#define COGUI_BORDER_STATIC     0x10                        /**< Border style static    */
-#define COGUI_BORDER_EXTRA      0x20                        /**< Border style extra     */
-#define COGUI_BORDER_UP         0x40                        /**< Border style up        */
-#define COGUI_BORDER_DOWN       0x80                        /**< Border style down      */
+
+#define COGUI_BORDER_DEFAULT_WIDTH  2                       /**< Default border width   */
+
+extern const cogui_color_t default_foreground;
 
 struct cogui_dc;
 struct cogui_widget;
@@ -122,11 +119,10 @@ struct cogui_dc_buffer
     co_uint8_t *pixel;*/
 };
 
-
 /* create a hardware DC */
 cogui_dc_t *cogui_dc_hw_create(struct cogui_widget *owner);
 
-void cogui_dc_draw_line(cogui_dc_t *dc, co_int32_t x1, co_int32_t y1, co_int32_t x2, co_int32_t y2);
+void cogui_dc_draw_line(cogui_dc_t *dc, co_int32_t x1, co_int32_t x2, co_int32_t y1, co_int32_t y2);
 void cogui_dc_draw_rect(cogui_dc_t *dc, cogui_rect_t *rect);
 void cogui_dc_draw_shaded_rect(cogui_dc_t *dc, cogui_rect_t *rect, cogui_color_t c1, cogui_color_t c2);
 void cogui_dc_fill_rect_forecolor(cogui_dc_t *dc, cogui_rect_t *rect);
@@ -136,10 +132,15 @@ void cogui_dc_fill_rect_forecolor(cogui_dc_t *dc, cogui_rect_t *rect);
 void cogui_dc_draw_horizontal_line(cogui_dc_t *dc, co_int32_t x1, co_int32_t x2, co_int32_t y);
 void rtgui_dc_draw_vertical_line(cogui_dc_t *dc, co_int32_t x, co_int32_t y1, co_int32_t y2);
 
-void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect, co_uint16_t flag);
+void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect);
+
+void cogui_dc_draw_button(cogui_dc_t *dc, co_int16_t flag);
+void cogui_dc_draw_title(cogui_dc_t *dc);
 
 /* get current graph context */
 struct cogui_gc *cogui_dc_get_gc(cogui_dc_t *dc);
+
+struct cogui_widget *cogui_dc_get_owner(cogui_dc_t *dc);
 
 /* DC usage function */
 cogui_dc_t *cogui_dc_begin_drawing(struct cogui_widget *owner);

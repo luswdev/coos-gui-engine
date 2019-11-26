@@ -116,52 +116,81 @@ void cogui_dc_draw_shaded_rect(cogui_dc_t *dc, cogui_rect_t *rect, cogui_color_t
 	dc->engine->draw_hline(dc, rect->x1,   rect->x2, rect->y2-1);
 }
 
-void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect, co_uint16_t flag)
+void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect)
 {
-	cogui_rect_t r;
-	//cogui_color_t c;
+	cogui_rect_t r = *rect;
+	cogui_color_t save_color;
 	
 	COGUI_ASSERT(dc != Co_NULL);
 	
 	if (rect == Co_NULL)
 		return;
 	
-	r = *rect;
-	switch(flag) {
-        case COGUI_BORDER_STATIC:
-            cogui_dc_draw_shaded_rect(dc, &r, COGUI_LIGHT_GRAY, COGUI_DARK_GRAY);
-			break;
+    save_color      = COGUI_DC_FC(dc);
+	COGUI_DC_FC(dc) = COGUI_LIGHT_GRAY;
 
-		case COGUI_BORDER_SIMPLE:
-			COGUI_DC_FC(dc) = COGUI_LIGHT_GRAY;
-			cogui_dc_draw_rect(dc, &r);
-			break;
+	cogui_dc_draw_rect(dc, &r);
 
-		case COGUI_BORDER_EXTRA:
-			COGUI_DC_FC(dc) = COGUI_WHITE;
-			cogui_dc_draw_rect(dc, &r);
-			break;
+    COGUI_RECT_EXPAND(&r, -1);
 
-        case COGUI_BORDER_SUNKEN:
-            cogui_dc_draw_shaded_rect(dc, &r, COGUI_DARK_GRAY, COGUI_HIGH_LIGHT);
-            cogui_rect_inflate(&r, -1);
-            cogui_dc_draw_shaded_rect(dc, &r, COGUI_LIGHT_GRAY, COGUI_LIGHT_GRAY);
-			break;
+	cogui_dc_draw_rect(dc, &r);
 
-		case COGUI_BORDER_RAISE:
-            cogui_dc_draw_shaded_rect(dc, &r, COGUI_WHITE, COGUI_DARK_GRAY);
-            cogui_rect_inflate(&r, -1);
-            cogui_dc_draw_shaded_rect(dc, &r, COGUI_HIGH_LIGHT, COGUI_WHITE);
-			break;
-		case COGUI_BORDER_BOX:
-            cogui_dc_draw_shaded_rect(dc, &r, COGUI_HIGH_LIGHT, COGUI_DARK_GRAY);
-            cogui_rect_inflate(&r, -1);
-            cogui_dc_draw_shaded_rect(dc, &r, COGUI_DARK_GRAY, COGUI_HIGH_LIGHT);
-			break;
-		
-		default:
-			break;
-	}
+    COGUI_DC_FC(dc) = save_color;
+}
+
+void cogui_dc_draw_button(cogui_dc_t *dc, co_int16_t flag)
+{
+    COGUI_ASSERT(dc != Co_NULL);
+
+    if (flag & COGUI_WINTITLE_BTN_BORDER) {
+        cogui_rect_t rect;
+        COGUI_SET_RECT(&rect, 0, 0, COGUI_WINTITLE_BTN_HEIGHT, COGUI_WINTITLE_BTN_HEIGHT);
+        cogui_dc_draw_rect(dc, &rect);
+    }
+
+    if (flag & COGUI_WINTITLE_BTN_CLOSE) {
+        co_int16_t i, j;
+
+        for ( i = 0; i < COGUI_WINTITLE_BTN_INNER_HEIGHT; i++) {
+            for ( j = 0; j < COGUI_WINTITLE_BTN_INNER_HEIGHT; j++) {
+                if ( _UI_ABS(i - j) > 3 )   /* skip other pixels */
+                    continue;
+
+                if ((i == 0  && j <= 1)  || (i == 1  && j == 0)  || /* skip left top corner     */
+                    (i == 28 && j == 0)  || (i == 29 && j <= 1)  || /* skip right top corner    */
+                    (i == 0  && j >= 28) || (i == 1  && j == 29) || /* skip left bottom corner  */
+                    (i == 28 && j == 29) || (i == 29 && j >= 28)) { /* skip right bottom corner */
+                    continue;
+                }
+
+                dc->engine->draw_point(dc, i+2, j+2);   /* positive diagonal */
+                dc->engine->draw_point(dc, 31-i, j+2);  /* negative diagonal */
+            }
+        }
+    }
+
+    if (flag & COGUI_WINTITLE_BTN_MINI) {      
+        cogui_dc_draw_line(dc, 2, 31, 15, 19);
+    }
+}
+
+void cogui_dc_draw_title(cogui_dc_t *dc) {
+    COGUI_ASSERT(dc != Co_NULL);
+
+    cogui_dc_t *cdc = cogui_dc_get_owner(dc)->next->dc_engine;
+    cogui_dc_t *mdc = cogui_dc_get_owner(dc)->next->next->dc_engine;
+
+    cogui_rect_t rect;
+    COGUI_SET_RECT(&rect, 0, 0, 240, COGUI_WINTITLE_HEIGHT);
+    
+    /* draw background */
+    dc->engine->fill_rect(dc, &rect);
+    //cogui_dc_draw_line(dc, 0, 240, 0, COGUI_WINTITLE_HEIGHT);
+
+    /* draw close button */
+    cogui_dc_draw_button(cdc, COGUI_WINTITLE_BTN_CLOSE);
+    /* draw mini button */
+    cogui_dc_draw_button(mdc,  COGUI_WINTITLE_BTN_MINI);
 }
 
 /**
@@ -198,6 +227,42 @@ struct cogui_gc *cogui_dc_get_gc(cogui_dc_t *dc)
 	}
 	
 	return gc;
+}
+
+/**
+ *******************************************************************************
+ * @brief      Get DC's owner
+ * @param[in]  *dc      Using this DC to find
+ * @param[out] None
+ * @retval     *owner   Which widget DC belong
+ *
+ * @par Description
+ * @details    This function is called to find owner widget by giving DC 
+ *             pointer.
+ *******************************************************************************
+ */
+struct cogui_widget *cogui_dc_get_owner(cogui_dc_t *dc)
+{
+	cogui_widget_t *owner = Co_NULL;
+	
+	COGUI_ASSERT(dc != Co_NULL);
+	
+	switch(dc->type) {
+		case COGUI_DC_HW: {
+			struct cogui_dc_hw *dchw;
+			dchw = (struct cogui_dc_hw *)dc;
+			
+            /* get graph  context by its owner */
+			owner = dchw->owner;
+			break;
+		}
+
+		case COGUI_DC_BUFFER:
+		default:
+			break;
+	}
+	
+	return owner;
 }
 
 /**

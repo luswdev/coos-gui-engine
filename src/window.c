@@ -1,54 +1,224 @@
 /**
  ********************************************************************************
  * @file       window.c
- * @version    V0.0.1   
- * @date       2019.9.29
- * @brief      Some system function for GUI engine's event.	
+ * @version    V0.0.2
+ * @date       2019.10.7
+ * @brief      Some window management function.
  *******************************************************************************
  */ 
 
 #include <cogui.h>
 
-static void _cogui_window_init(cogui_window_t *window)
+extern cogui_window_t *main_page;
+
+static void _cogui_window_init(cogui_window_t *win)
 {
-    window->parent_window = Co_NULL;
-    window->app = cogui_app_self();
+    win->app = cogui_app_self();
+
+    win->app->win = window;
+
+    win->widget_cnt = 0;
 
     /* initial oncall function */
-    window->on_activate     = Co_NULL;
-    window->on_deactivate   = Co_NULL;
-    window->on_focus_in     = Co_NULL;
-    window->on_focus_out    = Co_NULL;
-    window->on_key          = Co_NULL;
+    win->on_activate     = Co_NULL;
+    win->on_deactivate   = Co_NULL;
+    win->on_key          = Co_NULL;
 
-    /* set title to app's name */
-    window->title       = app->name;
-    window->_title_wgt  = Co_NULL;
+    /* initial title pointer */
+    win->title           =  Co_NULL;
 
-    window->last_mouse_event_widget = Co_NULL;
-    window->focus_widget = Co_NULL;
+    win->widget_list     = Co_NULL;
 
-    cogui_window_hide(window);
+    win->last_mouse_event_widget = Co_NULL;
+    win->focus_widget = Co_NULL;
 
-    window->flag = COGUI_WINDOW_FLAG_INIT;
-    window->handler = cogui_window_event_handler;
+    //cogui_window_hide(window);
 
-    window->user_data = 0;
+    win->flag = COGUI_WINDOW_FLAG_INIT;
+    win->handler = cogui_window_event_handler;
 
-    window->_do_show = cogui_window_do_show;
+    win->user_data = 0;
+
+    //window->_do_show = cogui_window_do_show;
 }
 
-cogui_window_t *cogui_window_create(cogui_window_t *parentWindow, cogui_rect_t *rect, U16 style)
+cogui_window_t *cogui_window_create(co_uint16_t style)
 {
-    cogui_window_t *window;
+    cogui_window_t *win;
 
-    window = cogui_malloc(sizeof(cogui_window_t));
-    if (window == Co_NULL)
+    win = cogui_malloc(sizeof(cogui_window_t));
+    if (win == Co_NULL)
         return Co_NULL;
-    
-    COGUI_WIDGET(window) = cogui_widget_create;
-    COGUI_WIDGET(window)->type = COGUI_WIDGET_TYPE_WINDOW;
 
-    _cogui_window_init(window);
+    _cogui_window_init(win);
 
+    cogui_widget_list_init(win);
+
+    if (!(style & COGUI_WINDOW_STYLE_NO_TITLE)) {
+        win->title = cogui_widget_create(win);
+        cogui_title_create(win);
+    }
+
+    win->style = style;
+    win->magic = COGUI_WINDOW_MAGIC;
+    return win;
 }
+
+cogui_window_t *cogui_main_window_create(void)
+{
+    cogui_window_t *win     = COGUI_WINDOW_CREATE_WITHOUT_TITLE();
+    cogui_widget_t *widget  = cogui_widget_create(win);
+
+    cogui_widget_set_rectangle(widget, 50, 50, 50, 50);
+    widget->gc.foreground = COGUI_GREEN;
+    widget->flag |= COGUI_WIDGET_FLAG_RECT | COGUI_WIDGET_FLAG_FILLED;
+
+    COGUI_WIDGET_ENABLE(widget);
+    cogui_window_show(win);
+
+    return win;
+}
+
+void cogui_window_delete(cogui_window_t *win)
+{
+    win->magic = 0;
+
+    cogui_title_delete(win);
+    win->app->win = Co_NULL;
+
+    if (win->user_data) {
+        cogui_free(win->user_data);
+    }
+
+    cogui_free(win);
+}
+
+StatusType cogui_window_close(cogui_window_t *win)
+{
+    COGUI_ASSERT(win != Co_NULL);
+
+    cogui_window_delete(win);
+
+    return Co_TRUE;
+}
+
+void cogui_window_set_onactivate(cogui_window_t *win, event_handler_ptr handler)
+{
+    COGUI_ASSERT(win != Co_NULL);
+    
+    win->on_activate = handler;
+}
+
+void cogui_window_set_ondeactive(cogui_window_t *win, event_handler_ptr handler)
+{
+    COGUI_ASSERT(win != Co_NULL);
+    
+    win->on_deactivate = handler;
+}
+
+
+void cogui_window_set_onkey(cogui_window_t *win, event_handler_ptr handler)
+{
+    COGUI_ASSERT(win != Co_NULL);
+    
+    win->on_key = handler;
+}
+
+StatusType cogui_window_show(cogui_window_t *win)
+{
+    COGUI_ASSERT(win != Co_NULL);
+    struct cogui_event event;
+    StatusType result;
+
+    if (COGUI_WINDOW_IS_ENABLE(win))
+        return Co_FALSE;
+
+    COGUI_WINDOW_ENABLE(win);
+
+    COGUI_EVENT_INIT(&event, COGUI_EVENT_WINDOW_SHOW);
+
+    if (win->handler != Co_NULL)
+        result = win->handler(win, &event);
+
+    return result;
+}
+
+StatusType cogui_window_hide(cogui_window_t *win)
+{
+    COGUI_ASSERT(win != Co_NULL);
+    struct cogui_event event;
+    StatusType result;
+
+    if (!COGUI_WINDOW_IS_ENABLE(win))
+        return Co_FALSE;
+
+    COGUI_WINDOW_DISABLE(win);
+
+    COGUI_EVENT_INIT(&event, COGUI_EVENT_WINDOW_HIDE);
+
+    if (win->handler != Co_NULL)
+        result = win->handler(win, &event);
+
+    return result;
+}
+
+StatusType cogui_window_onshow(cogui_window_t *win)
+{
+    if (!COGUI_WINDOW_IS_ENABLE(win)) {
+        return Co_FALSE;
+    }
+
+    COGUI_WINDOW_DISABLE(main_page);
+	cogui_screen_refresh(win);
+
+    return Co_TRUE;
+}
+
+StatusType cogui_window_onhide(cogui_window_t *win)
+{
+    if (COGUI_WINDOW_IS_ENABLE(win)) {
+        return Co_FALSE;
+    }
+
+    COGUI_WINDOW_ENABLE(main_page);
+	cogui_screen_refresh(main_page);
+
+    return Co_TRUE;
+}
+
+cogui_window_t *cogui_get_current_window()
+{
+    cogui_app_t *app = cogui_app_self();
+
+    return app->win;
+}
+
+StatusType cogui_window_event_handler(struct cogui_window *win, struct cogui_event *event)
+{
+    COGUI_ASSERT(win != Co_NULL);
+    COGUI_ASSERT(event != Co_NULL);
+
+    StatusType result;
+
+    switch (event->type)
+    {
+    case COGUI_EVENT_WINDOW_SHOW:
+        result = cogui_window_onshow(win);
+        break; 
+
+    case COGUI_EVENT_WINDOW_HIDE:
+        result = cogui_window_onhide(win);
+        break; 
+    
+    case COGUI_EVENT_WINDOW_CLOSE:
+        result = cogui_window_close(win);
+        break; 
+
+    default:
+        result = CO_FALSE;
+        break;
+    }
+
+	return result;
+}
+

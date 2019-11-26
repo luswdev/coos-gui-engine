@@ -13,9 +13,9 @@
 typedef co_int64_t cogui_color_t;   /**< Color type belong to long integer */
 
 /** Determine which color style used */
-#define COGUI_USING_RGB565
+//#define COGUI_USING_RGB565
 //#define COGUI_USING_BGR565
-//#define COGUI_USING_RGB888
+#define COGUI_USING_RGB888
 //#define COGUI_USING_ARGB8888
 //#define COGUI_USING_RGBA8888
 //#define COGUI_USING_ABGR8888

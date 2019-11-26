@@ -78,12 +78,18 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
 {
     COGUI_ASSERT(event != Co_NULL);
 
+    cogui_printf("[%10s] Got event #%d.\r\n", server_app->name, event->type);
+
     switch (event->type)
     {
 	case COGUI_EVENT_APP_CREATE:
     case COGUI_EVENT_APP_DELE:
 		cogui_ack(event, E_OK);
 		break;
+
+    case COGUI_EVENT_PAINT:
+        cogui_send(event->sender, event);
+        break;
 		
     /* mouse and keyboard event */
     case COGUI_EVENT_MOUSE_BUTTON:
@@ -113,18 +119,19 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
 
 void cogui_server_entry(void *parameter)
 {
-    server_app = cogui_app_create("cogui");
+    server_app = cogui_app_create("server");
     if(server_app == Co_NULL){
         return;
     }
 
     server_app->handler = cogui_server_event_handler;
 
-    cogui_printf("starting server app...\r\n");
     cogui_app_run(server_app);
 
     cogui_app_delete(server_app);
     server_app = Co_NULL;
+
+    CoExitTask();
 }
 
 StatusType cogui_server_post_event(struct cogui_event *event)
@@ -135,7 +142,7 @@ StatusType cogui_server_post_event(struct cogui_event *event)
         result = cogui_send(server_app, event);
     }
     else{
-        result = E_NOSYS;
+        result = E_OK;  //TODO
     }
 
     return result;
@@ -148,8 +155,5 @@ cogui_app_t *cogui_get_server(void)
 
 void cogui_server_init(void)
 {
-	cogui_printf("Create a task \"server_entry\"...");
-    CoCreateTask(cogui_server_entry, (void *)0, 10,&server_Stk[TASK_STK_SIZE-1], TASK_STK_SIZE);
-	cogui_printf("[OK]\r\n");
-	CoExitTask();
+    CoCreateTask(cogui_server_entry, (void *)0, 15,&server_Stk[TASK_STK_SIZE-1], TASK_STK_SIZE);
 }
