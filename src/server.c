@@ -78,17 +78,17 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
 {
     COGUI_ASSERT(event != Co_NULL);
 
-    cogui_printf("[%10s] Got event #%d.\r\n", server_app->name, event->type);
+    StatusType result = Co_FALSE;
 
     switch (event->type)
     {
 	case COGUI_EVENT_APP_CREATE:
     case COGUI_EVENT_APP_DELE:
-		cogui_ack(event, E_OK);
+		result = cogui_ack(event, E_OK);
 		break;
 
     case COGUI_EVENT_PAINT:
-        cogui_send(event->sender, event);
+        result = cogui_send(event->sender, event);
         break;
 		
     /* mouse and keyboard event */
@@ -104,6 +104,22 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
         //cogui_server_event_handler_mouse_motion((struct cogui_event_mouse *)event);
         break;
 
+    case COGUI_EVENT_WINDOW_HIDE:
+    {
+        struct cogui_event_win *e = (struct cogui_event_win *)event;
+
+        if (COGUI_WINDOW_IS_ENABLE(e->win)) {
+            cogui_printf("bad\r\n");
+            result = Co_FALSE;
+        }
+
+        extern cogui_window_t *main_page;
+        cogui_printf("0x%x 0x%x\r\n", server_app->win, main_page);
+        result = cogui_window_show(server_app->win);
+        
+        break;
+    }
+        
     case COGUI_EVENT_KBD:
         /* handle keyboard event */
 		
@@ -111,10 +127,10 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
         break;
 
     default:
-        return Co_FALSE;
+        break;
     }
 
-    return Co_TRUE;
+    return result;
 }
 
 void cogui_server_entry(void *parameter)

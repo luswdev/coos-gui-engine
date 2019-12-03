@@ -15,7 +15,7 @@ static void _cogui_window_init(cogui_window_t *win)
 {
     win->app = cogui_app_self();
 
-    win->app->win = window;
+    win->app->win = win;
 
     win->widget_cnt = 0;
 
@@ -130,10 +130,18 @@ StatusType cogui_window_show(cogui_window_t *win)
     struct cogui_event event;
     StatusType result;
 
-    if (COGUI_WINDOW_IS_ENABLE(win))
-        return Co_FALSE;
+    /* if this is not main page to show, first hide main page */
+    if (win != main_page) {
+        COGUI_WINDOW_DISABLE(main_page);
+    }
 
-    COGUI_WINDOW_ENABLE(win);
+    /* determine whether if window is need to show */
+    if (COGUI_WINDOW_IS_ENABLE(win)) {
+        return Co_FALSE;
+    }
+    else {
+        COGUI_WINDOW_ENABLE(win);
+    }
 
     COGUI_EVENT_INIT(&event, COGUI_EVENT_WINDOW_SHOW);
 
@@ -149,10 +157,13 @@ StatusType cogui_window_hide(cogui_window_t *win)
     struct cogui_event event;
     StatusType result;
 
-    if (!COGUI_WINDOW_IS_ENABLE(win))
+    /* determine whether if window is need to hide */
+    if (!COGUI_WINDOW_IS_ENABLE(win)) {
         return Co_FALSE;
-
-    COGUI_WINDOW_DISABLE(win);
+    }
+    else {
+        COGUI_WINDOW_DISABLE(win);
+    }
 
     COGUI_EVENT_INIT(&event, COGUI_EVENT_WINDOW_HIDE);
 
@@ -168,7 +179,6 @@ StatusType cogui_window_onshow(cogui_window_t *win)
         return Co_FALSE;
     }
 
-    COGUI_WINDOW_DISABLE(main_page);
 	cogui_screen_refresh(win);
 
     return Co_TRUE;
@@ -180,10 +190,11 @@ StatusType cogui_window_onhide(cogui_window_t *win)
         return Co_FALSE;
     }
 
-    COGUI_WINDOW_ENABLE(main_page);
-	cogui_screen_refresh(main_page);
+    struct cogui_event_win event;
+    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_WINDOW_HIDE);
+    event.win = win;
 
-    return Co_TRUE;
+    return cogui_send(cogui_get_server(), &event.parent);
 }
 
 cogui_window_t *cogui_get_current_window()
@@ -198,7 +209,7 @@ StatusType cogui_window_event_handler(struct cogui_window *win, struct cogui_eve
     COGUI_ASSERT(win != Co_NULL);
     COGUI_ASSERT(event != Co_NULL);
 
-    StatusType result;
+    StatusType result = Co_FALSE;
 
     switch (event->type)
     {
@@ -215,7 +226,6 @@ StatusType cogui_window_event_handler(struct cogui_window *win, struct cogui_eve
         break; 
 
     default:
-        result = CO_FALSE;
         break;
     }
 
