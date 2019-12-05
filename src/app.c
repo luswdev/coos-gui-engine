@@ -41,7 +41,7 @@ cogui_app_t *cogui_app_create(char *title)
 
     app->tid = tid;
 
-    app->name = (U8 *)cogui_strdup((char *)title);
+    app->name = cogui_strdup((char *)title);
 
     app->mq = CoCreateMbox(EVENT_SORT_TYPE_PRIO);
 

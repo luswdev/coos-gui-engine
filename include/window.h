@@ -3,7 +3,7 @@
  * @file       window.h
  * @version    V0.0.2  
  * @date       2019.10.5
- * @brief      Wndow management function header file.
+ * @brief      Window management function header file.
  *******************************************************************************
  */ 
 
@@ -59,6 +59,7 @@ struct cogui_window
 
     /* window title */
     cogui_widget_t *title;
+    char *title_name;
 
     /* call back */
     StatusType (*on_activate)(cogui_widget_t *widget, struct cogui_event *event);

@@ -35,7 +35,12 @@ void cogui_title_create(cogui_window_t *win)
     cogui_widget_set_rectangle(mini_btn, 40, 2, 36, 36);
 }
 
-void cogui_title_delete(cogui_window_t *window)
+void cogui_title_delete(cogui_window_t *win)
 {
+    cogui_widget_t *close_btn = win->title->next;
+    cogui_widget_t  *mini_btn = win->title->next->next;
+    cogui_widget_delete(close_btn);
+    cogui_widget_delete(mini_btn);
 
+    COGUI_WIDGET_DISABLE(win->title);
 }

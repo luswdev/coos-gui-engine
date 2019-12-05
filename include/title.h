@@ -23,7 +23,7 @@
 
 struct cogui_window;
 
-void cogui_title_create(struct cogui_window *window);
-void cogui_title_delete(struct cogui_window *window);
+void cogui_title_create(struct cogui_window *win);
+void cogui_title_delete(struct cogui_window *win);
 
 #endif /* _COGUI_TITLE_H */

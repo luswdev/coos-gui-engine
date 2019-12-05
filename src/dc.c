@@ -191,6 +191,11 @@ void cogui_dc_draw_title(cogui_dc_t *dc) {
     cogui_dc_draw_button(cdc, COGUI_WINTITLE_BTN_CLOSE);
     /* draw mini button */
     cogui_dc_draw_button(mdc,  COGUI_WINTITLE_BTN_MINI);
+
+    char *title = cogui_dc_get_owner(dc)->top->title_name;
+
+    /* show title name */
+    cogui_tm_16x26_puts(100, 7, title, cogui_dc_get_owner(dc));
 }
 
 /**

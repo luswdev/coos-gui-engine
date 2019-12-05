@@ -26,6 +26,7 @@
 #include "region.h"
 #include "driver.h"
 #include "dc.h"
+#include "font.h"
 
 /* window */
 #include "title.h"

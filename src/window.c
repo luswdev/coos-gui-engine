@@ -13,10 +13,11 @@ extern cogui_window_t *main_page;
 
 static void _cogui_window_init(cogui_window_t *win)
 {
+    /* filled window pointer to current app structure */
     win->app = cogui_app_self();
-
     win->app->win = win;
 
+    /* initial widget count */
     win->widget_cnt = 0;
 
     /* initial oncall function */
@@ -25,7 +26,8 @@ static void _cogui_window_init(cogui_window_t *win)
     win->on_key          = Co_NULL;
 
     /* initial title pointer */
-    win->title           =  Co_NULL;
+    win->title           = Co_NULL;
+    win->title_name      = cogui_app_self()->name;
 
     win->widget_list     = Co_NULL;
 
@@ -81,15 +83,22 @@ cogui_window_t *cogui_main_window_create(void)
 
 void cogui_window_delete(cogui_window_t *win)
 {
+    /* remove magic code */
     win->magic = 0;
 
+    /* delete title widget */
     cogui_title_delete(win);
+    cogui_widget_delete(win->title);
+
+    /* remove window pointer in app structure */
     win->app->win = Co_NULL;
 
+    /* free user data if need */
     if (win->user_data) {
         cogui_free(win->user_data);
     }
 
+    /* free window */
     cogui_free(win);
 }
 

@@ -26,7 +26,7 @@ extern ECB      EventTbl[CFG_MAX_EVENT];
 struct cogui_app
 {
     U8      id;
-    U8   *name;
+    char   *name;
 
     U32 flag;
 

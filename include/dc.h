@@ -79,8 +79,7 @@ struct cogui_dc_engine
  */
 struct cogui_dc
 {
-    co_uint8_t           type;           /**< type of device context */
-
+    co_uint8_t               type;          /**< type of device context */
     struct cogui_dc_engine  *engine;        /**< DC engine */
 };
 
