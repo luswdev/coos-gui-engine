@@ -256,6 +256,30 @@ void cogui_putstr(const char *str)
         cogui_putchar(*str++);
 }
 
+void cogui_itoa(co_int16_t n, char *ss)
+{
+    int i, j, sign, k;
+    char s[10];
+
+    if((sign=n)<0)
+        n=-n;
+
+    i=0;
+    do{
+        s[i++]=n%10+'0';
+    }while ((n/=10)>0);
+
+    if(sign<0)
+        s[i++]='-';
+
+    s[i]='\0';
+
+    for(j=i-1, k=0; j>=0; j--, k++) {
+        ss[k] = s[j];
+    }
+    s[k++]=0;
+}
+
 
 int cogui_printf(const char *str,...)
 {
@@ -399,6 +423,7 @@ void cogui_assert_handler(const char *ex_string, const char *func, U32 line)
 
 	cogui_printf("(%s) assertion failed at function: %s, line number: %d.\r\n", ex_string, func, line);
 
+    cogui_assert_failed_page(ex_string, line, func);
     /* loop forever */
 	while(dummy == 0)
 	{

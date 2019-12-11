@@ -10,6 +10,12 @@
 #include <cogui.h>
 
 extern cogui_window_t *main_page;
+co_int16_t current_app_install_cnt = 0;
+
+struct main_app_table main_app_table[9];
+
+co_int16_t cogui_main_page_app_install(char *title);
+void cogui_main_page_app_uninstall(co_int16_t);
 
 static void _cogui_window_init(cogui_window_t *win)
 {
@@ -46,6 +52,11 @@ static void _cogui_window_init(cogui_window_t *win)
 
 cogui_window_t *cogui_window_create(co_uint16_t style)
 {
+    co_int16_t id = -1;
+    if (main_page) {
+        id = cogui_main_page_app_install(cogui_app_self()->name);
+    }
+
     cogui_window_t *win;
 
     win = cogui_malloc(sizeof(cogui_window_t));
@@ -63,23 +74,75 @@ cogui_window_t *cogui_window_create(co_uint16_t style)
 
     win->style = style;
     win->magic = COGUI_WINDOW_MAGIC;
+    win->id    = id;
     return win;
 }
 
 cogui_window_t *cogui_main_window_create(void)
 {
     cogui_window_t *win     = COGUI_WINDOW_CREATE_WITHOUT_TITLE();
-    cogui_widget_t *widget  = cogui_widget_create(win);
+    cogui_widget_t *widget;
+    co_uint16_t     i;
 
-    cogui_widget_set_rectangle(widget, 50, 50, 50, 50);
-    widget->gc.foreground = COGUI_GREEN;
+    widget = cogui_widget_create(win);
+    cogui_widget_set_rectangle(widget, 0, 0, 240, 40);
+    widget->gc.foreground = COGUI_DARK_GRAY; 
     widget->flag |= COGUI_WIDGET_FLAG_RECT | COGUI_WIDGET_FLAG_FILLED;
-
     COGUI_WIDGET_ENABLE(widget);
+
+    for ( i=0; i<9; i++) {
+        widget = cogui_widget_create(win);
+        cogui_widget_set_rectangle(widget, 15 + (i%3)*75 , 55 + (i/3)*88, 60, 60);
+        widget->gc.foreground = COGUI_GREEN; 
+        widget->flag |= COGUI_WIDGET_FLAG_RECT;
+        COGUI_WIDGET_ENABLE(widget);
+
+        main_app_table[i].app_icon = widget;
+
+        widget = cogui_widget_create(win);
+        cogui_widget_set_rectangle(widget, 15 + (i%3)*75 , 115 + (i/3)*88, 60, 13);
+        widget->gc.foreground = COGUI_WHITE; 
+        widget->flag |= COGUI_WIDGET_FLAG_RECT;
+
+        main_app_table[i].app_title_box = widget;
+    }
+
     cogui_window_show(win);
 
     return win;
 }
+
+static co_int16_t cogui_main_page_app_install(char* title)
+{
+    if (current_app_install_cnt > 9) {
+        return Co_FALSE;
+    }
+
+    cogui_widget_t *widget;    
+    widget = main_app_table[current_app_install_cnt].app_icon;
+
+    widget->flag |= COGUI_WIDGET_FLAG_FILLED;
+
+    main_app_table[current_app_install_cnt].title = title;
+
+    return current_app_install_cnt++;
+}
+
+static void cogui_main_page_app_uninstall(co_int16_t id)
+{
+    COGUI_ASSERT((id < current_app_install_cnt) && (id >= 0));
+
+    main_app_table[id].app_icon->flag &= ~COGUI_WIDGET_FLAG_FILLED;
+    main_app_table[id].title = Co_NULL;
+
+    /* if this app is not previous install app, we need to shift all app forward */
+    if (id != --current_app_install_cnt) {
+        co_uint16_t i;
+        for ( i=id+1; i<=current_app_install_cnt; i++) {
+            cogui_memcpy(main_app_table+(i-1), main_app_table+i, sizeof(struct main_app_table));
+        }
+    }
+}   
 
 void cogui_window_delete(cogui_window_t *win)
 {
@@ -98,6 +161,8 @@ void cogui_window_delete(cogui_window_t *win)
         cogui_free(win->user_data);
     }
 
+    cogui_main_page_app_uninstall(win->id);
+
     /* free window */
     cogui_free(win);
 }
@@ -108,7 +173,11 @@ StatusType cogui_window_close(cogui_window_t *win)
 
     cogui_window_delete(win);
 
-    return Co_TRUE;
+    struct cogui_event_win event;
+    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_WINDOW_CLOSE);
+    event.win = win;
+
+    return cogui_send(cogui_get_server(), &event.parent);
 }
 
 void cogui_window_set_onactivate(cogui_window_t *win, event_handler_ptr handler)
@@ -241,3 +310,29 @@ StatusType cogui_window_event_handler(struct cogui_window *win, struct cogui_eve
 	return result;
 }
 
+void cogui_assert_failed_page(const char* ex, co_uint16_t line, const char* func)
+{
+    COGUI_DC_FC(main_page->widget_list->next->dc_engine) = COGUI_BLUE;
+    cogui_dc_fill_rect_forecolor(main_page->widget_list->next->dc_engine, &main_page->widget_list->next->inner_extent);
+    cogui_widget_t *widget;
+    widget = cogui_widget_create(main_page);
+    cogui_widget_set_rectangle(widget, 15 , 55, 60, 60);
+    widget->gc.foreground = COGUI_WHITE; 
+    cogui_tm_16x26_puts(5, 17, ":(", widget);
+    cogui_widget_set_rectangle(widget, 20 , 120, 200, 200);
+    cogui_tm_11x18_puts(0, 0, "Your computer ran into a problem.\n", widget);
+
+    char *ex_str = cogui_strdup(ex);
+    char *f_str = cogui_strdup(func);
+    char l_str[10];
+    cogui_itoa(line, l_str);
+
+    cogui_tm_7x10_puts(0, 50, "Assert failed at\n", widget);
+    cogui_tm_7x10_puts(0, 60, "Function: ", widget);
+    cogui_tm_7x10_puts(70, 60, f_str, widget);
+    cogui_tm_7x10_puts(0, 70, "Line: ", widget);
+    cogui_tm_7x10_puts(42, 70, l_str, widget);
+    cogui_tm_7x10_puts(0, 80, "Expression: ", widget);
+    cogui_tm_7x10_puts(84, 80, ex_str, widget);
+    //cogui_tm_11x18_puts(0, 80, str, widget);
+}

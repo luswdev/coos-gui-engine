@@ -28,5 +28,6 @@ void cogui_lcd_putc(co_uint16_t x, co_uint16_t y, char c, cogui_font_t *font, co
 #define cogui_tm_7x10_puts(x, y, s, w) cogui_lcd_puts((x), (y), (s), &tm_font_7x10, (w))
 #define cogui_tm_11x18_puts(x, y, s, w) cogui_lcd_puts((x), (y), (s), &tm_font_11x18, (w))
 #define cogui_tm_16x26_puts(x, y, s, w) cogui_lcd_puts((x), (y), (s), &tm_font_16x26, (w))
+#define cogui_tm_16x26_putc(x, y, c, w) cogui_lcd_putc((x), (y), (c), &tm_font_16x26, (w))
 
 #endif /* _COGUI_FONT_H */

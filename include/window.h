@@ -32,7 +32,9 @@
 
 struct cogui_window
 {
-    cogui_widget_t *widget_list; 
+    cogui_widget_t *widget_list;
+
+    co_int16_t id;
 
     /* window style */
     co_uint16_t style;
@@ -82,6 +84,12 @@ struct cogui_window
 };
 typedef struct cogui_window cogui_window_t;
 
+struct main_app_table {
+    cogui_widget_t *app_icon;
+    cogui_widget_t *app_title_box;
+    char *          title;    
+};
+
 
 cogui_window_t *cogui_window_create(co_uint16_t style);
 void cogui_window_delete(cogui_window_t *win);
@@ -109,5 +117,7 @@ StatusType cogui_window_event_handler(struct cogui_window * win, struct cogui_ev
 
 void cogui_window_set_title(cogui_window_t *win, const U8 *title);
 U8 *cogui_window_get_title(cogui_window_t *win);
+
+void cogui_assert_failed_page(const char* ex, co_uint16_t line, const char* func);
 
 #endif /* _COGUI_WINDOW_H */

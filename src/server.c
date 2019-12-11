@@ -104,6 +104,7 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
         //cogui_server_event_handler_mouse_motion((struct cogui_event_mouse *)event);
         break;
 
+    case COGUI_EVENT_WINDOW_CLOSE:
     case COGUI_EVENT_WINDOW_HIDE:
     {
         struct cogui_event_win *e = (struct cogui_event_win *)event;

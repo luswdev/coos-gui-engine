@@ -110,6 +110,7 @@ StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, co_int32_t timeo
 
 /* math function for cogui */
 U64 cogui_pow(S32 x, S32 y);
+void cogui_itoa(co_int16_t n, char* ss);
 
 /* mem function for cogui */
 void *cogui_memset(void *s, int c, U64 cnt);

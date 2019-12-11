@@ -306,6 +306,23 @@ StatusType cogui_screen_refresh(struct cogui_window *top)
         list = list->next;
     }
 
+    if (top == main_page) {
+        COGUI_DC_FC(top->widget_list->next->dc_engine) = COGUI_WHITE;
+        cogui_tm_16x26_puts(88, 7, "CoOS", top->widget_list->next);
+        COGUI_DC_FC(top->widget_list->next->dc_engine) = COGUI_DARK_GRAY;
+
+        extern co_int16_t current_app_install_cnt;
+        extern struct main_app_table main_app_table[9];
+        co_uint16_t i;
+
+        for ( i=0; i<current_app_install_cnt; i++) {
+            cogui_tm_7x10_puts(1, 1, main_app_table[i].title, main_app_table[i].app_title_box);
+            COGUI_DC_FC(main_app_table[i].app_icon->dc_engine) = COGUI_WHITE;
+            cogui_tm_16x26_putc(22, 17, main_app_table[i].title[0], main_app_table[i].app_icon);
+            COGUI_DC_FC(main_app_table[i].app_icon->dc_engine) = COGUI_GREEN;
+        }
+    }
+
     return Co_TRUE;
 }
 
@@ -394,7 +411,7 @@ static void cogui_widget_set_rect(cogui_widget_t *widget, cogui_rect_t *rect)
 
 void cogui_widget_set_rectangle(cogui_widget_t *widget, S32 x, S32 y, S32 width, S32 height)
 {
-    if (!(widget->flag & COGUI_WIDGET_FLAG_TITLE) && !(widget->flag & COGUI_WIDGET_FLAG_HEADER) ) {
+    if (!(widget->top->style & COGUI_WINDOW_STYLE_NO_TITLE) && !(widget->flag & COGUI_WIDGET_FLAG_TITLE) && !(widget->flag & COGUI_WIDGET_FLAG_HEADER) ) {
         if (y <= COGUI_WINTITLE_HEIGHT)
             y = COGUI_WINTITLE_HEIGHT+1;
     }
