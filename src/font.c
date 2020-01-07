@@ -1,13 +1,15 @@
 /**
  *******************************************************************************
  * @file       font.c
- * @version    V0.0.1
- * @date       2019.12.5
+ * @version    V0.1.0
+ * @date       2019.12.11
  * @brief      Font function file.
  *******************************************************************************
  */ 
 
 #include "cogui.h"
+
+cogui_font_t *default_font = &tm_font_7x10;
 
 void cogui_lcd_puts(co_uint16_t x, co_uint16_t y, char *str, cogui_font_t *font, cogui_widget_t *widget)
 {

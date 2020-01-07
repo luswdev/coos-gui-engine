@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       app.c
- * @version    V0.1.0
- * @date       2019.10.3
+ * @version    V0.1.1
+ * @date       2020.01.04
  * @brief      This is a file for GUI engine's app.	
  *******************************************************************************
  */ 
@@ -11,14 +11,12 @@
 
 cogui_window_t *main_page       = Co_NULL;
 
+StatusType cogui_app_event_handler(struct cogui_event *event);
+
 void _cogui_app_init(cogui_app_t *app)
 {
-    app->name         = Co_NULL;
-    app->ref_cnt      = 0;
-    app->tid          = 0;
-    app->mq           = 0;
-    app->win_cnt      = 0;
-    app->win_acti_cnt = 0;
+    cogui_memset(app, 0, sizeof(cogui_app_t));
+
 	app->handler      = cogui_app_event_handler;
 	app->optional_handler      = Co_NULL;
 }
@@ -28,7 +26,7 @@ cogui_app_t *cogui_app_create(char *title)
     cogui_app_t *app;
     cogui_app_t *srv_app;
     OS_TID tid = CoGetCurTaskID();
-    struct cogui_event_app event;
+    struct cogui_event event;
 
     COGUI_ASSERT(tid != 0);
     COGUI_ASSERT(title != Co_NULL);
@@ -51,10 +49,10 @@ cogui_app_t *cogui_app_create(char *title)
         return app;
     }
 		
-    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_APP_CREATE);
+    COGUI_EVENT_INIT(&event, COGUI_EVENT_APP_CREATE);
     event.app = app;
 
-    if(cogui_send_sync(srv_app, &event.parent) == E_OK) {
+    if(cogui_send_sync(srv_app, &event) == E_OK) {
         TCBTbl[tid].userData = app;
         return app;
     }
@@ -66,7 +64,7 @@ cogui_app_t *cogui_app_create(char *title)
 void cogui_app_delete(cogui_app_t *app)
 {
     cogui_app_t *srv_app;
-    struct cogui_event_app event;
+    struct cogui_event event;
 
     COGUI_ASSERT(app != Co_NULL);
     COGUI_ASSERT(app->tid);
@@ -79,11 +77,12 @@ void cogui_app_delete(cogui_app_t *app)
     TCBTbl[app->tid].userData = 0;
 		
     srv_app = cogui_get_server();
-    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_APP_DELE);
+    COGUI_EVENT_INIT(&event, COGUI_EVENT_APP_DELE);
     event.app = app;
 
-    if(cogui_send_sync(srv_app, &event.parent) != E_OK)
+    if(cogui_send_sync(srv_app, &event) != E_OK) {
        return;
+    }
 		
 	cogui_free(app);
 }
@@ -97,7 +96,7 @@ StatusType cogui_app_event_handler(struct cogui_event *event)
 	switch (event->type)
     {
 	case COGUI_EVENT_APP_DELE:
-		cogui_app_exit(((struct cogui_event_app *)event)->app, 0);
+		cogui_app_exit((event)->app, 0);
 		break;
 
 	case COGUI_EVENT_PAINT:
@@ -121,15 +120,18 @@ static void _cogui_app_event_loop(cogui_app_t *app)
     StatusType  result;
     co_uint16_t current_ref;
     co_int32_t loop_cnt = 0;
-    struct cogui_event event;
+    struct cogui_event *event;
+
+    event = (struct cogui_event *)app->event_buffer;
 
     current_ref = ++app->ref_cnt;
     while(current_ref <= app->ref_cnt) {
         cogui_printf("[%10s] App event loop #%d.\r\n", app->name, loop_cnt++);
-        result = cogui_recv(app->mq, &event, 0);
+        result = cogui_recv(app->mq, event, 0);
 
-        if(result == E_OK && &event != Co_NULL) {
-            app->handler(&event);
+        if(result == E_OK && event != Co_NULL) {
+            cogui_printf("[%10s] Got a event no.%d\r\n", app->name, event->type);
+            app->handler(event);
         }
     }
 }
@@ -141,11 +143,11 @@ void cogui_app_run(cogui_app_t *app)
     COGUI_ASSERT(TCBTbl[app->tid].userData);
 
     if (app != cogui_get_server()){
-        struct cogui_event_app event;
-        COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_PAINT);
+        struct cogui_event event;
+        COGUI_EVENT_INIT(&event, COGUI_EVENT_PAINT);
         event.app = app;
 
-        cogui_send(cogui_get_server(), &event.parent);
+        cogui_send(cogui_get_server(), &event);
     }
     else {
         cogui_printf("[%10s] Create main window.\r\n", cogui_app_self()->name);
@@ -166,12 +168,12 @@ void cogui_app_exit(cogui_app_t *app, U16 code)
 
 void cogui_app_close(cogui_app_t *app)
 {
-	struct cogui_event_app event;
+	struct cogui_event event;
 
-    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_APP_DELE);
+    COGUI_EVENT_INIT(&event, COGUI_EVENT_APP_DELE);
     event.app = app;
 
-    cogui_send(app, &event.parent);
+    cogui_send(app, &event);
 }
 
 void cogui_app_sleep(cogui_app_t *app, U32 sleep_tick)

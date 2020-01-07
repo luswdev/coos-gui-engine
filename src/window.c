@@ -1,8 +1,8 @@
 /**
  ********************************************************************************
  * @file       window.c
- * @version    V0.0.2
- * @date       2019.10.7
+ * @version    V0.1.1
+ * @date       2020.01.04
  * @brief      Some window management function.
  *******************************************************************************
  */ 
@@ -14,40 +14,22 @@ co_int16_t current_app_install_cnt = 0;
 
 struct main_app_table main_app_table[9];
 
-co_int16_t cogui_main_page_app_install(char *title);
-void cogui_main_page_app_uninstall(co_int16_t);
+static co_int16_t cogui_main_page_app_install(char *title);
+static void cogui_main_page_app_uninstall(co_int16_t);
+
+StatusType cogui_window_event_handler(struct cogui_window * win, struct cogui_event *event);
 
 static void _cogui_window_init(cogui_window_t *win)
 {
-    /* filled window pointer to current app structure */
-    win->app = cogui_app_self();
-    win->app->win = win;
+    cogui_memset(win, 0, sizeof(cogui_window_t));
 
-    /* initial widget count */
-    win->widget_cnt = 0;
+    win->app        = cogui_app_self();
+    win->app->win   = win;
 
-    /* initial oncall function */
-    win->on_activate     = Co_NULL;
-    win->on_deactivate   = Co_NULL;
-    win->on_key          = Co_NULL;
+    win->title_name = cogui_app_self()->name;
 
-    /* initial title pointer */
-    win->title           = Co_NULL;
-    win->title_name      = cogui_app_self()->name;
-
-    win->widget_list     = Co_NULL;
-
-    win->last_mouse_event_widget = Co_NULL;
-    win->focus_widget = Co_NULL;
-
-    //cogui_window_hide(window);
-
-    win->flag = COGUI_WINDOW_FLAG_INIT;
-    win->handler = cogui_window_event_handler;
-
-    win->user_data = 0;
-
-    //window->_do_show = cogui_window_do_show;
+    win->flag       = COGUI_WINDOW_FLAG_INIT;
+    win->handler    = cogui_window_event_handler;
 }
 
 cogui_window_t *cogui_window_create(co_uint16_t style)
@@ -58,7 +40,6 @@ cogui_window_t *cogui_window_create(co_uint16_t style)
     }
 
     cogui_window_t *win;
-
     win = cogui_malloc(sizeof(cogui_window_t));
     if (win == Co_NULL)
         return Co_NULL;
@@ -75,15 +56,17 @@ cogui_window_t *cogui_window_create(co_uint16_t style)
     win->style = style;
     win->magic = COGUI_WINDOW_MAGIC;
     win->id    = id;
+
     return win;
 }
 
 cogui_window_t *cogui_main_window_create(void)
 {
-    cogui_window_t *win     = COGUI_WINDOW_CREATE_WITHOUT_TITLE();
+    cogui_window_t *win     = cogui_window_create_without_title();
     cogui_widget_t *widget;
     co_uint16_t     i;
 
+    cogui_printf("create widget\r\n");
     widget = cogui_widget_create(win);
     cogui_widget_set_rectangle(widget, 0, 0, 240, 40);
     widget->gc.foreground = COGUI_DARK_GRAY; 
@@ -107,6 +90,7 @@ cogui_window_t *cogui_main_window_create(void)
         main_app_table[i].app_title_box = widget;
     }
 
+    cogui_printf("show main page\r\n");
     cogui_window_show(win);
 
     return win;
@@ -173,11 +157,11 @@ StatusType cogui_window_close(cogui_window_t *win)
 
     cogui_window_delete(win);
 
-    struct cogui_event_win event;
-    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_WINDOW_CLOSE);
+    struct cogui_event event;
+    COGUI_EVENT_INIT(&event, COGUI_EVENT_WINDOW_CLOSE);
     event.win = win;
 
-    return cogui_send(cogui_get_server(), &event.parent);
+    return cogui_send(cogui_get_server(), &event);
 }
 
 void cogui_window_set_onactivate(cogui_window_t *win, event_handler_ptr handler)
@@ -268,11 +252,11 @@ StatusType cogui_window_onhide(cogui_window_t *win)
         return Co_FALSE;
     }
 
-    struct cogui_event_win event;
-    COGUI_EVENT_INIT(&event.parent, COGUI_EVENT_WINDOW_HIDE);
+    struct cogui_event event;
+    COGUI_EVENT_INIT(&event, COGUI_EVENT_WINDOW_HIDE);
     event.win = win;
 
-    return cogui_send(cogui_get_server(), &event.parent);
+    return cogui_send(cogui_get_server(), &event);
 }
 
 cogui_window_t *cogui_get_current_window()

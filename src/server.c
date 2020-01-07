@@ -1,28 +1,28 @@
 /**
  *******************************************************************************
  * @file       server.c
- * @version    V0.0.2  
- * @date       2019.10.3
+ * @version    V0.0.3
+ * @date       2020.01.04
  * @brief      The server for gui engine.	
  *******************************************************************************
  */ 
 
 #include <cogui.h>
 
-#define TASK_STK_SIZE		128
+#define TASK_STK_SIZE		512
 
 cogui_app_t *server_app = Co_NULL;
-OS_STK   server_Stk[TASK_STK_SIZE];
+OS_STK   server_Stk[TASK_STK_SIZE]={0};
 
 //void SHandlerMonitorAdd();
 //void SHandlerMonitorRemove();
 
-void cogui_server_handler_mouse_btn(struct cogui_event_mouse *event)
+void cogui_server_handler_mouse_btn(struct cogui_event *event)
 {
     /* the topwin contains current mouse */
     //P_TopWin win    = Co_NULL;
 
-    COGUI_EVENT_INIT(&event->parent, COGUI_EVENT_MOUSE_BUTTON);
+    COGUI_EVENT_INIT(event, COGUI_EVENT_MOUSE_BUTTON);
 
     /* set cursor position */
     //MouseSetPos(event->x, event->y);
@@ -34,17 +34,17 @@ void cogui_server_handler_mouse_btn(struct cogui_event_mouse *event)
 
     event->win = win->wid;*/
 
-    while(cogui_send(event->app, &event->parent) != E_OK){
+    while(cogui_send(event->app, event) != E_OK){
         CoTickDelay(50);
     }
 }
 
-void cogui_server_handler_mouse_motion(struct cogui_event_mouse *event)
+void cogui_server_handler_mouse_motion(struct cogui_event *event)
 {
     /* the topwin contains current mouse */
     //P_TopWin win    = Co_NULL;
 
-    COGUI_EVENT_INIT(&event->parent, COGUI_EVENT_MOUSE_MOTION);
+    COGUI_EVENT_INIT(event, COGUI_EVENT_MOUSE_MOTION);
 
     /*win = GetTopWin(event->x, event->y);
     if(win == Co_NULL){
@@ -52,17 +52,17 @@ void cogui_server_handler_mouse_motion(struct cogui_event_mouse *event)
     }
 
     event->win = win->wid;*/
-    cogui_send(event->app, &event->parent);
+    cogui_send(event->app, event);
 
     //MouseMoveTo(event->x, event->y);
 }
 
-void cogui_server_event_kbd(struct cogui_event_kbd *event)
+void cogui_server_event_kbd(struct cogui_event *event)
 {
     /* the topwin contains current mouse */
     //P_TopWin win = Co_NULL;
 
-    COGUI_EVENT_INIT(&event->parent, COGUI_EVENT_KBD);
+    COGUI_EVENT_INIT(event, COGUI_EVENT_KBD);
 
     /*win = GetTopWinFocus();
     if(win == Co_NULL){
@@ -71,14 +71,14 @@ void cogui_server_event_kbd(struct cogui_event_kbd *event)
 
     event->win = win->wid;*/
 
-    cogui_send(event->app, &event->parent);
+    cogui_send(event->app, event);
 }
 
 StatusType cogui_server_event_handler(struct cogui_event *event)
 {
     COGUI_ASSERT(event != Co_NULL);
 
-    StatusType result = Co_FALSE;
+    StatusType result = -1;
 
     switch (event->type)
     {
@@ -107,17 +107,11 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
     case COGUI_EVENT_WINDOW_CLOSE:
     case COGUI_EVENT_WINDOW_HIDE:
     {
-        struct cogui_event_win *e = (struct cogui_event_win *)event;
-
-        if (COGUI_WINDOW_IS_ENABLE(e->win)) {
-            cogui_printf("bad\r\n");
+        if (COGUI_WINDOW_IS_ENABLE(event->win)) {
             result = Co_FALSE;
         }
 
-        extern cogui_window_t *main_page;
-        cogui_printf("0x%x 0x%x\r\n", server_app->win, main_page);
-        result = cogui_window_show(server_app->win);
-        
+        result = cogui_window_show(server_app->win);    
         break;
     }
         
@@ -144,7 +138,6 @@ void cogui_server_entry(void *parameter)
     server_app->handler = cogui_server_event_handler;
 
     cogui_app_run(server_app);
-
     cogui_app_delete(server_app);
     server_app = Co_NULL;
 

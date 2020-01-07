@@ -1,14 +1,13 @@
 /**
  *******************************************************************************
  * @file       system.c
- * @version    V0.1.3 
- * @date       2019.10.5
+ * @version    V0.1.5
+ * @date       2020.01.04
  * @brief      Some system function for GUI engine.	
  *******************************************************************************
  */ 
 
 #include <cogui.h>
-#include <stm32f4xx.h>      /* for UART setting */
 #include <stdarg.h>         /* for va function  */
 
 void cogui_system_init()
@@ -83,22 +82,6 @@ StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event)
     return result;
 }
 
-static co_int32_t _cogui_get_event_size(struct cogui_event *event) {
-    if (event->type <= COGUI_EVENT_APP_ACTIVATE) {
-        return sizeof(struct cogui_event_app);
-    }
-
-    if (event->type <= COGUI_EVENT_MOUSE_BUTTON) {
-        return sizeof(struct cogui_event_mouse);
-    }
-
-    if (event->type <= COGUI_EVENT_KBD) {
-        return sizeof(struct cogui_event_kbd);
-    }
-
-    return sizeof(struct cogui_event);
-}
-
 StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, co_int32_t timeout)
 {
     StatusType result;
@@ -113,14 +96,14 @@ StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, co_int32_t timeo
     }
 
     buf = (struct cogui_event *)CoPendMail(mq, timeout, &result);
-    cogui_memcpy(event, buf, _cogui_get_event_size(buf));
+    cogui_memcpy(event, buf, sizeof(struct cogui_event));
 
     return result;
 }
 
 
 
-void *cogui_memset(void *s, int c, U64 cnt)
+void *cogui_memset(void *s, int c, co_uint64_t cnt)
 {
     char *ss = (char *)s;
 
@@ -130,7 +113,7 @@ void *cogui_memset(void *s, int c, U64 cnt)
     return s;
 }
 
-void *cogui_memcpy(void *dest, const void *src, U64 cnt)
+void *cogui_memcpy(void *dest, const void *src, co_uint64_t cnt)
 {
     char *tar = (char *)dest, *s = (char *)src;
 
@@ -140,7 +123,7 @@ void *cogui_memcpy(void *dest, const void *src, U64 cnt)
     return dest;    
 }
 
-void *cogui_memmove(void *dest, const void *src, U64 cnt)
+void *cogui_memmove(void *dest, const void *src, co_uint64_t cnt)
 {
     char *ds = (char *)dest, *ss = (char *)src;
 
@@ -159,7 +142,7 @@ void *cogui_memmove(void *dest, const void *src, U64 cnt)
     return dest;
 }
 
-S32 cogui_memcmp(const void *str1, const void *str2, U64 cnt)
+co_int32_t cogui_memcmp(const void *str1, const void *str2, co_uint64_t cnt)
 {
     const U8 *s1, *s2;
     int res = 0;
@@ -190,7 +173,7 @@ char *cogui_strstr(const char *src, const char *tar)
     return Co_NULL;
 }
 
-U64 cogui_strlen(const char *str)
+co_uint64_t cogui_strlen(const char *str)
 {
     const char *s;
 
@@ -202,7 +185,7 @@ U64 cogui_strlen(const char *str)
 
 char *cogui_strdup(const char *str)
 {
-    U64 len = cogui_strlen(str) + 1;
+    co_uint64_t len = cogui_strlen(str) + 1;
     char *tmp =  (char *)cogui_malloc(len);
 
     if (tmp == Co_NULL)
@@ -213,7 +196,7 @@ char *cogui_strdup(const char *str)
     return tmp;
 }
 
-S32 cogui_strncmp(const char *str1, const char *str2, U64 cnt)
+co_int32_t cogui_strncmp(const char *str1, const char *str2, co_uint64_t cnt)
 {
     for (; *str1 && *str1 == *str2 && cnt; str1++, str2++, cnt--)
         ;
@@ -221,7 +204,7 @@ S32 cogui_strncmp(const char *str1, const char *str2, U64 cnt)
     return (*str1 - *str2);
 }
 
-S32 cogui_strcmp(const char *str1, const char *str2)
+co_int32_t cogui_strcmp(const char *str1, const char *str2)
 {
     for (; *str1 && *str1 == *str2; str1++, str2++)
         ;
@@ -230,30 +213,14 @@ S32 cogui_strcmp(const char *str1, const char *str2)
 }
 
 
-U64 cogui_pow(S32 x, S32 y)
+co_uint64_t cogui_pow(co_int32_t x, co_int32_t y)
 {
-    U64 sum = 1;
+    co_uint64_t sum = 1;
 
     while (y--)
         sum *= x;
 
     return sum;
-}
-
-void cogui_putchar(const char ch)
-{
-    USART1->DR = (uint8_t) ch;
-
-	/* loop until the end of transmission */
-    while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
-}
-
-
-void cogui_putstr(const char *str)
-{   
-    /* output character one by one */
-    while (*str)
-        cogui_putchar(*str++);
 }
 
 void cogui_itoa(co_int16_t n, char *ss)
@@ -280,7 +247,7 @@ void cogui_itoa(co_int16_t n, char *ss)
     s[k++]=0;
 }
 
-
+#ifdef COGUI_DEBUG_PRINT
 int cogui_printf(const char *str,...)
 {
 	va_list ap;
@@ -416,6 +383,11 @@ int cogui_printf(const char *str,...)
 
 	return res;
 }
+#else
+int cogui_printf(const char *str,...){
+
+}
+#endif /* COGUI_DEBUG_PRINT */
 
 void cogui_assert_handler(const char *ex_string, const char *func, U32 line)
 {

@@ -10,9 +10,6 @@
 #ifndef _COGUI_SYSTEM_H
 #define _COGUI_SYSTEM_H
 
-#include "app.h"
-#include <coocox.h>
-
 /* Redefine data type define to current code style */
 typedef signed   char          co_int8_t;           /**<  8-bit signed integer      */
 typedef unsigned char          co_uint8_t;	        /**<  8-bit unsigned integer    */
@@ -92,9 +89,22 @@ typedef struct cogui_slist_node cogui_slist_t;
  */
 struct cogui_point
 {
-    S16 x, y;
+    co_int16_t x, y;
 };
 typedef struct cogui_point cogui_point_t;
+
+/**
+ * rectangle
+ */
+struct cogui_rect
+{
+    co_int16_t x1, x2, y1, y2;
+};
+typedef struct cogui_rect cogui_rect_t;
+
+struct cogui_event;
+struct cogui_app;
+typedef struct cogui_app cogui_app_t;
 
 void cogui_system_init(void);
 
@@ -109,20 +119,20 @@ StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event);
 StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, co_int32_t timeout);
 
 /* math function for cogui */
-U64 cogui_pow(S32 x, S32 y);
+co_uint64_t cogui_pow(co_int32_t x, co_int32_t y);
 void cogui_itoa(co_int16_t n, char* ss);
 
 /* mem function for cogui */
-void *cogui_memset(void *s, int c, U64 cnt);
-void *cogui_memcpy(void *dest, const void *src, U64 cnt);
-void *cogui_memmove(void *dest, const void *src, U64 cnt);
-S32 cogui_memcmp(const void *str1, const void *str2, U64 cnt);
+void *cogui_memset(void *s, int c, co_uint64_t cnt);
+void *cogui_memcpy(void *dest, const void *src, co_uint64_t cnt);
+void *cogui_memmove(void *dest, const void *src, co_uint64_t cnt);
+co_int32_t cogui_memcmp(const void *str1, const void *str2, co_uint64_t cnt);
 
 /* string function for cogui */
 char *cogui_strdup(const char *str);
-U64 cogui_strlen(const char *str);
-S32 cogui_strncmp(const char *str1, const char *str2, U64 cnt);
-S32 cogui_strcmp(const char *str1, const char *str2);
+co_uint64_t cogui_strlen(const char *str);
+co_int32_t cogui_strncmp(const char *str1, const char *str2, co_uint64_t cnt);
+co_int32_t cogui_strcmp(const char *str1, const char *str2);
 
 /* debug function */
 int cogui_printf(const char *str, ...);

@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       cogui.h
- * @version    V0.1.0  
- * @date       2019.9.29
+ * @version    V0.1.1
+ * @date       2020.01.04
  * @brief      This is a file for GUI engine.	
  *******************************************************************************
  */ 
@@ -18,35 +18,18 @@
 /* configuation */
 #include "cogui_config.h"
 
-/* widget */
-#include "widget.h"
-
-/* darwing */
+/* GUI */
+#include "system.h"
 #include "color.h"
-#include "region.h"
 #include "driver.h"
 #include "dc.h"
+#include "widget.h"
 #include "font.h"
-
-/* window */
 #include "title.h"
 #include "window.h"
-#include "topwin.h"
-#include "container.h"
-
-/* application */
-#include "app.h"
-
-/* system define */
-#include "system.h"
-
-/* server */
-#include "server.h"
-
-/* event */
 #include "event.h"
-
-/* in/output */
+#include "app.h"
+#include "server.h"
 #include "mouse.h"
 #include "kbddef.h"
 

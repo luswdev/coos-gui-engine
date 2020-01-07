@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       dc.h
- * @version    V0.1.0  
- * @date       2019.9.29
+ * @version    V0.1.1
+ * @date       2020.01.04
  * @brief      Drawable canvas engine header file.	
  *******************************************************************************
  */ 
@@ -10,15 +10,15 @@
 #ifndef _COGUI_DC_H
 #define _COGUI_DC_H
 
-#include "color.h"
-
 #define COGUI_DC(dc)	((cogui_dc_t *)(dc))                /**< Change type to DC pointer      */
 
 #define _int_swap(x, y) {x ^= y; y ^= x; x ^= y;}           /**< Swap two integer               */
 #define _int_comp(x, y) { if (x>y) _int_swap(x, y); }       /**< If x larger than y, swap it    */
 
-#define COGUI_DC_FC(dc) (cogui_dc_get_gc(COGUI_DC(dc))->foreground)  /**< Get foreground    */
-#define COGUI_DC_BC(dc) (cogui_dc_get_gc(COGUI_DC(dc))->background)  /**< Get background    */
+#define COGUI_DC_FC(dc)     (cogui_dc_get_gc(COGUI_DC(dc))->foreground)  /**< get foreground    */
+#define COGUI_DC_BC(dc)     (cogui_dc_get_gc(COGUI_DC(dc))->background)  /**< get background    */
+#define COGUI_DC_TA(dc)     (cogui_dc_get_gc(COGUI_DC(dc))->text_align)  /**< get text_align    */
+#define COGUI_DC_FONT(dc)   (cogui_dc_get_gc(COGUI_DC(dc))->font)        /**< get font pointer   */
 
 /* Border style */
 #define COGUI_BORDER_NONE       0x00                        /**< Border style none      */
@@ -34,6 +34,14 @@ struct cogui_graphic_driver;
 
 typedef struct cogui_dc cogui_dc_t;
 
+#define COGUI_TEXT_ALIGN_NONE           0x00
+#define COGUI_TEXT_ALIGN_LEFT           0x01
+#define COGUI_TEXT_ALIGN_RIGHT          0x02
+#define COGUI_TEXT_ALIGN_CENTER         0x04
+#define COGUI_TEXT_ALIGN_TOP            0x08
+#define COGUI_TEXT_ALIGN_MIDDLE         0x10
+#define COGUI_TEXT_ALIGN_BOTTOM         0x20
+
 /**
  * @struct   cogui_gc dc.h	
  * @brief    Graph context struct
@@ -41,13 +49,12 @@ typedef struct cogui_dc cogui_dc_t;
  */
 struct cogui_gc
 {
-    cogui_color_t       foreground;           /**< Foreground and background color */
-    cogui_color_t       background;           /**< Boreground and background color */
+    cogui_color_t       foreground;             /**< foreground and background color */
+    cogui_color_t       background;             /**< background and background color */
 
-    //co_uint16_t         textstyle;           /**< Text style  */
-    //co_uint16_t         textalign;           /**< Text align */
+    struct cogui_font * font;                   /**< font structure pointer         */
 
-    //struct cogui_font   *font;               /**< Font */
+    co_uint16_t          text_align;            /**< text alignment                 */
 };
 
 /* dc type define */

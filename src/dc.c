@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       dc.c
- * @version    V0.1.1
- * @date       2019.10.5
+ * @version    V0.1.2
+ * @date       2019.12.10
  * @brief      This is a file for GUI DC engine interface.	
  *******************************************************************************
  */ 
@@ -138,6 +138,42 @@ void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect)
     COGUI_DC_FC(dc) = save_color;
 }
 
+void cogui_dc_draw_text(cogui_dc_t *dc, cogui_rect_t *rect, char *str)
+{
+    co_uint16_t text_align = COGUI_DC_TA(dc);
+    co_int16_t  tx, ty;
+
+    if (text_align & COGUI_TEXT_ALIGN_NONE) {
+        tx = ty = 0;
+        return;
+    }
+
+    /* fixed text start point x */
+    if (text_align & COGUI_TEXT_ALIGN_LEFT) {
+        tx = 0;
+    }
+    else if (text_align & COGUI_TEXT_ALIGN_CENTER) {
+         
+    }
+    else {
+
+    }
+
+    /* fixed text start point y */
+    if (text_align & COGUI_TEXT_ALIGN_TOP) {
+        ty = 0;
+    }
+    else if (text_align & COGUI_TEXT_ALIGN_MIDDLE) {
+
+    }
+    else {
+
+    }
+
+    /* put text in the right place */
+    cogui_lcd_puts(tx, ty, str, COGUI_DC_FONT(dc), cogui_dc_get_owner(dc));
+}
+
 void cogui_dc_draw_button(cogui_dc_t *dc, co_int16_t flag)
 {
     COGUI_ASSERT(dc != Co_NULL);
@@ -185,7 +221,6 @@ void cogui_dc_draw_title(cogui_dc_t *dc) {
     
     /* draw background */
     dc->engine->fill_rect(dc, &rect);
-    //cogui_dc_draw_line(dc, 0, 240, 0, COGUI_WINTITLE_HEIGHT);
 
     /* draw close button */
     cogui_dc_draw_button(cdc, COGUI_WINTITLE_BTN_CLOSE);

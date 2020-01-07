@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       widget.c
- * @version    V0.1.0  
- * @date       2019.9.29
+ * @version    V0.1.1
+ * @date       2020.01.04
  * @brief      Some widget function for GUI engine's event.	
  *******************************************************************************
  */ 
@@ -13,41 +13,29 @@
 extern const cogui_color_t default_foreground;
 extern const cogui_color_t default_background;
 
+extern cogui_font_t *default_font; 
+
 extern struct cogui_window *main_page;
+
+StatusType cogui_widget_event_handler(cogui_widget_t *widget, struct cogui_event *event);
 
 static void _cogui_widget_init(cogui_widget_t *widget)
 {
-    /* initial children list */
-    widget->next = Co_NULL;
-
-    /* initial top level */
-    widget->top = Co_NULL;
+    cogui_memset(widget, 0, sizeof(cogui_widget_t));
 
     /* init flag and type */
     widget->flag = COGUI_WIDGET_FLAG_INIT | COGUI_WIDGET_TYPE_INIT;
 
-    /* initial dc engine */
-    widget->dc_engine = Co_NULL;
-
     /* set default fore/background */
 	widget->gc.foreground = default_foreground;
 	widget->gc.background = default_background;
+    widget->gc.font       = default_font;
 
     /* initial extent rectangle */
     COGUI_INIT_RECR(&widget->extent);
 
-    /* set size equal to 0 */
-    widget->min_width = widget->min_height = 0;
-
-    /* initial call back function */
-    widget->on_focus_in  = Co_NULL;
-    widget->on_focus_out = Co_NULL;
-
     /* set event handler */
     widget->handler = cogui_widget_event_handler;
-
-    /* initial private data */
-    widget->user_data = 0;
 }
 
 cogui_widget_t *cogui_widget_create(struct cogui_window *top)
@@ -78,8 +66,6 @@ cogui_widget_t *cogui_widget_create(struct cogui_window *top)
     cogui_widget_list_insert(widget);
 
     top->focus_widget = widget;
-    extern OSTCB    TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM];
-    extern P_OSTCB  TCBRunning;
     return widget;
 }
 
@@ -191,7 +177,7 @@ cogui_widget_t *cogui_widget_list_pop(co_uint32_t id, struct cogui_window *top)
             tmp_widget->next = Co_NULL;
             
 			/* after pop function, refresh screen */
-			//cogui_screen_refresh(top);
+			cogui_screen_refresh(top);
 			
             return tmp_widget;
         }
@@ -222,7 +208,7 @@ void cogui_widget_list_remove(co_uint32_t id, struct cogui_window *top)
     cogui_free(widget);
 
     /* after remove function, refresh screen */
-    //cogui_screen_refresh(top);
+    cogui_screen_refresh(top);
 }
 
 /**
@@ -468,8 +454,9 @@ static void _cogui_widget_move(cogui_widget_t *widget, S32 dx, S32 dy)
 
 void cogui_widget_move_to_logic(cogui_widget_t *widget, S32 dx, S32 dy)
 {
-    if (widget == Co_NULL)
+    if (widget == Co_NULL) {
         return;
+    }
 	
 	_cogui_widget_move(widget, dx, dy);
 }
@@ -572,8 +559,9 @@ StatusType cogui_widget_onshow(cogui_widget_t *widget, struct cogui_event *event
 
 StatusType cogui_widget_onhide(cogui_widget_t *widget, struct cogui_event *event)
 {
-    if (widget->flag & COGUI_WIDGET_FLAG_SHOWN)
+    if (widget->flag & COGUI_WIDGET_FLAG_SHOWN) {
         return Co_FALSE;
+    }
 
 	cogui_screen_refresh(widget->top);
 

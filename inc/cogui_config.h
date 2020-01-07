@@ -10,6 +10,8 @@
 #ifndef _COGUI_CONFIG_H
 #define _COGUI_CONFIG_H
 
+#include "user_config.h"
+
 /* screen parameter */
 #define COGUI_SCREEN_WIDTH      240
 #define COGUI_SCREEN_HEIGHT     320
@@ -18,6 +20,9 @@
 #define COGUI_SCREEN_TYPE       0
 
 /* debug output (serial) */
-#define COGUI_DEBUG_PRINT       1
+#define COGUI_DEBUG_PRINT
+
+#define cogui_putchar(c)    stm_print_char((c))
+#define cogui_putstr(s)     stm_print_string((s))
 
 #endif /* _COGUI_CONFIG_H */
