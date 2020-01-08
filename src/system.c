@@ -12,7 +12,7 @@
 
 void cogui_system_init()
 {
-    cogui_printf("[%10s]Initial server...", "server");
+    cogui_printf("[%10s] Initial server...", "Server");
     cogui_server_init();
     cogui_printf("[OK]\r\n");
 }

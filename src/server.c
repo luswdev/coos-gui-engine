@@ -130,7 +130,7 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
 
 void cogui_server_entry(void *parameter)
 {
-    server_app = cogui_app_create("server");
+    server_app = cogui_app_create("Server");
     if(server_app == Co_NULL){
         return;
     }

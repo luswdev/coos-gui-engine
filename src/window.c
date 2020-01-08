@@ -66,7 +66,6 @@ cogui_window_t *cogui_main_window_create(void)
     cogui_widget_t *widget;
     co_uint16_t     i;
 
-    cogui_printf("create widget\r\n");
     widget = cogui_widget_create(win);
     cogui_widget_set_rectangle(widget, 0, 0, 240, 40);
     widget->gc.foreground = COGUI_DARK_GRAY; 
@@ -90,7 +89,6 @@ cogui_window_t *cogui_main_window_create(void)
         main_app_table[i].app_title_box = widget;
     }
 
-    cogui_printf("show main page\r\n");
     cogui_window_show(win);
 
     return win;
