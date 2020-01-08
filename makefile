@@ -20,6 +20,9 @@ $(OBJDIR)/tm_stm32f4_fonts.o \
 $(OBJDIR)/widget.o \
 $(OBJDIR)/window.o
 
+GIT_REMOTE = gui
+GIT_BRANCH = mouse_dev
+
 all: $(OBJS)
 
 $(OBJDIR)/%.o: src/%.c | $(OBJDIR)
@@ -31,6 +34,11 @@ $(OBJDIR)/%.o: src/%.c | $(OBJDIR)
 $(OBJDIR):
 	@echo $(NOW) INFO Make new folder GUI/$(OBJDIR) >> ../build.log
 	mkdir -p $(OBJDIR)
+
+git:
+	git add .
+	git commit -m $(com_msg)
+	git push -u $(GIT_REMOTE) $(GIT_BRANCH)
 
 clean:
 	-rm -rf $(OBJDIR)/*.o

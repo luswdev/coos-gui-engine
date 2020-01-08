@@ -12,7 +12,7 @@
 
 void cogui_system_init()
 {
-    cogui_printf("[%10s] Initial server...", "system");
+    cogui_printf("[%10s]Initial server...", "server");
     cogui_server_init();
     cogui_printf("[OK]\r\n");
 }
@@ -23,11 +23,9 @@ void *cogui_malloc(U32 size)
     
     ptr = CoKmalloc(size);
 
-#ifdef COGUI_DEBUG_PRINT
 	if(ptr == Co_NULL){
 		cogui_printf("[sys] out of memory\r\n");
 	}
-#endif
 	
     return ptr;
 }
@@ -282,6 +280,9 @@ int cogui_printf(const char *str,...)
                         }
                         else if (val == 0) {
                             cogui_putchar('0');
+                        }
+                        if (val < space*10) {
+
                         }
                         
                         r_val = val; 

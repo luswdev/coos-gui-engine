@@ -22,7 +22,9 @@
 /* debug output (serial) */
 #define COGUI_DEBUG_PRINT
 
+#ifdef COGUI_DEBUG_PRINT
 #define cogui_putchar(c)    stm_print_char((c))
 #define cogui_putstr(s)     stm_print_string((s))
+#endif /* COGUI_DEBUG_PRINT*/
 
 #endif /* _COGUI_CONFIG_H */

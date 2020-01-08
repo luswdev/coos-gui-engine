@@ -136,6 +136,7 @@ co_int32_t cogui_strcmp(const char *str1, const char *str2);
 
 /* debug function */
 int cogui_printf(const char *str, ...);
+
 void cogui_assert_handler(const char *ex_string, const char *func, U32 line);
 
 #endif /* _COGUI_SYSTEM_H */
