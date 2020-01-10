@@ -71,7 +71,7 @@ struct cogui_list_node
 };
 typedef struct cogui_list_node cogui_list_t;
 
-/****** 宣哲到此一遊:) 2019/01/09
+/**
  * @struct   cogui_slist_node dc.h	
  * @brief    Single linked list struct
  * @details  This struct is single linked list.
