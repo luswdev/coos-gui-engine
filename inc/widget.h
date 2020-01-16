@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       widget.h
- * @version    V0.1.2
- * @date       2020.01.04
+ * @version    V0.1.4
+ * @date       2020.01.16
  * @brief      Some widget function for GUI engine's widget.	
  *******************************************************************************
  */ 
@@ -34,8 +34,6 @@ struct cogui_window;
 #define COGUI_WIDGET_FLAG_RECT          0x0200       /**< Node is rectangle          */
 #define COGUI_WIDGET_FLAG_TITLE         0x0400       /**< Node is button             */
 #define COGUI_WIDGET_FLAG_HAS_TEXT      0x0800       /**< node need to print text    */
-#define COGUI_WIDGET_FLAG_BUTTON_MINI   0x1000       /**< it is button node          */
-#define COGUI_WIDGET_FLAG_BUTTON_CLOSE  0x2000       /**< it is button node          */
 #define COGUI_WIDGET_FLAG_HEADER        0x4000       /**< it is header node          */
 
 /* inline function */

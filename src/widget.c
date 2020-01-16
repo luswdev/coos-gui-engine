@@ -1,14 +1,13 @@
 /**
  *******************************************************************************
  * @file       widget.c
- * @version    V0.1.1
- * @date       2020.01.04
+ * @version    V0.1.2
+ * @date       2020.01.16
  * @brief      Some widget function for GUI engine's event.	
  *******************************************************************************
  */ 
 
 #include <cogui.h>
-#include "stdio.h"
 
 extern const cogui_color_t default_foreground;
 extern const cogui_color_t default_background;
@@ -270,7 +269,7 @@ StatusType cogui_screen_refresh(struct cogui_window *top)
             continue;
         }
 
-        /* draw by different type */
+        /* draw shape if needed */
         if (list->flag & COGUI_WIDGET_FLAG_RECT) {
             if (list->flag & COGUI_WIDGET_FLAG_FILLED) {
                 list->dc_engine->engine->fill_rect(list->dc_engine, &list->inner_extent);
@@ -280,7 +279,7 @@ StatusType cogui_screen_refresh(struct cogui_window *top)
             }
         }
         
-        /* draw text if need */
+        /* draw text if needed */
         if (list->flag & COGUI_WIDGET_FLAG_HAS_TEXT) {
             cogui_rect_t pr = list->inner_extent;
             co_uint64_t padding = list->gc.padding;
