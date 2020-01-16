@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       dc.c
- * @version    V0.1.4
- * @date       2020.01.08
+ * @version    V0.1.5
+ * @date       2020.01.15
  * @brief      This is a file for GUI DC engine interface.	
  *******************************************************************************
  */ 
@@ -140,12 +140,27 @@ void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect)
 
 void cogui_dc_draw_text(cogui_dc_t *dc, cogui_rect_t *rect, char *str)
 {
+	COGUI_ASSERT(dc != Co_NULL);
+
+    /* pass if nothing to show */
+    if (str == Co_NULL) {
+        return;
+    }
+
     co_uint16_t text_align = COGUI_DC_TA(dc);
     co_int16_t  tx, ty;
 
-    if (text_align & COGUI_TEXT_ALIGN_NONE) {
+    /* default style setting */
+    if (text_align == COGUI_TEXT_ALIGN_NONE) {
         tx = ty = 0;
-        return;
+    }
+
+    co_uint32_t text_width = cogui_get_text_width(str, COGUI_DC_FONT(dc));
+    co_uint32_t rect_width = COGUI_RECT_WIDTH(rect);
+
+    /* if text is too long, it will no longer align */
+    if (text_width > rect_width) {
+        text_width = rect_width;
     }
 
     /* fixed text start point x */
@@ -153,25 +168,35 @@ void cogui_dc_draw_text(cogui_dc_t *dc, cogui_rect_t *rect, char *str)
         tx = 0;
     }
     else if (text_align & COGUI_TEXT_ALIGN_CENTER) {
-         
+        tx = rect_width - text_width;
+        tx /=2;
     }
-    else {
+    else if (text_align & COGUI_TEXT_ALIGN_RIGHT) {
+        tx = rect_width - text_width;
+    }
 
-    }
+    co_uint32_t text_height = cogui_get_text_height(str, COGUI_DC_FONT(dc), rect);
+    co_uint32_t rect_height = COGUI_RECT_HEIGHT(rect);
+
+    /* text overflow-y: hidden */
+    if (text_height > rect_height) {
+        text_height = rect_height;
+    } 
 
     /* fixed text start point y */
     if (text_align & COGUI_TEXT_ALIGN_TOP) {
         ty = 0;
     }
     else if (text_align & COGUI_TEXT_ALIGN_MIDDLE) {
-
+        ty = rect_height - text_height;
+        ty/=2;
     }
-    else {
-
+    else if (text_align & COGUI_TEXT_ALIGN_BOTTOM) {
+        ty = rect_height - text_height;
     }
 
     /* put text in the right place */
-    cogui_lcd_puts(tx, ty, str, COGUI_DC_FONT(dc), cogui_dc_get_owner(dc));
+    cogui_lcd_puts(tx+rect->x1, ty+rect->y1, str, COGUI_DC_FONT(dc), dc, rect);
 }
 
 void cogui_dc_draw_button(cogui_dc_t *dc, co_int16_t flag)
@@ -208,29 +233,6 @@ void cogui_dc_draw_button(cogui_dc_t *dc, co_int16_t flag)
     if (flag & COGUI_WINTITLE_BTN_MINI) {      
         cogui_dc_draw_line(dc, 2, 31, 15, 19);
     }
-}
-
-void cogui_dc_draw_title(cogui_dc_t *dc) {
-    COGUI_ASSERT(dc != Co_NULL);
-
-    cogui_dc_t *cdc = cogui_dc_get_owner(dc)->next->dc_engine;
-    cogui_dc_t *mdc = cogui_dc_get_owner(dc)->next->next->dc_engine;
-
-    cogui_rect_t rect;
-    COGUI_SET_RECT(&rect, 0, 0, 240, COGUI_WINTITLE_HEIGHT);
-    
-    /* draw background */
-    dc->engine->fill_rect(dc, &rect);
-
-    /* draw close button */
-    cogui_dc_draw_button(cdc, COGUI_WINTITLE_BTN_CLOSE);
-    /* draw mini button */
-    cogui_dc_draw_button(mdc,  COGUI_WINTITLE_BTN_MINI);
-
-    char *title = cogui_dc_get_owner(dc)->top->title_name;
-
-    /* show title name */
-    cogui_tm_16x26_puts(100, 7, title, cogui_dc_get_owner(dc));
 }
 
 /**

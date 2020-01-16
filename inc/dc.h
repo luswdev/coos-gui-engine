@@ -15,10 +15,11 @@
 #define _int_swap(x, y) {x ^= y; y ^= x; x ^= y;}           /**< Swap two integer               */
 #define _int_comp(x, y) { if (x>y) _int_swap(x, y); }       /**< If x larger than y, swap it    */
 
-#define COGUI_DC_FC(dc)     (cogui_dc_get_gc(COGUI_DC(dc))->foreground)  /**< get foreground    */
-#define COGUI_DC_BC(dc)     (cogui_dc_get_gc(COGUI_DC(dc))->background)  /**< get background    */
-#define COGUI_DC_TA(dc)     (cogui_dc_get_gc(COGUI_DC(dc))->text_align)  /**< get text_align    */
-#define COGUI_DC_FONT(dc)   (cogui_dc_get_gc(COGUI_DC(dc))->font)        /**< get font pointer   */
+#define COGUI_DC_FC(dc)         (cogui_dc_get_gc(COGUI_DC(dc))->foreground)  /**< get foreground    */
+#define COGUI_DC_BC(dc)         (cogui_dc_get_gc(COGUI_DC(dc))->background)  /**< get background    */
+#define COGUI_DC_TA(dc)         (cogui_dc_get_gc(COGUI_DC(dc))->text_align)  /**< get text_align    */
+#define COGUI_DC_FONT(dc)       (cogui_dc_get_gc(COGUI_DC(dc))->font)        /**< get font pointer   */
+#define COGUI_DC_PADDING(dc)    (cogui_dc_get_gc(COGUI_DC(dc))->padding)        /**< get font pointer   */
 
 /* Border style */
 #define COGUI_BORDER_NONE       0x00                        /**< Border style none      */
@@ -54,8 +55,11 @@ struct cogui_gc
 
     struct cogui_font * font;                   /**< font structure pointer         */
 
-    co_uint16_t          text_align;            /**< text alignment                 */
+    co_uint16_t         text_align;             /**< text alignment                 */
+    co_uint64_t         padding;                /**< rectangle padding (for text)   */
 };
+
+#define COGUI_PADDING(top, bottom, left, right) ((co_uint64_t)(((top)<<24)|((bottom)<<16)|((left)<<8)|(right)))
 
 /* dc type define */
 #define COGUI_DC_INIT           0x00          /**< DC initial type      */
@@ -139,6 +143,8 @@ void cogui_dc_draw_horizontal_line(cogui_dc_t *dc, co_int32_t x1, co_int32_t x2,
 void rtgui_dc_draw_vertical_line(cogui_dc_t *dc, co_int32_t x, co_int32_t y1, co_int32_t y2);
 
 void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect);
+
+void cogui_dc_draw_text(cogui_dc_t *dc, cogui_rect_t *rect, char *str);
 
 void cogui_dc_draw_button(cogui_dc_t *dc, co_int16_t flag);
 void cogui_dc_draw_title(cogui_dc_t *dc);

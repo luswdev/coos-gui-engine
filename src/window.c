@@ -10,6 +10,7 @@
 #include <cogui.h>
 
 extern cogui_window_t *main_page;
+cogui_window_t *current_window;
 co_int16_t current_app_install_cnt = 0;
 
 struct main_app_table main_app_table[9];
@@ -68,8 +69,11 @@ cogui_window_t *cogui_main_window_create(void)
 
     widget = cogui_widget_create(win);
     cogui_widget_set_rectangle(widget, 0, 0, 240, 40);
-    widget->gc.foreground = COGUI_DARK_GRAY; 
+    widget->gc.background = COGUI_DARK_GRAY;
     widget->flag |= COGUI_WIDGET_FLAG_RECT | COGUI_WIDGET_FLAG_FILLED;
+    cogui_widget_set_text(widget, "CoOS");
+    cogui_widget_set_font(widget, &tm_font_16x26);
+    cogui_widget_set_text_align(widget, COGUI_TEXT_ALIGN_CENTER|COGUI_TEXT_ALIGN_MIDDLE);
     COGUI_WIDGET_ENABLE(widget);
 
     for ( i=0; i<9; i++) {
@@ -78,13 +82,17 @@ cogui_window_t *cogui_main_window_create(void)
         widget->gc.foreground = COGUI_GREEN; 
         widget->flag |= COGUI_WIDGET_FLAG_RECT;
         COGUI_WIDGET_ENABLE(widget);
+        cogui_widget_set_font(widget, &tm_font_16x26);
+        cogui_widget_set_text_align(widget, COGUI_TEXT_ALIGN_CENTER|COGUI_TEXT_ALIGN_MIDDLE);
 
         main_app_table[i].app_icon = widget;
 
         widget = cogui_widget_create(win);
         cogui_widget_set_rectangle(widget, 15 + (i%3)*75 , 115 + (i/3)*88, 60, 13);
         widget->gc.foreground = COGUI_WHITE; 
-        widget->flag |= COGUI_WIDGET_FLAG_RECT;
+        widget->flag |= COGUI_WIDGET_FLAG_RECT| COGUI_WIDGET_FLAG_FILLED;
+        cogui_widget_set_text_align(widget, COGUI_TEXT_ALIGN_CENTER|COGUI_TEXT_ALIGN_MIDDLE);
+        COGUI_WIDGET_ENABLE(widget);
 
         main_app_table[i].app_title_box = widget;
     }
@@ -100,10 +108,18 @@ static co_int16_t cogui_main_page_app_install(char* title)
         return Co_FALSE;
     }
 
-    cogui_widget_t *widget;    
+    cogui_widget_t *widget;
+    char *icon_text = cogui_strdup(title);
+    icon_text[1] = 0;
     widget = main_app_table[current_app_install_cnt].app_icon;
+    cogui_widget_set_text(widget, icon_text);
 
     widget->flag |= COGUI_WIDGET_FLAG_FILLED;
+    widget->gc.background = COGUI_GREEN;
+    widget->gc.foreground = COGUI_WHITE;
+
+    widget = main_app_table[current_app_install_cnt].app_title_box;
+    cogui_widget_set_text(widget, title);
 
     main_app_table[current_app_install_cnt].title = title;
 
@@ -116,6 +132,14 @@ static void cogui_main_page_app_uninstall(co_int16_t id)
 
     main_app_table[id].app_icon->flag &= ~COGUI_WIDGET_FLAG_FILLED;
     main_app_table[id].title = Co_NULL;
+
+    cogui_widget_clear_text(main_app_table[id].app_icon);
+    cogui_widget_clear_text(main_app_table[id].app_title_box);
+
+    cogui_widget_t *widget;    
+    widget = main_app_table[current_app_install_cnt].app_icon;
+    widget->gc.background = COGUI_BLACK;
+    widget->gc.foreground = COGUI_GREEN;
 
     /* if this app is not previous install app, we need to shift all app forward */
     if (id != --current_app_install_cnt) {
@@ -241,6 +265,8 @@ StatusType cogui_window_onshow(cogui_window_t *win)
 
 	cogui_screen_refresh(win);
 
+    current_window = win;
+
     return Co_TRUE;
 }
 
@@ -294,27 +320,42 @@ StatusType cogui_window_event_handler(struct cogui_window *win, struct cogui_eve
 
 void cogui_assert_failed_page(const char* ex, co_uint16_t line, const char* func)
 {
-    COGUI_DC_FC(main_page->widget_list->next->dc_engine) = COGUI_BLUE;
-    cogui_dc_fill_rect_forecolor(main_page->widget_list->next->dc_engine, &main_page->widget_list->next->inner_extent);
+    /* let full screen background set to blue */
+    main_page->widget_list->next->gc.background = COGUI_BLUE;
+    main_page->widget_list->next->next = Co_NULL;
+
+    cogui_window_show(main_page);
+    /* create a widget to print error text */
     cogui_widget_t *widget;
     widget = cogui_widget_create(main_page);
     cogui_widget_set_rectangle(widget, 15 , 55, 60, 60);
     widget->gc.foreground = COGUI_WHITE; 
-    cogui_tm_16x26_puts(5, 17, ":(", widget);
-    cogui_widget_set_rectangle(widget, 20 , 120, 200, 200);
-    cogui_tm_11x18_puts(0, 0, "Your computer ran into a problem.\n", widget);
+    cogui_widget_set_font(widget, &tm_font_16x26);
 
+    widget->gc.padding = COGUI_PADDING(17, 0, 5, 0);
+
+    /* set to error code */
+    cogui_widget_set_text(widget, ":("); 
+    cogui_widget_show(widget);
+
+    widget = cogui_widget_create(main_page);
+    cogui_widget_set_rectangle(widget, 20 , 120, 200, 200);
+    cogui_widget_set_font(widget, &tm_font_11x18);
+    cogui_widget_set_text(widget, "Your computer ran into a problem.\n"); 
+    cogui_widget_show(widget);
+
+    widget = cogui_widget_create(main_page);
+    cogui_widget_set_rectangle(widget, 20 , 170, 200, 150);
     char *ex_str = cogui_strdup(ex);
     char *f_str = cogui_strdup(func);
     char l_str[10];
     cogui_itoa(line, l_str);
 
-    cogui_tm_7x10_puts(0, 50, "Assert failed at\n", widget);
-    cogui_tm_7x10_puts(0, 60, "Function: ", widget);
-    cogui_tm_7x10_puts(70, 60, f_str, widget);
-    cogui_tm_7x10_puts(0, 70, "Line: ", widget);
-    cogui_tm_7x10_puts(42, 70, l_str, widget);
-    cogui_tm_7x10_puts(0, 80, "Expression: ", widget);
-    cogui_tm_7x10_puts(84, 80, ex_str, widget);
-    //cogui_tm_11x18_puts(0, 80, str, widget);
+    cogui_widget_set_text(widget, "Assert failed at\n"); 
+    cogui_widget_append_text(widget, f_str);
+    cogui_widget_append_text(widget, "\nLine: ");
+    cogui_widget_append_text(widget, l_str);
+    cogui_widget_append_text(widget, "\nExpression: ");
+    cogui_widget_append_text(widget, ex_str);
+    cogui_widget_show(widget);
 }

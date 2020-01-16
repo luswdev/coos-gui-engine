@@ -34,7 +34,9 @@ struct cogui_window;
 #define COGUI_WIDGET_FLAG_RECT          0x0200       /**< Node is rectangle          */
 #define COGUI_WIDGET_FLAG_TITLE         0x0400       /**< Node is button             */
 #define COGUI_WIDGET_FLAG_HAS_TEXT      0x0800       /**< node need to print text    */
-#define COGUI_WIDGET_FLAG_HEADER        0x1000       /**< it is header node          */
+#define COGUI_WIDGET_FLAG_BUTTON_MINI   0x1000       /**< it is button node          */
+#define COGUI_WIDGET_FLAG_BUTTON_CLOSE  0x2000       /**< it is button node          */
+#define COGUI_WIDGET_FLAG_HEADER        0x4000       /**< it is header node          */
 
 /* inline function */
 #define COGUI_WIDGET(w) ((struct cogui_widget *)(w))
@@ -114,6 +116,13 @@ void cogui_widget_enable_border(cogui_widget_t *widget);
 /* get widget size */
 void cogui_widget_get_rect(cogui_widget_t *widget, cogui_rect_t *rect);
 void cogui_widget_get_extent(cogui_widget_t *widget, cogui_rect_t *rect);
+
+/* set widget text */
+void cogui_widget_set_font(cogui_widget_t* widget, cogui_font_t *font);
+void cogui_widget_set_text_align(cogui_widget_t *widget, co_uint16_t style);
+void cogui_widget_set_text(cogui_widget_t *widget, const char *text);
+void cogui_widget_append_text(cogui_widget_t *widget, const char *text);
+void cogui_widget_clear_text(cogui_widget_t *widget);
 
 /* show/hide widget */
 StatusType cogui_widget_show(cogui_widget_t *widget);

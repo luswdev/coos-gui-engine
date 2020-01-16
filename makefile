@@ -29,7 +29,7 @@ $(OBJDIR)/%.o: src/%.c | $(OBJDIR)
 	@echo "bulid file: $<"
 	$(CC) $(CFLAGS) -MMD -MF$(@:%.o=%.d) -o $@ $< \
         && echo $(NOW) INFO Objecting $< success. >> ../build.log \
-        || echo $(NOW) ERROR Objecting $< failed, stop building. >> ../build.log; exit 0
+        || echo $(NOW) ERROR Objecting $< failed, stop building. >> ../build.log | exit 1
 
 $(OBJDIR):
 	@echo $(NOW) INFO Make new folder GUI/$(OBJDIR) >> ../build.log

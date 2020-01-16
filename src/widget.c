@@ -273,40 +273,35 @@ StatusType cogui_screen_refresh(struct cogui_window *top)
         /* draw by different type */
         if (list->flag & COGUI_WIDGET_FLAG_RECT) {
             if (list->flag & COGUI_WIDGET_FLAG_FILLED) {
-                cogui_dc_fill_rect_forecolor(list->dc_engine, &list->inner_extent);
+                list->dc_engine->engine->fill_rect(list->dc_engine, &list->inner_extent);
 			}
             else {
                 cogui_dc_draw_rect(list->dc_engine, &list->inner_extent);
             }
         }
-        else if (list->flag & COGUI_WIDGET_FLAG_TITLE) {
-            cogui_dc_draw_title(list->dc_engine);
+        else if (list->flag & COGUI_WIDGET_FLAG_BUTTON_MINI) {
+            cogui_dc_draw_button(list->dc_engine, COGUI_WINTITLE_BTN_MINI);
+        }
+        else if (list->flag & COGUI_WIDGET_FLAG_BUTTON_CLOSE) {
+            cogui_dc_draw_button(list->dc_engine, COGUI_WINTITLE_BTN_CLOSE);
         }
         
+        /* draw text if need */
+        if (list->flag & COGUI_WIDGET_FLAG_HAS_TEXT) {
+            cogui_rect_t pr = list->inner_extent;
+            co_uint64_t padding = list->gc.padding;
+            COGUI_RECT_PADDING(&pr, padding);
+
+            cogui_dc_draw_text(list->dc_engine, &pr, list->text);
+        }
+
         /* draw border at last if needed */
         if (list->flag & COGUI_WIDGET_BORDER) {
             cogui_dc_draw_border(list->dc_engine, &list->inner_extent);
-        }
+        }        
 
         /* go forward to next node */
         list = list->next;
-    }
-
-    if (top == main_page) {
-        COGUI_DC_FC(top->widget_list->next->dc_engine) = COGUI_WHITE;
-        cogui_tm_16x26_puts(88, 7, "CoOS", top->widget_list->next);
-        COGUI_DC_FC(top->widget_list->next->dc_engine) = COGUI_DARK_GRAY;
-
-        extern co_int16_t current_app_install_cnt;
-        extern struct main_app_table main_app_table[9];
-        co_uint16_t i;
-
-        for ( i=0; i<current_app_install_cnt; i++) {
-            cogui_tm_7x10_puts(1, 1, main_app_table[i].title, main_app_table[i].app_title_box);
-            COGUI_DC_FC(main_app_table[i].app_icon->dc_engine) = COGUI_WHITE;
-            cogui_tm_16x26_putc(22, 17, main_app_table[i].title[0], main_app_table[i].app_icon);
-            COGUI_DC_FC(main_app_table[i].app_icon->dc_engine) = COGUI_GREEN;
-        }
     }
 
     return Co_TRUE;
@@ -439,6 +434,60 @@ void cogui_widget_enable_border(cogui_widget_t *widget)
     widget->flag |= COGUI_WIDGET_BORDER;
 
     cogui_screen_refresh(widget->top);
+}
+
+void cogui_widget_set_font(cogui_widget_t* widget, cogui_font_t *font)
+{
+    COGUI_ASSERT(widget != Co_NULL);
+    COGUI_ASSERT(font != Co_NULL);
+
+    widget->gc.font = font;
+}
+
+void cogui_widget_set_text_align(cogui_widget_t *widget, co_uint16_t style)
+{
+    COGUI_ASSERT(widget != Co_NULL);
+
+    widget->gc.text_align = style;
+}
+
+void cogui_widget_set_text(cogui_widget_t *widget, const char *text)
+{
+    COGUI_ASSERT(widget != Co_NULL);
+
+    widget->flag |= COGUI_WIDGET_FLAG_HAS_TEXT;
+    
+    widget->text = cogui_strdup(text);
+}
+
+void cogui_widget_append_text(cogui_widget_t *widget, const char *text)
+{
+    COGUI_ASSERT(widget != Co_NULL);
+    
+    /* if this is first text, just call set_text to do finish work */
+    if (!(widget->flag & COGUI_WIDGET_FLAG_HAS_TEXT)) {
+        cogui_widget_set_text(widget, text);
+        return;
+    }
+    
+    co_uint64_t len = cogui_strlen(text) + cogui_strlen(widget->text) + 1;
+    char * new_text = (char *)cogui_malloc(len);
+
+    /* create new string and put 'text' on original text's end */
+    cogui_memcpy(new_text, widget->text, cogui_strlen(widget->text));
+    cogui_memcpy(new_text+cogui_strlen(widget->text), text, cogui_strlen(text)+1);
+
+    /* after copy original text, free it */
+    cogui_free(widget->text);
+
+    widget->text = new_text;
+}
+
+void cogui_widget_clear_text(cogui_widget_t *widget)
+{
+    widget->flag &= ~COGUI_WIDGET_FLAG_HAS_TEXT;
+    
+    cogui_free(widget->text);
 }
 
 static void _cogui_widget_move(cogui_widget_t *widget, S32 dx, S32 dy)

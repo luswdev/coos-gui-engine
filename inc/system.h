@@ -56,6 +56,17 @@ if(!(EX)){											    \
     (r)->y2 += (d);                     \
 }                                       \
 
+#define COGUI_RECT_PADDING(r, p)    \
+{                                   \
+    (r)->x1 += (p)>>8  & 0x0FF;     \
+    (r)->x2 -= (p)     & 0x0FF;     \
+    (r)->y1 += (p)>>24 & 0x0FF;     \
+    (r)->y2 -= (p)>>16 & 0x0FF;     \
+}                                   \
+
+#define COGUI_RECT_WIDTH(r)         ((r)->x2-(r)->x1)
+#define COGUI_RECT_HEIGHT(r)        ((r)->y2-(r)->y1)
+
 #define COGUI_LIST_PREV(l) ((l)->prev)
 #define COGUI_LIST_NEXT(l) ((l)->next)
 
