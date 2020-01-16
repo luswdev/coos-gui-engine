@@ -279,12 +279,6 @@ StatusType cogui_screen_refresh(struct cogui_window *top)
                 cogui_dc_draw_rect(list->dc_engine, &list->inner_extent);
             }
         }
-        else if (list->flag & COGUI_WIDGET_FLAG_BUTTON_MINI) {
-            cogui_dc_draw_button(list->dc_engine, COGUI_WINTITLE_BTN_MINI);
-        }
-        else if (list->flag & COGUI_WIDGET_FLAG_BUTTON_CLOSE) {
-            cogui_dc_draw_button(list->dc_engine, COGUI_WINTITLE_BTN_CLOSE);
-        }
         
         /* draw text if need */
         if (list->flag & COGUI_WIDGET_FLAG_HAS_TEXT) {

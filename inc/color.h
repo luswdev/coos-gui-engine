@@ -53,12 +53,12 @@ typedef co_int64_t cogui_color_t;   /**< Color type belong to long integer */
 #endif
 
 /* some default color scheme */
-#define COGUI_RED               COGUI_RGB(0xc6, 0x28, 0x28)         /**< Default red color          */ 
-#define COGUI_GREEN             COGUI_RGB(0x38, 0x8e, 0x3c)         /**< Default green color        */ 
-#define COGUI_BLUE              COGUI_RGB(0x02, 0x77, 0xbd)         /**< Default blue color         */ 
-#define COGUI_YELLOW            COGUI_RGB(0xfb, 0xc0, 0x2d)         /**< Default yellow color       */ 
-#define COGUI_PURPLE            COGUI_RGB(0x51, 0x35, 0xb1)         /**< Default purple color       */ 
-#define COGUI_CYAN              COGUI_RGB(0x26, 0xc6, 0xda)         /**< Default cyan color         */ 
+#define COGUI_RED               COGUI_RGB(0xff, 0x00, 0x00)         /**< Default red color          */ 
+#define COGUI_GREEN             COGUI_RGB(0x00, 0xff, 0x00)         /**< Default green color        */ 
+#define COGUI_BLUE              COGUI_RGB(0x00, 0x00, 0xff)         /**< Default blue color         */ 
+#define COGUI_YELLOW            COGUI_RGB(0xff, 0xff, 0x00)         /**< Default yellow color       */ 
+#define COGUI_PURPLE            COGUI_RGB(0xff, 0x00, 0xff)         /**< Default purple color       */
+#define COGUI_CYAN              COGUI_RGB(0x00, 0xff, 0xff)         /**< Default cyan color         */ 
 #define COGUI_HIGH_LIGHT        COGUI_RGB(0xf5, 0xf5, 0xf5)         /**< Default high light color   */ 
 #define COGUI_LIGHT_GRAY        COGUI_RGB(0x9e, 0x9e, 0x9e)         /**< Default light gray color   */ 
 #define COGUI_DARK_GRAY         COGUI_RGB(0x42, 0x42, 0x42)         /**< Default dark gray color    */ 

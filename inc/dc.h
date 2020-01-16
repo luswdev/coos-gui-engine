@@ -60,6 +60,7 @@ struct cogui_gc
 };
 
 #define COGUI_PADDING(top, bottom, left, right) ((co_uint64_t)(((top)<<24)|((bottom)<<16)|((left)<<8)|(right)))
+#define COGUI_PADDING_SIMPLE(pa)                ((co_uint64_t)(((pa)<<24)|((pa)<<16)|((pa)<<8)|(pa)))
 
 /* dc type define */
 #define COGUI_DC_INIT           0x00          /**< DC initial type      */
@@ -145,9 +146,6 @@ void rtgui_dc_draw_vertical_line(cogui_dc_t *dc, co_int32_t x, co_int32_t y1, co
 void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect);
 
 void cogui_dc_draw_text(cogui_dc_t *dc, cogui_rect_t *rect, char *str);
-
-void cogui_dc_draw_button(cogui_dc_t *dc, co_int16_t flag);
-void cogui_dc_draw_title(cogui_dc_t *dc);
 
 /* get current graph context */
 struct cogui_gc *cogui_dc_get_gc(cogui_dc_t *dc);

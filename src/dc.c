@@ -199,42 +199,6 @@ void cogui_dc_draw_text(cogui_dc_t *dc, cogui_rect_t *rect, char *str)
     cogui_lcd_puts(tx+rect->x1, ty+rect->y1, str, COGUI_DC_FONT(dc), dc, rect);
 }
 
-void cogui_dc_draw_button(cogui_dc_t *dc, co_int16_t flag)
-{
-    COGUI_ASSERT(dc != Co_NULL);
-
-    if (flag & COGUI_WINTITLE_BTN_BORDER) {
-        cogui_rect_t rect;
-        COGUI_SET_RECT(&rect, 0, 0, COGUI_WINTITLE_BTN_HEIGHT, COGUI_WINTITLE_BTN_HEIGHT);
-        cogui_dc_draw_rect(dc, &rect);
-    }
-
-    if (flag & COGUI_WINTITLE_BTN_CLOSE) {
-        co_int16_t i, j;
-
-        for ( i = 0; i < COGUI_WINTITLE_BTN_INNER_HEIGHT; i++) {
-            for ( j = 0; j < COGUI_WINTITLE_BTN_INNER_HEIGHT; j++) {
-                if ( _UI_ABS(i - j) > 3 )   /* skip other pixels */
-                    continue;
-
-                if ((i == 0  && j <= 1)  || (i == 1  && j == 0)  || /* skip left top corner     */
-                    (i == 28 && j == 0)  || (i == 29 && j <= 1)  || /* skip right top corner    */
-                    (i == 0  && j >= 28) || (i == 1  && j == 29) || /* skip left bottom corner  */
-                    (i == 28 && j == 29) || (i == 29 && j >= 28)) { /* skip right bottom corner */
-                    continue;
-                }
-
-                dc->engine->draw_point(dc, i+2, j+2);   /* positive diagonal */
-                dc->engine->draw_point(dc, 31-i, j+2);  /* negative diagonal */
-            }
-        }
-    }
-
-    if (flag & COGUI_WINTITLE_BTN_MINI) {      
-        cogui_dc_draw_line(dc, 2, 31, 15, 19);
-    }
-}
-
 /**
  *******************************************************************************
  * @brief      Get graph context by DC

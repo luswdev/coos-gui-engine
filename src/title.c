@@ -17,30 +17,41 @@ void cogui_title_create(cogui_window_t *win)
     cogui_widget_t *close_btn = cogui_widget_create(win);
     cogui_widget_t  *mini_btn = cogui_widget_create(win);
 
-    win->title->gc.foreground = COGUI_BLACK;
-    win->title->gc.background = COGUI_LIGHT_GRAY;
-    close_btn->gc.foreground = COGUI_BLACK;
-    close_btn->gc.background = COGUI_LIGHT_GRAY;
-    mini_btn->gc.foreground = COGUI_BLACK;
-    mini_btn->gc.background = COGUI_LIGHT_GRAY;
+    win->title->gc.foreground = COGUI_LIGHT_GRAY;
+    win->title->gc.background = COGUI_BLACK;
+    close_btn->gc.foreground = COGUI_DARK_GRAY;
+    close_btn->gc.background = COGUI_RED;
+    mini_btn->gc.foreground = COGUI_DARK_GRAY;
+    mini_btn->gc.background = COGUI_YELLOW;
 
     COGUI_WIDGET_ENABLE(win->title);
     COGUI_WIDGET_ENABLE(close_btn);
     COGUI_WIDGET_ENABLE(mini_btn);
 
     win->title->flag |= COGUI_WIDGET_FLAG_TITLE | COGUI_WIDGET_FLAG_RECT | COGUI_WIDGET_FLAG_FILLED;
-    close_btn->flag |= COGUI_WIDGET_FLAG_TITLE | COGUI_WIDGET_FLAG_BUTTON_CLOSE;
-    mini_btn->flag |= COGUI_WIDGET_FLAG_TITLE | COGUI_WIDGET_FLAG_BUTTON_MINI;
+    close_btn->flag |= COGUI_WIDGET_FLAG_TITLE | COGUI_WIDGET_FLAG_RECT | COGUI_WIDGET_FLAG_FILLED;
+    mini_btn->flag |= COGUI_WIDGET_FLAG_TITLE | COGUI_WIDGET_FLAG_RECT | COGUI_WIDGET_FLAG_FILLED;
 
-    cogui_widget_set_rectangle(win->title, 0, 0, 240, COGUI_WINTITLE_HEIGHT);
-    cogui_widget_set_rectangle(close_btn, 2, 2, 36, 36);
-    cogui_widget_set_rectangle(mini_btn, 40, 2, 36, 36);
+    cogui_widget_set_rectangle(win->title, 80, 0, 240, COGUI_WINTITLE_HEIGHT);
+    cogui_widget_set_rectangle(close_btn, 6, 6, 28, 28);
+    cogui_widget_set_rectangle(mini_btn, 40, 6, 28, 28);
 
-    win->title->gc.padding = COGUI_PADDING(7, 0, 100, 0);
-
-    cogui_widget_set_text_align(win->title, COGUI_TEXT_ALIGN_LEFT|COGUI_TEXT_ALIGN_TOP);
+    cogui_widget_set_text_align(win->title, COGUI_TEXT_ALIGN_LEFT|COGUI_TEXT_ALIGN_MIDDLE);
     cogui_widget_set_font(win->title, &tm_font_16x26);
     cogui_widget_set_text(win->title, win->title_name);
+
+    /* symbol "X" */
+    cogui_widget_set_text_align(close_btn, COGUI_TEXT_ALIGN_CENTER|COGUI_TEXT_ALIGN_MIDDLE);
+    cogui_widget_set_font(close_btn, &tm_font_16x26);
+    cogui_widget_set_text(close_btn, "X");
+    close_btn->gc.padding = COGUI_PADDING(2,0,0,0);
+
+    /* symbol "-" */
+    cogui_widget_set_text_align(mini_btn, COGUI_TEXT_ALIGN_CENTER|COGUI_TEXT_ALIGN_MIDDLE);
+    cogui_widget_set_font(mini_btn, &tm_font_16x26);
+    cogui_widget_set_text(mini_btn, "-");
+    mini_btn->gc.padding = COGUI_PADDING(2,0,0,1);
+
 }
 
 void cogui_title_delete(cogui_window_t *win)

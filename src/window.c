@@ -69,7 +69,7 @@ cogui_window_t *cogui_main_window_create(void)
 
     widget = cogui_widget_create(win);
     cogui_widget_set_rectangle(widget, 0, 0, 240, 40);
-    widget->gc.background = COGUI_DARK_GRAY;
+    widget->gc.background = COGUI_BLACK;
     widget->flag |= COGUI_WIDGET_FLAG_RECT | COGUI_WIDGET_FLAG_FILLED;
     cogui_widget_set_text(widget, "CoOS");
     cogui_widget_set_font(widget, &tm_font_16x26);

@@ -18,8 +18,8 @@
 #define COGUI_WINTITLE_BORDER_SIZE          2
 
 #define COGUI_WINTITLE_HEIGHT               40          /**< Title height                   */
-#define COGUI_WINTITLE_BTN_HEIGHT           34          /**< Title button height            */
-#define COGUI_WINTITLE_BTN_INNER_HEIGHT     30          /**< Title button drawing height    */
+#define COGUI_WINTITLE_BTN_HEIGHT           28          /**< Title button height            */
+#define COGUI_WINTITLE_BTN_INNER_HEIGHT     22          /**< Title button drawing height    */
 
 struct cogui_window;
 
