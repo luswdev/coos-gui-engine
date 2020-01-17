@@ -12,6 +12,8 @@
 const cogui_color_t default_title_background = COGUI_LIGHT_GRAY;
 const cogui_color_t default_title_foreground = COGUI_BLACK;
 
+extern cogui_font_t tm_symbol_16x16;
+
 void cogui_title_create(cogui_window_t *win)
 {
     cogui_widget_t *close_btn = cogui_widget_create(win);
@@ -42,14 +44,14 @@ void cogui_title_create(cogui_window_t *win)
 
     /* symbol "X" */
     cogui_widget_set_text_align(close_btn, COGUI_TEXT_ALIGN_CENTER|COGUI_TEXT_ALIGN_MIDDLE);
-    cogui_widget_set_font(close_btn, &tm_font_16x26);
-    cogui_widget_set_text(close_btn, "x");
+    cogui_widget_set_font(close_btn, &tm_symbol_16x16);
+    cogui_widget_set_text(close_btn, "!");
     close_btn->gc.padding = COGUI_PADDING(0,2,0,0);
 
     /* symbol "-" */
     cogui_widget_set_text_align(mini_btn, COGUI_TEXT_ALIGN_CENTER|COGUI_TEXT_ALIGN_MIDDLE);
-    cogui_widget_set_font(mini_btn, &tm_font_16x26);
-    cogui_widget_set_text(mini_btn, "-");
+    cogui_widget_set_font(mini_btn, &tm_symbol_16x16);
+    cogui_widget_set_text(mini_btn, "\"");
 }
 
 void cogui_title_delete(cogui_window_t *win)
