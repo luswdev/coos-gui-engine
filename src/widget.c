@@ -72,6 +72,12 @@ void cogui_widget_delete(cogui_widget_t *widget)
 {
     cogui_widget_list_pop(widget->id, widget->top);
     cogui_dc_end_drawing(widget->dc_engine);
+    cogui_widget_clear_text(widget);
+
+    if (widget->user_data) {
+        cogui_free(widget->user_data);
+    }
+
     cogui_free(widget);
 }
 
@@ -186,28 +192,6 @@ cogui_widget_t *cogui_widget_list_pop(co_uint32_t id, struct cogui_window *top)
     }
 
     return Co_NULL;
-}
-
-/**
- *******************************************************************************
- * @brief      Remove a screen node from screen list
- * @param[in]  id       Which node we should remove
- * @param[out] None
- * @retval     None 
- *
- * @par Description
- * @details    This function is used to remove a screen node from screen list
- *             and DELETE it right now. 
- *******************************************************************************
- */
-void cogui_widget_list_remove(co_uint32_t id, struct cogui_window *top)
-{
-    cogui_widget_t *widget = cogui_widget_list_pop(id, top);
-
-    cogui_free(widget);
-
-    /* after remove function, refresh screen */
-    cogui_screen_refresh(top);
 }
 
 /**
@@ -479,8 +463,11 @@ void cogui_widget_append_text(cogui_widget_t *widget, const char *text)
 void cogui_widget_clear_text(cogui_widget_t *widget)
 {
     widget->flag &= ~COGUI_WIDGET_FLAG_HAS_TEXT;
-    
-    cogui_free(widget->text);
+
+    /* free text pointer if needed */
+    if (widget->text) {
+        cogui_free(widget->text);
+    }
 }
 
 static void _cogui_widget_move(cogui_widget_t *widget, S32 dx, S32 dy)

@@ -159,6 +159,17 @@ void cogui_window_delete(cogui_window_t *win)
     cogui_title_delete(win);
     cogui_widget_delete(win->title);
 
+    /* delete all widget */
+    cogui_widget_t *tmp_widget = win->widget_list->next;
+    cogui_widget_t *next_delete_widget = tmp_widget;
+    while ((next_delete_widget = next_delete_widget->next) != Co_NULL) {
+        cogui_widget_delete(tmp_widget);
+        tmp_widget = next_delete_widget;
+    }
+
+    /* last delete header widget */
+    cogui_widget_delete(win->widget_list);
+
     /* remove window pointer in app structure */
     win->app->win = Co_NULL;
 
