@@ -39,7 +39,7 @@ git:
 	git add .
 	git commit -m "$(com_msg)"
 	git push -u $(GIT_REMOTE) $(GIT_BRANCH)  \
-        && echo $(NOW) INFO Push to remote branch $(GIT_BRANCH) from $(GIT_REMOTE) success. >> ../build.log
+        && echo $(NOW) INFO Push to remote branch '$(GIT_BRANCH)' from '$(GIT_REMOTE)' success. >> ../build.log
 
 clean:
 	-rm -rf $(OBJDIR)/*.o
