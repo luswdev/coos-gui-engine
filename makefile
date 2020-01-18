@@ -23,7 +23,7 @@ $(OBJDIR)/window.o
 GIT_REMOTE = gui
 GIT_BRANCH = mouse_dev
 
-all: $(OBJS)
+all: $(OBJS)0
 
 $(OBJDIR)/%.o: src/%.c | $(OBJDIR)
 	@echo "bulid file: $<"
