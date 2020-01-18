@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       server.c
- * @version    V0.0.3
- * @date       2020.01.04
+ * @version    V0.0.4
+ * @date       2020.01.18
  * @brief      The server for gui engine.	
  *******************************************************************************
  */ 
@@ -78,7 +78,7 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
 {
     COGUI_ASSERT(event != Co_NULL);
 
-    StatusType result = -1;
+    StatusType result = GUI_E_ERROR;
 
     switch (event->type)
     {
@@ -108,7 +108,7 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
     case COGUI_EVENT_WINDOW_HIDE:
     {
         if (COGUI_WINDOW_IS_ENABLE(event->win)) {
-            result = Co_FALSE;
+            result = GUI_E_ERROR;
         }
 
         result = cogui_window_show(server_app->win);    
@@ -152,7 +152,7 @@ StatusType cogui_server_post_event(struct cogui_event *event)
         result = cogui_send(server_app, event);
     }
     else{
-        result = E_OK;  //TODO
+        result = GUI_E_OK;  //TODO
     }
 
     return result;

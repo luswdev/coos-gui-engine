@@ -1,14 +1,14 @@
 /**
  *******************************************************************************
  * @file       system.c
- * @version    V0.1.6
- * @date       2020.01.16
+ * @version    V0.1.7
+ * @date       2020.01.18
  * @brief      Some system function for GUI engine.	
  *******************************************************************************
  */ 
 
 #include <cogui.h>
-#include <stdarg.h>         /* for va function  */
+#include <stdarg.h>         /* for va function */
 
 void cogui_system_init()
 {
@@ -54,7 +54,10 @@ StatusType cogui_send(cogui_app_t *app, struct cogui_event *event)
 
     result = CoPostMail(app->mq, event);
 
-    return result;
+    if (result == E_OK)
+        return GUI_E_OK;
+    else 
+        return GUI_E_ERROR;
 }
 
 StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event)
@@ -77,7 +80,11 @@ StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event)
     event = CoPendMail(mq, 0, &result);
 
     CoDelMbox(mq, OPT_DEL_ANYWAY);
-    return result;
+
+    if (result == E_OK)
+        return GUI_E_OK;
+    else 
+        return GUI_E_ERROR;
 }
 
 StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, co_int32_t timeout)
@@ -90,13 +97,16 @@ StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, co_int32_t timeo
 
     app = cogui_app_self();
     if (app == Co_NULL) {
-        return E_ERROR;
+        return GUI_E_ERROR;
     }
 
     buf = (struct cogui_event *)CoPendMail(mq, timeout, &result);
     cogui_memcpy(event, buf, sizeof(struct cogui_event));
 
-    return result;
+    if (result == E_OK)
+        return GUI_E_OK;
+    else 
+        return GUI_E_ERROR;
 }
 
 void *cogui_memset(void *s, int c, co_uint64_t cnt)

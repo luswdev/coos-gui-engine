@@ -1,8 +1,8 @@
 /**
  ********************************************************************************
  * @file       window.c
- * @version    V0.1.3
- * @date       2020.01.16
+ * @version    V0.1.4
+ * @date       2020.01.18
  * @brief      Some window management function.
  *******************************************************************************
  */ 
@@ -105,7 +105,7 @@ cogui_window_t *cogui_main_window_create(void)
 static co_int16_t cogui_main_page_app_install(char* title)
 {
     if (current_app_install_cnt > 9) {
-        return Co_FALSE;
+        return GUI_E_ERROR;
     }
 
     cogui_widget_t *widget;
@@ -232,7 +232,7 @@ StatusType cogui_window_show(cogui_window_t *win)
 
     /* determine whether if window is need to show */
     if (COGUI_WINDOW_IS_ENABLE(win)) {
-        return Co_FALSE;
+        return GUI_E_ERROR;
     }
     else {
         COGUI_WINDOW_ENABLE(win);
@@ -254,7 +254,7 @@ StatusType cogui_window_hide(cogui_window_t *win)
 
     /* determine whether if window is need to hide */
     if (!COGUI_WINDOW_IS_ENABLE(win)) {
-        return Co_FALSE;
+        return GUI_E_ERROR;
     }
     else {
         COGUI_WINDOW_DISABLE(win);
@@ -271,20 +271,20 @@ StatusType cogui_window_hide(cogui_window_t *win)
 StatusType cogui_window_onshow(cogui_window_t *win)
 {
     if (!COGUI_WINDOW_IS_ENABLE(win)) {
-        return Co_FALSE;
+        return GUI_E_ERROR;
     }
 
 	cogui_screen_refresh(win);
 
     current_window = win;
 
-    return Co_TRUE;
+    return GUI_E_OK;
 }
 
 StatusType cogui_window_onhide(cogui_window_t *win)
 {
     if (COGUI_WINDOW_IS_ENABLE(win)) {
-        return Co_FALSE;
+        return GUI_E_ERROR;
     }
 
     struct cogui_event event;
@@ -306,7 +306,7 @@ StatusType cogui_window_event_handler(struct cogui_window *win, struct cogui_eve
     COGUI_ASSERT(win != Co_NULL);
     COGUI_ASSERT(event != Co_NULL);
 
-    StatusType result = Co_FALSE;
+    StatusType result = GUI_E_ERROR;
 
     switch (event->type)
     {

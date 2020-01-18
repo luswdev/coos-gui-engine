@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       app.c
- * @version    V0.1.1
- * @date       2020.01.04
+ * @version    V0.1.2
+ * @date       2020.01.18
  * @brief      This is a file for GUI engine's app.	
  *******************************************************************************
  */ 
@@ -52,7 +52,7 @@ cogui_app_t *cogui_app_create(char *title)
     COGUI_EVENT_INIT(&event, COGUI_EVENT_APP_CREATE);
     event.app = app;
 
-    if(cogui_send_sync(srv_app, &event) == E_OK) {
+    if(cogui_send_sync(srv_app, &event) == GUI_E_OK) {
         TCBTbl[tid].userData = app;
         return app;
     }
@@ -80,7 +80,7 @@ void cogui_app_delete(cogui_app_t *app)
     COGUI_EVENT_INIT(&event, COGUI_EVENT_APP_DELE);
     event.app = app;
 
-    if(cogui_send_sync(srv_app, &event) != E_OK) {
+    if(cogui_send_sync(srv_app, &event) != GUI_E_OK) {
        return;
     }
 		
@@ -105,14 +105,14 @@ StatusType cogui_app_event_handler(struct cogui_event *event)
             break;
         }
         else 
-            return Co_FALSE;
+            return GUI_E_ERROR;
 
 	default:
-		return Co_FALSE;
+		return GUI_E_ERROR;
 				
 	}
 		
-	return Co_TRUE;
+	return GUI_E_OK;
 }
 
 static void _cogui_app_event_loop(cogui_app_t *app)
@@ -129,7 +129,7 @@ static void _cogui_app_event_loop(cogui_app_t *app)
         cogui_printf("[%10s] App event loop #%d.\r\n", app->name, loop_cnt++);
         result = cogui_recv(app->mq, event, 0);
 
-        if(result == E_OK && event != Co_NULL) {
+        if(result == GUI_E_OK && event != Co_NULL) {
             cogui_printf("[%10s] Got a event no.%d\r\n", app->name, event->type);
             app->handler(event);
         }

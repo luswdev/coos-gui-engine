@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       dc_hw.c
- * @version    V0.1.1
- * @date       2019.10.4
+ * @version    V0.1.2
+ * @date       2020.01.18
  * @brief      This is a file for GUI hardware DC engine.	
  *******************************************************************************
  */ 
@@ -60,19 +60,19 @@ cogui_dc_t *cogui_dc_hw_create(cogui_widget_t *owner)
  * @brief      Finish a hardware DC 
  * @param[in]  *dc      Which DC should finish
  * @param[out] None
- * @retval     Co_TRUE	Finish successfully
- * @retval     Co_FALSE	Something wrong with this DC
+ * @retval     GUI_E_OK	    Finish successfully
+ * @retval     GUI_E_ERROR	Something wrong with this DC
  *******************************************************************************
  */
 static StatusType cogui_dc_hw_fini(cogui_dc_t *dc)
 {
     if (dc == Co_NULL || dc->type != COGUI_DC_HW)
-        return Co_FALSE;
+        return GUI_E_ERROR;
 
     /* release hardware DC */
     cogui_free(dc);
 
-    return Co_TRUE;
+    return GUI_E_OK;
 }
 
 /**

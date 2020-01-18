@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       system.h
- * @version    V0.1.1
- * @date       2020.01.16
+ * @version    V0.1.2
+ * @date       2020.01.18
  * @brief      GUI engine system header file.	
  *******************************************************************************
  */ 
@@ -22,7 +22,8 @@ typedef unsigned long long     co_uint64_t;         /**< 64-bit unsigned integer
 
 typedef co_int8_t              co_bool_t;           /**< Boolean type               */
 
-#define E_ERROR                (StatusType)22
+#define GUI_E_ERROR            (StatusType)22
+#define GUI_E_OK               (StatusType)23
 
 #define _UI_ABS(x)             ((x)>=0? (x): -(x))  /**< Simple abs function        */
 

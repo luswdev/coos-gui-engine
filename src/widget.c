@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       widget.c
- * @version    V0.1.2
- * @date       2020.01.16
+ * @version    V0.1.3
+ * @date       2020.01.18
  * @brief      Some widget function for GUI engine's event.	
  *******************************************************************************
  */ 
@@ -241,7 +241,7 @@ StatusType cogui_screen_refresh(struct cogui_window *top)
     }
 
     if (!COGUI_WINDOW_IS_ENABLE(top) && top == main_page) {
-        return Co_FALSE;
+        return GUI_E_ERROR;
     }
 
     cogui_widget_t *list = top->widget_list->next;
@@ -281,7 +281,7 @@ StatusType cogui_screen_refresh(struct cogui_window *top)
         list = list->next;
     }
 
-    return Co_TRUE;
+    return GUI_E_OK;
 }
 
 void cogui_widget_set_focus(cogui_widget_t *widget, event_handler_ptr handler)
@@ -544,7 +544,7 @@ StatusType cogui_widget_show(cogui_widget_t *widget)
     StatusType result;
 
     if (widget->flag & COGUI_WIDGET_FLAG_SHOWN)
-        return Co_FALSE;
+        return GUI_E_ERROR;
 
     widget->flag |= COGUI_WIDGET_FLAG_SHOWN;
 
@@ -564,7 +564,7 @@ StatusType cogui_widget_hide(cogui_widget_t *widget)
     StatusType result;
 
     if (!(widget->flag & COGUI_WIDGET_FLAG_SHOWN))
-        return Co_FALSE;
+        return GUI_E_ERROR;
     
     widget->flag &= ~COGUI_WIDGET_FLAG_SHOWN;
 
@@ -579,22 +579,22 @@ StatusType cogui_widget_hide(cogui_widget_t *widget)
 StatusType cogui_widget_onshow(cogui_widget_t *widget, struct cogui_event *event)
 {
     if (!(widget->flag & COGUI_WIDGET_FLAG_SHOWN))
-        return Co_FALSE;
+        return GUI_E_ERROR;
 
     cogui_widget_focus(widget);
 
-    return Co_TRUE;
+    return GUI_E_OK;
 }
 
 StatusType cogui_widget_onhide(cogui_widget_t *widget, struct cogui_event *event)
 {
     if (widget->flag & COGUI_WIDGET_FLAG_SHOWN) {
-        return Co_FALSE;
+        return GUI_E_ERROR;
     }
 
 	cogui_screen_refresh(widget->top);
 
-    return Co_TRUE;
+    return GUI_E_OK;
 }
 
 void cogui_widget_update(cogui_widget_t *widget);
@@ -604,7 +604,7 @@ StatusType cogui_widget_event_handler(cogui_widget_t *widget, struct cogui_event
     COGUI_ASSERT(widget != Co_NULL);
     COGUI_ASSERT(event != Co_NULL);
 
-    StatusType result;
+    StatusType result = GUI_E_ERROR;
 
     switch (event->type)
     {
@@ -617,7 +617,7 @@ StatusType cogui_widget_event_handler(cogui_widget_t *widget, struct cogui_event
         return result;
     }
 
-	return Co_FALSE;
+	return result;
 }
 
 #ifdef COGUI_DEBUG_PRINT
