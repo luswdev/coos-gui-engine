@@ -87,6 +87,16 @@ StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event)
         return GUI_E_ERROR;
 }
 
+/**
+ *******************************************************************************
+ * @brief      Receive a event from CoOS's mail box system.
+ * @param[in]  mq               Which mail box should receive
+ * @param[in]  timeout          How long should it wait
+ * @param[out] event            Got event pointer
+ * @retval     GUI_E_OK         Receive event successfully
+ * @retval     GUI_E_ERROR      Something wrong when receiveing a event
+ *******************************************************************************
+ */
 StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, co_int32_t timeout)
 {
     StatusType result;

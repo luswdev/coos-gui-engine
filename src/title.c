@@ -14,6 +14,19 @@ const cogui_color_t default_title_foreground = COGUI_BLACK;
 
 extern cogui_font_t tm_symbol_16x16;
 
+/**
+ *******************************************************************************
+ * @brief      Create a title widget set for new window.
+ * @param[in]  *win    Which window this title below.
+ * @param[out] None
+ * @retval     None 
+ *
+ * @par Description
+ * @details    This function is used to create a title widget set for new 
+ *             window contain a minimal button, close button and title
+ *             name field.
+ *******************************************************************************
+ */
 void cogui_title_create(cogui_window_t *win)
 {
     cogui_widget_t *close_btn = cogui_widget_create(win);
@@ -31,8 +44,8 @@ void cogui_title_create(cogui_window_t *win)
     COGUI_WIDGET_ENABLE(mini_btn);
 
     win->title->flag |= COGUI_WIDGET_FLAG_TITLE | COGUI_WIDGET_FLAG_RECT | COGUI_WIDGET_FLAG_FILLED;
-    close_btn->flag |= COGUI_WIDGET_FLAG_TITLE;// | COGUI_WIDGET_FLAG_RECT | COGUI_WIDGET_FLAG_FILLED;
-    mini_btn->flag |= COGUI_WIDGET_FLAG_TITLE;// | COGUI_WIDGET_FLAG_RECT | COGUI_WIDGET_FLAG_FILLED;
+    close_btn->flag |= COGUI_WIDGET_FLAG_TITLE;
+    mini_btn->flag |= COGUI_WIDGET_FLAG_TITLE;
 
     cogui_widget_set_rectangle(win->title, 65, 0, 240, COGUI_WINTITLE_HEIGHT);
     cogui_widget_set_rectangle(close_btn, 8, 0, 20, 40);
