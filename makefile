@@ -23,7 +23,7 @@ $(OBJDIR)/window.o
 GIT_REMOTE = gui
 GIT_BRANCH = mouse_dev
 
-all: $(OBJS)0
+all: $(OBJS)
 
 $(OBJDIR)/%.o: src/%.c | $(OBJDIR)
 	@echo "bulid file: $<"
@@ -39,8 +39,7 @@ git:
 	git add .
 	git commit -m "$(com_msg)"
 	git push -u $(GIT_REMOTE) $(GIT_BRANCH)  \
-        && echo $(NOW) INFO Push to $(GIT_REMOTE) : $(GIT_BRANCH) success. >> ../build.log \
-        || echo $(NOW) ERROR Push to $(GIT_REMOTE) : $(GIT_BRANCH) failed. >> ../build.log | exit 1
+        && echo $(NOW) INFO Push to $(GIT_REMOTE) : $(GIT_BRANCH) success. >> ../build.log
 
 clean:
 	-rm -rf $(OBJDIR)/*.o
