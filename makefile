@@ -38,15 +38,9 @@ $(OBJDIR):
 git:
 	git add .
 	git commit -m "$(com_msg)"
-	git push -u $(GIT_REMOTE) $(GIT_BRANCH) | tee log
-	@if grep "error" log; then 												\
-		echo $(NOW) ERROR Flash binary into STM32 failed. >> build.log; 	\
-		echo $(NOW) WARNING Trying flash binary again. >> build.log; 			\
-		make run;															\
-	else																	\
-		echo $(NOW) INFO Build finished without error. >> build.log;		\
-	fi
-	@-rm -rf log
+	git push -u $(GIT_REMOTE) $(GIT_BRANCH)  \
+        && echo $(NOW) INFO Push to $(GIT_REMOTE) : $(GIT_BRANCH) success. >> ../build.log \
+        || echo $(NOW) ERROR Push to $(GIT_REMOTE) : $(GIT_BRANCH) failed. >> ../build.log | exit 1
 
 clean:
 	-rm -rf $(OBJDIR)/*.o
