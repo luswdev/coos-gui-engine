@@ -149,7 +149,7 @@ StatusType cogui_server_post_event(struct cogui_event *event)
         result = cogui_send(server_app, event);
     }
     else{
-        result = GUI_E_OK;  //TODO
+        result = GUI_E_ERROR;
     }
 
     return result;
