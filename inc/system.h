@@ -10,23 +10,25 @@
 #ifndef _COGUI_SYSTEM_H
 #define _COGUI_SYSTEM_H
 
-/* Redefine data type define to current code style */
-typedef signed   char          co_int8_t;           /**<  8-bit signed integer      */
-typedef unsigned char          co_uint8_t;	        /**<  8-bit unsigned integer    */
-typedef signed   short         co_int16_t;          /**< 16-bit signed integer      */
-typedef unsigned short         co_uint16_t;         /**< 16-bit unsigned integer    */
-typedef signed   int           co_int32_t;          /**< 32-bit signed integer      */
-typedef unsigned int           co_uint32_t;         /**< 32-bit unsigned integer    */
-typedef signed   long long     co_int64_t;          /**< 64-bit signed integer      */
-typedef unsigned long long     co_uint64_t;         /**< 64-bit unsigned integer    */
+/* redefine data type define to current code style */
+typedef signed   char          co_int8_t;           /**<  8-bit signed integer       */
+typedef unsigned char          co_uint8_t;	        /**<  8-bit unsigned integer     */
+typedef signed   short         co_int16_t;          /**< 16-bit signed integer       */
+typedef unsigned short         co_uint16_t;         /**< 16-bit unsigned integer     */
+typedef signed   int           co_int32_t;          /**< 32-bit signed integer       */
+typedef unsigned int           co_uint32_t;         /**< 32-bit unsigned integer     */
+typedef signed   long long     co_int64_t;          /**< 64-bit signed integer       */
+typedef unsigned long long     co_uint64_t;         /**< 64-bit unsigned integer     */
 
-typedef co_int8_t              co_bool_t;           /**< Boolean type               */
+typedef co_int8_t              co_bool_t;           /**< Boolean type                */
 
-#define GUI_E_ERROR            (StatusType)22
-#define GUI_E_OK               (StatusType)23
-#define GUI_E_APP_NULL         (StatusType)24
+/* GUI engine status type */
+#define GUI_E_ERROR            (StatusType)22       /**< occurred error status       */
+#define GUI_E_OK               (StatusType)23       /**< everythings OK status       */
+#define GUI_E_APP_NULL         (StatusType)24       /**< run null application status */
 
-#define _UI_ABS(x)             ((x)>=0? (x): -(x))  /**< Simple abs function        */
+/* some math inline function */
+#define _UI_ABS(x)             ((x)>=0? (x): -(x))  /**< simple abs function         */
 
 /** assert function */
 #define COGUI_ASSERT(EX) 								\
@@ -34,6 +36,7 @@ if(!(EX)){											    \
 	cogui_assert_handler(#EX, __FUNCTION__, __LINE__);	\
 }													    \
 
+/** initial a rectangle to zero */
 #define COGUI_INIT_RECR(r)              \
 {                                       \
     (r)->x1 = 0;                        \
@@ -42,6 +45,7 @@ if(!(EX)){											    \
     (r)->y2 = 0;                        \
 }    
 
+/** setting a rectangle */
 #define COGUI_SET_RECT(r, x, y, w, h)   \
 {                                       \
     (r)->x1 = (x);                      \
@@ -50,6 +54,7 @@ if(!(EX)){											    \
     (r)->y2 = (y) + (h);                \
 }                                       \
 
+/** expand a rectangle */
 #define COGUI_RECT_EXPAND(r, d)         \
 {                                       \
     (r)->x1 -= (d);                     \
@@ -58,6 +63,7 @@ if(!(EX)){											    \
     (r)->y2 += (d);                     \
 }                                       \
 
+/** resize a rectangle with padding value */
 #define COGUI_RECT_PADDING(r, p)    \
 {                                   \
     (r)->x1 += (p)>>8  & 0x0FF;     \
@@ -66,20 +72,23 @@ if(!(EX)){											    \
     (r)->y2 -= (p)>>16 & 0x0FF;     \
 }                                   \
 
+/* rectangle width and height */
 #define COGUI_RECT_WIDTH(r)         ((r)->x2-(r)->x1)
 #define COGUI_RECT_HEIGHT(r)        ((r)->y2-(r)->y1)
 
+/* list previous and next node */
 #define COGUI_LIST_PREV(l) ((l)->prev)
 #define COGUI_LIST_NEXT(l) ((l)->next)
 
+/** return a new result type */
 #define COGUI_RETURN_TYPE(r)    \
-    if ((r) == E_OK)         \
+    if ((r) == E_OK)            \
         return GUI_E_OK;        \
     else                        \
         return GUI_E_ERROR;     \
 
 /**
- * @struct   cogui_list_node dc.h	
+ * @struct   cogui_list_node
  * @brief    Double linked list struct
  * @details  This struct is double linked list.
  */
@@ -91,7 +100,7 @@ struct cogui_list_node
 typedef struct cogui_list_node cogui_list_t;
 
 /**
- * @struct   cogui_slist_node dc.h	
+ * @struct   cogui_slist_node	
  * @brief    Single linked list struct
  * @details  This struct is single linked list.
  */
@@ -102,7 +111,7 @@ struct cogui_slist_node
 typedef struct cogui_slist_node cogui_slist_t;
 
 /**
- * @struct   cogui_point dc.h	
+ * @struct   cogui_point
  * @brief    2D point struct
  * @details  This struct is 2D point.
  */
@@ -113,7 +122,9 @@ struct cogui_point
 typedef struct cogui_point cogui_point_t;
 
 /**
- * rectangle
+ * @struct   cogui_rect	
+ * @brief    Rectangle struct
+ * @details  This struct is rectangle.
  */
 struct cogui_rect
 {
@@ -155,7 +166,6 @@ co_int32_t cogui_strcmp(const char *str1, const char *str2);
 
 /* debug function */
 int cogui_printf(const char *str, ...);
-
 void cogui_assert_handler(const char *ex_string, const char *func, U32 line);
 
 #endif /* _COGUI_SYSTEM_H */

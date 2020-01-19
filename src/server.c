@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       server.c
- * @version    V0.0.4
- * @date       2020.01.18
+ * @version    V0.0.5
+ * @date       2020.01.19
  * @brief      The server for gui engine.	
  *******************************************************************************
  */ 
@@ -13,9 +13,6 @@
 
 cogui_app_t *server_app = Co_NULL;
 OS_STK   server_Stk[TASK_STK_SIZE]={0};
-
-//void SHandlerMonitorAdd();
-//void SHandlerMonitorRemove();
 
 void cogui_server_handler_mouse_btn(struct cogui_event *event)
 {
