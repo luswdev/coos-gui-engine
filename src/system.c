@@ -22,7 +22,7 @@ void cogui_system_init(void)
 {
     cogui_printf("[%10s] Initial server...", "Server");
     cogui_server_init();
-    cogui_printf("\t[OK]\r\n");
+    cogui_printf("\t\t\x1b[;32;1m[OK]\x1b[0;m\r\n");
 }
 
 /**
@@ -477,17 +477,25 @@ void cogui_itoa(co_int16_t n, char *ss)
 int cogui_printf(const char *str,...)
 {
 	va_list ap;
-    int val,r_val,space=0;
+    int val,r_val,space=0,align=0;
 	char count, ch;
 	char *s = Co_NULL;
     int res = 0;
 
     va_start(ap,str);
     while ('\0' != *str) { 
-          switch (*str)
-          {
+        space=0;
+        align=0;
+        switch (*str)
+        {
             case '%':
                 str++;
+
+                /* if add a minor symbol before data type, align by left */
+                if (*str == '-') {
+                    align = 1;
+                    str++;
+                }
 
                 /* transform output length to integer */
                 while (*str >= '0' && *str <= '9') {
@@ -577,9 +585,9 @@ int cogui_printf(const char *str,...)
                     /* handle string var */
                     case 's':
 						s = va_arg(ap, char *);
+                        int len = cogui_strlen(s);
                         
-                        if (space) {
-                            int len = cogui_strlen(s);
+                        if (len < space && !align) {
 
                             while (len < space) {
                                 cogui_putchar(' ');
@@ -587,9 +595,27 @@ int cogui_printf(const char *str,...)
                                 res ++;
                             }
                         }
+                        
+                        if (len > space && space) {
+                            while (space --) {
+                                cogui_putchar(*s++);
+                                res++;
+                            }
+                        }
+                        else {
+                            cogui_putstr(s);
+                            res += cogui_strlen(s);                                
+                        }
+						
 
-						cogui_putstr(s);
-                        res += cogui_strlen(s);
+                        if (len < space && align) {
+
+                            while (len < space) {
+                                cogui_putchar(' ');
+                                space --;
+                                res ++;
+                            }
+                        }
 						break;
 					
                     /* handle character var */
@@ -621,7 +647,7 @@ int cogui_printf(const char *str,...)
 				res += 1;
 		}
 		str++;
-     }
+    }
     va_end(ap);
 
 	return res;
