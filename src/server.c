@@ -9,10 +9,8 @@
 
 #include <cogui.h>
 
-#define TASK_STK_SIZE		512
-
 cogui_app_t *server_app = Co_NULL;
-OS_STK   server_Stk[TASK_STK_SIZE]={0};
+OS_STK   server_Stk[512]={0};
 
 void cogui_server_handler_mouse_btn(struct cogui_event *event)
 {
@@ -155,6 +153,21 @@ StatusType cogui_server_post_event(struct cogui_event *event)
     return result;
 }
 
+StatusType cogui_server_post_event_sync(struct cogui_event *event)
+{
+    StatusType result;
+
+    if (server_app != Co_NULL){
+        result = cogui_send_sync(server_app, event);
+    }
+    else{
+        result = GUI_E_ERROR;
+    }
+
+    return result;
+}
+
+
 cogui_app_t *cogui_get_server(void)
 {
     return server_app;
@@ -162,5 +175,5 @@ cogui_app_t *cogui_get_server(void)
 
 void cogui_server_init(void)
 {
-    CoCreateTask(cogui_server_entry, (void *)0, 15,&server_Stk[TASK_STK_SIZE-1], TASK_STK_SIZE);
+    CoCreateTask(cogui_server_entry, (void *)0, 15,&server_Stk[511], 512);
 }

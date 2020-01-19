@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       widget.h
- * @version    V0.1.4
- * @date       2020.01.16
+ * @version    V0.1.5
+ * @date       2020.01.19
  * @brief      Some widget function for GUI engine's widget.	
  *******************************************************************************
  */ 
@@ -47,10 +47,15 @@ struct cogui_window;
 /* focus */
 #define COGUI_WIDGET_FOCUS(w)           COGUI_WIDGET((w))->flag |= COGUI_WIDGET_FLAG_FOCUS
 #define COGUI_WIDGET_UNFOCUS(w)         COGUI_WIDGET((w))->flag &= ~COGUI_WIDGET_FLAG_FOCUS
-#define COGUI_WIDGET_IS_FOCUS(w)           COGUI_WIDGET((w))->flag |= COGUI_WIDGET_FLAG_FOCUS
+#define COGUI_WIDGET_IS_FOCUS(w)        (COGUI_WIDGET((w))->flag & COGUI_WIDGET_FLAG_FOCUS)
 
-typedef StatusType  (*event_handler_ptr)(struct cogui_widget *widget, struct cogui_event *event);
+typedef StatusType (*event_handler_ptr)(struct cogui_widget *widget, struct cogui_event *event);
 
+/**
+ * @struct   cogui_widget
+ * @brief    Widget struct
+ * @details  This struct is for widget.
+ */
 struct cogui_widget
 {
     /* node data field */

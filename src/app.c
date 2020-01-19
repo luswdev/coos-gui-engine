@@ -52,7 +52,7 @@ cogui_app_t *cogui_app_create(char *title)
     COGUI_EVENT_INIT(&event, COGUI_EVENT_APP_CREATE);
     event.app = app;
 
-    if(cogui_send_sync(srv_app, &event) == GUI_E_OK) {
+    if(cogui_server_post_event_sync(&event) == GUI_E_OK) {
         TCBTbl[tid].userData = app;
         return app;
     }
