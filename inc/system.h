@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       system.h
- * @version    V0.1.2
- * @date       2020.01.18
+ * @version    V0.1.3
+ * @date       2020.01.19
  * @brief      GUI engine system header file.	
  *******************************************************************************
  */ 
@@ -24,6 +24,7 @@ typedef co_int8_t              co_bool_t;           /**< Boolean type           
 
 #define GUI_E_ERROR            (StatusType)22
 #define GUI_E_OK               (StatusType)23
+#define GUI_E_APP_NULL         (StatusType)24
 
 #define _UI_ABS(x)             ((x)>=0? (x): -(x))  /**< Simple abs function        */
 
@@ -70,6 +71,12 @@ if(!(EX)){											    \
 
 #define COGUI_LIST_PREV(l) ((l)->prev)
 #define COGUI_LIST_NEXT(l) ((l)->next)
+
+#define COGUI_RETURN_TYPE(r)    \
+    if ((r) == E_OK)         \
+        return GUI_E_OK;        \
+    else                        \
+        return GUI_E_ERROR;     \
 
 /**
  * @struct   cogui_list_node dc.h	
@@ -122,7 +129,7 @@ void cogui_system_init(void);
 
 /* memory manange from CoOS */
 void *cogui_malloc(U32 size);
-void cogui_free(void* memBuf);
+void cogui_free(void* ptr);
 
 /* sync function from CoOS */
 StatusType cogui_ack(struct cogui_event *event, StatusType status);
@@ -131,19 +138,19 @@ StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event);
 StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, co_int32_t timeout);
 
 /* math function for cogui */
-co_uint64_t cogui_pow(co_int32_t x, co_int32_t y);
+co_uint64_t cogui_pow(co_int32_t base, co_int32_t exp);
 void cogui_itoa(co_int16_t n, char* ss);
 
 /* mem function for cogui */
-void *cogui_memset(void *s, int c, co_uint64_t cnt);
-void *cogui_memcpy(void *dest, const void *src, co_uint64_t cnt);
-void *cogui_memmove(void *dest, const void *src, co_uint64_t cnt);
-co_int32_t cogui_memcmp(const void *str1, const void *str2, co_uint64_t cnt);
+void *cogui_memset(void *buf, int val, co_uint64_t size);
+void *cogui_memcpy(void *dest, const void *src, co_uint64_t size);
+void *cogui_memmove(void *dest, const void *src, co_uint64_t size);
+co_int32_t cogui_memcmp(const void *str1, const void *str2, co_uint64_t size);
 
 /* string function for cogui */
 char *cogui_strdup(const char *str);
 co_uint64_t cogui_strlen(const char *str);
-co_int32_t cogui_strncmp(const char *str1, const char *str2, co_uint64_t cnt);
+co_int32_t cogui_strncmp(const char *str1, const char *str2, co_uint64_t size);
 co_int32_t cogui_strcmp(const char *str1, const char *str2);
 
 /* debug function */
