@@ -1,14 +1,18 @@
 /**
  *******************************************************************************
  * @file       widget.h
- * @version    V0.1.5
- * @date       2020.01.19
+ * @version    V0.1.6
+ * @date       2020.01.20
  * @brief      Some widget function for GUI engine's widget.	
  *******************************************************************************
  */ 
 
-#ifndef _COGUI_WIDGET_H
-#define _COGUI_WIDGET_H
+#ifndef __COGUI_WIDGET_H__
+#define __COGUI_WIDGET_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct cogui_dc;
 struct cogui_gc;
@@ -149,4 +153,8 @@ void cogui_widget_move_to_logic(cogui_widget_t *widget, S32 dx, S32 dy);
 /* debug */
 void cogui_widget_list_print(struct cogui_window *top);
 
-#endif /* _COGUI_WIDGET_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __COGUI_WIDGET_H__ */

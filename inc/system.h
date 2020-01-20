@@ -1,14 +1,18 @@
 /**
  *******************************************************************************
  * @file       system.h
- * @version    V0.1.3
- * @date       2020.01.19
+ * @version    V0.1.4
+ * @date       2020.01.20
  * @brief      GUI engine system header file.	
  *******************************************************************************
  */ 
 
-#ifndef _COGUI_SYSTEM_H
-#define _COGUI_SYSTEM_H
+#ifndef __COGUI_SYSTEM_H__
+#define __COGUI_SYSTEM_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* redefine data type define to current code style */
 typedef signed   char          co_int8_t;           /**<  8-bit signed integer       */
@@ -168,4 +172,8 @@ co_int32_t cogui_strcmp(const char *str1, const char *str2);
 int cogui_printf(const char *str, ...);
 void cogui_assert_handler(const char *ex_string, const char *func, U32 line);
 
-#endif /* _COGUI_SYSTEM_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __COGUI_SYSTEM_H__ */

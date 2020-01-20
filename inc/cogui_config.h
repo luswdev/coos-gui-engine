@@ -1,14 +1,18 @@
 /**
  *******************************************************************************
  * @file       cogui_config.h
- * @version    V0.0.1
- * @date       2019.9.17
+ * @version    V0.0.3
+ * @date       2020.01.20
  * @brief      This is a file for some configuration
  *******************************************************************************
  */ 
 
-#ifndef _COGUI_CONFIG_H
-#define _COGUI_CONFIG_H
+#ifndef __COGUI_CONFIG_H__
+#define __COGUI_CONFIG_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "user_config.h"
 
@@ -27,4 +31,8 @@
 #define cogui_putstr(s)     stm_print_string((s))
 #endif /* COGUI_DEBUG_PRINT*/
 
-#endif /* _COGUI_CONFIG_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __COGUI_CONFIG_H__ */

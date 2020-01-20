@@ -1,14 +1,18 @@
 /**
  *******************************************************************************
  * @file       server.h
- * @version    V0.0.3
- * @date       2020.01.19
+ * @version    V0.0.4
+ * @date       2020.01.20
  * @brief      The server for gui engine.	
  *******************************************************************************
  */ 
 
-#ifndef _COGUI_SERVER_H
-#define _COGUI_SERVER_H
+#ifndef __COGUI_SERVER_H__
+#define __COGUI_SERVER_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* create server application */
 void cogui_server_init(void);
@@ -20,4 +24,8 @@ StatusType cogui_server_post_event_sync(struct cogui_event *event);
 /* get server pointer */
 cogui_app_t *cogui_get_server(void);
 
-#endif /* _GUI_SERVER_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __COGUI_SERVER_H__ */

@@ -1,14 +1,18 @@
 /**
  *******************************************************************************
  * @file       window.h
- * @version    V0.0.4
+ * @version    V0.0.5
  * @date       2020.01.20
  * @brief      Window management function header file.
  *******************************************************************************
  */ 
 
-#ifndef _COGUI_WINDOW_H
-#define _COGUI_WINDOW_H
+#ifndef __COGUI_WINDOW_H__
+#define __COGUI_WINDOW_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* window style */
 #define COGUI_WINDOW_STYLE_NO_TITLE            0x01  /**< no title window               */
@@ -105,4 +109,8 @@ co_uint8_t *cogui_window_get_title(cogui_window_t *win);
 
 void cogui_assert_failed_page(const char* ex, co_uint16_t line, const char* func);
 
-#endif /* _COGUI_WINDOW_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __COGUI_WINDOW_H__ */

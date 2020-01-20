@@ -1,16 +1,18 @@
 /**
  *******************************************************************************
  * @file       cogui.h
- * @version    V0.1.2
- * @date       2020.01.16
+ * @version    V0.1.3
+ * @date       2020.01.20
  * @brief      This is a file for GUI engine.	
  *******************************************************************************
  */ 
 
-#ifndef _COGUI_H
-#define _COGUI_H
+#ifndef __COGUI_H__
+#define __COGUI_H__
 
-//#include "stdio.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* CooCox CoOS library */
 #include "coocox.h"
@@ -33,4 +35,8 @@
 #include "mouse.h"
 #include "kbddef.h"
 
-#endif /* _COGUI_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __COGUI_H__ */

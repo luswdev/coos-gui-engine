@@ -1,14 +1,18 @@
 /**
  *******************************************************************************
  * @file       app.h
- * @version    V0.1.1
- * @date       2020.01.04
+ * @version    V0.1.2
+ * @date       2020.01.20
  * @brief      This is a file for GUI engine's app.	
  *******************************************************************************
  */ 
 
-#ifndef _COGUI_APP_H
-#define _COGUI_APP_H
+#ifndef __COGUI_APP_H__
+#define __COGUI_APP_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct cogui_event;
 struct cogui_window;
@@ -57,4 +61,8 @@ void cogui_app_sleep(cogui_app_t *app, co_uint32_t sleepTick);
 /* api for get current running application */
 cogui_app_t *cogui_app_self(void);
 
-#endif /* _COGUI_APP_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __COGUI_APP_H__ */

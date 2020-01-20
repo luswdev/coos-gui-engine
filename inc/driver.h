@@ -1,14 +1,18 @@
 /**
  *******************************************************************************
  * @file       driver.h
- * @version    V0.0.3
- * @date       2019.9.29
+ * @version    V0.0.4
+ * @date       2020.01.20
  * @brief      Some system function for GUI engine's driver.
  *******************************************************************************
  */ 
 
-#ifndef _COGUI_DRIVER_H
-#define _COGUI_DRIVER_H
+#ifndef __COGUI_DRIVER_H__
+#define __COGUI_DRIVER_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum
 {
@@ -75,5 +79,8 @@ typedef struct cogui_graphic_driver cogui_graphic_driver_t;
 cogui_graphic_driver_t *cogui_graphic_driver_get_default(void);
 void cogui_set_graphic_driver(cogui_graphic_driver_t *driver);
 
-#endif /* _COGUI_DRIVER_H */
+#ifdef __cplusplus
+}
+#endif
 
+#endif /* __COGUI_DRIVER_H__ */

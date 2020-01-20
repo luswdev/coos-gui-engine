@@ -1,14 +1,18 @@
 /**
  *******************************************************************************
  * @file       color.h
- * @version    V0.0.2
- * @date       2020.01.16
+ * @version    V0.0.3
+ * @date       2020.01.20
  * @brief      Color define header file.
  *******************************************************************************
  */ 
 
-#ifndef _COGUI_COLOR_H
-#define _COGUI_COLOR_H
+#ifndef __COGUI_COLOR_H__
+#define __COGUI_COLOR_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef co_int64_t cogui_color_t;   /**< Color type belong to long integer */
 
@@ -65,4 +69,8 @@ typedef co_int64_t cogui_color_t;   /**< Color type belong to long integer */
 #define COGUI_WHITE             COGUI_RGB(0xff, 0xff, 0xff)         /**< Default white color        */ 
 #define COGUI_BLACK             COGUI_RGB(0x00, 0x00, 0x00)         /**< Default black color        */ 
 
-#endif /* _COGUI_COLOR_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __COGUI_COLOR_H__ */

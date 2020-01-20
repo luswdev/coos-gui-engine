@@ -1,16 +1,19 @@
 /**
  *******************************************************************************
  * @file       mouse.h
- * @version    V0.0.1   
- * @date       2019.8.9
+ * @version    V0.0.2 
+ * @date       2020.01.20
  * @brief      The mouse action for gui engine.	
  *******************************************************************************
  */ 
 
-#ifndef _COGUI_MOUSE_H
-#define _COGUI_MOUSE_H
+#ifndef __COGUI_MOUSE_H__
+#define __COGUI_MOUSE_H__
 
-/*---------------------------- structure -------------------------------------*/
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct cogui_couser
 {
     U16 cx, cy;
@@ -19,4 +22,8 @@ struct cogui_couser
 void cogui_mouse_set_pos(S32 x, S32 y);
 void cogui_mouse_move_to(S32 x, S32 y);
 
-#endif /* _COGUI_MOUSE_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __COGUI_MOUSE_H__ */

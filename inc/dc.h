@@ -1,14 +1,18 @@
 /**
  *******************************************************************************
  * @file       dc.h
- * @version    V0.1.2
- * @date       2020.01.16
+ * @version    V0.1.3
+ * @date       2020.01.20
  * @brief      Drawable canvas engine header file.	
  *******************************************************************************
  */ 
 
-#ifndef _COGUI_DC_H
-#define _COGUI_DC_H
+#ifndef __COGUI_DC_H__
+#define __COGUI_DC_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define COGUI_DC(dc)	((cogui_dc_t *)(dc))                /**< Change type to DC pointer      */
 
@@ -156,4 +160,8 @@ struct cogui_widget *cogui_dc_get_owner(cogui_dc_t *dc);
 cogui_dc_t *cogui_dc_begin_drawing(struct cogui_widget *owner);
 void cogui_dc_end_drawing(cogui_dc_t *dc);
 
-#endif /* _COGUI_DC_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __COGUI_DC_H__ */

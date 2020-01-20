@@ -1,14 +1,18 @@
 /**
  *******************************************************************************
  * @file       event.h
- * @version    V0.1.0
- * @date       2020.01.04
+ * @version    V0.1.1
+ * @date       2020.01.20
  * @brief      Some system function for GUI engine's event.	
  *******************************************************************************
  */ 
 
-#ifndef _COGUI_EVENT_H
-#define _COGUI_EVENT_H
+#ifndef __COGUI_EVENT_H__
+#define __COGUI_EVENT_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct cogui_app;
 struct cogui_window;
@@ -81,4 +85,8 @@ struct cogui_event {
 #define COGUI_MOUSE_BUTTON_DOWN         0x10
 #define COGUI_MOUSE_BUTTON_UP           0x20
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif /* __COGUI_EVENT_H__ */

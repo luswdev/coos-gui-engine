@@ -1,14 +1,18 @@
 /**
  *******************************************************************************
  * @file       font.h
- * @version    V0.1.1
- * @date       2020.01.19
+ * @version    V0.1.2
+ * @date       2020.01.20
  * @brief      Font define file.
  *******************************************************************************
  */ 
 
-#ifndef _COGUI_FONT_H
-#define _COGUI_FONT_H
+#ifndef __COGUI_FONT_H__
+#define __COGUI_FONT_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @struct   cogui_font
@@ -36,4 +40,8 @@ void cogui_lcd_putc(co_uint16_t x, co_uint16_t y, char c, cogui_font_t *font, co
 co_uint32_t cogui_get_text_width(char *str, cogui_font_t *font);
 co_uint32_t cogui_get_text_height(char *str, cogui_font_t *font, cogui_rect_t *rect);
 
-#endif /* _COGUI_FONT_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __COGUI_FONT_H__ */
