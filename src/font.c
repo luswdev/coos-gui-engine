@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       font.c
- * @version    V0.1.1
- * @date       2020.01.15
+ * @version    V0.1.2
+ * @date       2020.01.20
  * @brief      Font function file.
  *******************************************************************************
  */ 
@@ -11,6 +11,19 @@
 
 cogui_font_t *default_font = &tm_font_7x10;
 
+/**
+ *******************************************************************************
+ * @brief      Display string to screen.
+ * @param[in]  x        Logical x to rect.
+ * @param[in]  y        Logical y to rect.
+ * @param[in]  *str     String to display.
+ * @param[in]  *font    Which font to use.
+ * @param[in]  *dc      Using this DC engine.
+ * @param[in]  *rect    Where to draw the string.
+ * @param[out] None
+ * @retval     None 
+ *******************************************************************************
+ */
 void cogui_lcd_puts(co_uint16_t x, co_uint16_t y, char *str, cogui_font_t *font, cogui_dc_t *dc, cogui_rect_t *rect)
 {
     while (*str) {
@@ -33,6 +46,19 @@ void cogui_lcd_puts(co_uint16_t x, co_uint16_t y, char *str, cogui_font_t *font,
     }
 }
 
+/**
+ *******************************************************************************
+ * @brief      Display a character to screen.
+ * @param[in]  x        Logical x to rect.
+ * @param[in]  y        Logical y to rect.
+ * @param[in]  c        Character to display.
+ * @param[in]  *font    Which font to use.
+ * @param[in]  *dc      Using this DC engine.
+ * @param[in]  *rect    Where to draw the string.
+ * @param[out] None
+ * @retval     None 
+ *******************************************************************************
+ */
 void cogui_lcd_putc(co_uint16_t x, co_uint16_t y, char c, cogui_font_t *font, cogui_dc_t *dc, cogui_rect_t *rect)
 {	
 	co_uint16_t i, j, f;
@@ -47,29 +73,53 @@ void cogui_lcd_putc(co_uint16_t x, co_uint16_t y, char c, cogui_font_t *font, co
 	}
 }
 
+/**
+ *******************************************************************************
+ * @brief      Get the string width.
+ * @param[in]  *str             Which string we are computing.
+ * @param[in]  *font            Choosing which font.
+ * @param[out] None
+ * @retval     text_width       Result of string widget.
+ *******************************************************************************
+ */
 co_uint32_t cogui_get_text_width(char *str, cogui_font_t *font)
 {
+    COGUI_ASSERT(font != Co_NULL);
+
     co_uint32_t text_width;
     co_uint64_t str_len = str != Co_NULL ? cogui_strlen(str) : 0;
 
-    COGUI_ASSERT(font != Co_NULL);
+    /* compute text widget */
     text_width = str_len * font->width;
 
     return text_width;
 }
 
+/**
+ *******************************************************************************
+ * @brief      Get the string height.
+ * @param[in]  *str             Which string we are computing.
+ * @param[in]  *font            Choosing which font.
+ * @param[in]  *rect            Where are the string.
+ * @param[out] None
+ * @retval     text_height      Result of string height.
+ *******************************************************************************
+ */
 co_uint32_t cogui_get_text_height(char *str, cogui_font_t *font, cogui_rect_t *rect)
 {
-    /* how many lines does this text has in this rectangle */
     COGUI_ASSERT(rect != Co_NULL);
+    COGUI_ASSERT(font != Co_NULL);
+
     co_uint32_t rect_width = COGUI_RECT_WIDTH(rect);
-    co_uint32_t text_width = cogui_get_text_width(str, font);
-    co_uint32_t lines = text_width / rect_width + 1;
+    co_uint32_t text_width;
+    co_uint32_t text_height;
+    co_uint32_t lines;
+
+    /* how many lines does this text has in this rectangle */
+    text_width = cogui_get_text_width(str, font);
+    lines = text_width / rect_width + 1;
 
     /* compute text height */
-    co_uint32_t text_height;
-
-    COGUI_ASSERT(font != Co_NULL);
     text_height = lines * font->height;
 
     return text_height;

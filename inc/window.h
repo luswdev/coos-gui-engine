@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       window.h
- * @version    V0.0.3 
- * @date       2020.01.04
+ * @version    V0.0.4
+ * @date       2020.01.20
  * @brief      Window management function header file.
  *******************************************************************************
  */ 
@@ -30,28 +30,33 @@
 #define cogui_window_create_with_title()        cogui_window_create(~COGUI_WINDOW_STYLE_NO_TITLE)
 #define cogui_window_create_without_title()     cogui_window_create(COGUI_WINDOW_STYLE_NO_TITLE)
 
+/**
+ * @struct   cogui_window
+ * @brief    Window struct
+ * @details  This struct is for window.
+ */
 struct cogui_window
 {
-    /* window magic word  field */
-    co_uint32_t         magic;                          /**< should be 0x57696E00 */
+    /* window magic word field */
+    co_uint32_t         magic;                          /**< should be 0x57696E00                   */
 
     /* meta data field */
-    cogui_widget_t *    widget_list;                    /**<*/
-    co_int16_t          id;                             /**<*/
-    co_uint16_t         style;                          /**<*/
-    co_int32_t          flag;                           /**<*/
-    co_int64_t          update;                         /**<*/
-    co_int32_t          widget_cnt;                     /**<*/
-    cogui_widget_t *    focus_widget;                   /**<*/
-    cogui_app_t *       app;                            /**<*/
-    cogui_widget_t *    title;                          /**<*/
-    char *              title_name;                     /**<*/
+    cogui_widget_t *    widget_list;                    /**< widget list under this window          */
+    co_int16_t          id;                             /**< window id (-1 for main window          */
+    co_uint16_t         style;                          /**< window style                           */
+    co_int32_t          flag;                           /**< window flag                            */
+    co_int64_t          update;                         /**< window update count                    */
+    co_int32_t          widget_cnt;                     /**< how many widgets this window have      */
+    cogui_widget_t *    focus_widget;                   /**< current focus widget                   */
+    cogui_app_t *       app;                            /**< window belongs to which application    */
+    cogui_widget_t *    title;                          /**< title bar widget set                   */
+    char *              title_name;                     /**< title belongs to application           */
 
     /* event pointer feild */
-    cogui_widget_t *    last_mouse_event_widget;        /**<*/
+    cogui_widget_t *    last_mouse_event_widget;        /**< last mouse event widget                */
 
     /* user private data field */
-    void *              user_data;                      /**<*/
+    void *              user_data;                      /**< user private data                      */
 
     /* event handler field */
     StatusType (*on_activate)(cogui_widget_t *widget, struct cogui_event *event);   /**<*/
@@ -62,6 +67,11 @@ struct cogui_window
 };
 typedef struct cogui_window cogui_window_t;
 
+/**
+ * @struct   main_app_table
+ * @brief    main window struct
+ * @details  This struct is for manage installed app of main window.
+ */
 struct main_app_table {
     cogui_widget_t *app_icon;
     cogui_widget_t *app_title_box;
