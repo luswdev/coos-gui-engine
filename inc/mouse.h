@@ -1,7 +1,7 @@
 /**
  *******************************************************************************
  * @file       mouse.h
- * @version    V0.0.2 
+ * @version    V0.6.1
  * @date       2020.01.20
  * @brief      The mouse action for gui engine.	
  *******************************************************************************
@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-struct cogui_couser
+struct cogui_cursor
 {
     U16 cx, cy;
 };
