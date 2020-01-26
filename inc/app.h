@@ -55,7 +55,7 @@ void cogui_app_delete(cogui_app_t *app);
 /* operation a appication */
 void cogui_app_run(cogui_app_t *app);
 void cogui_app_exit(cogui_app_t *app, co_uint16_t code);
-void cogui_app_close(cogui_app_t *app);
+StatusType cogui_app_close(cogui_app_t *app);
 void cogui_app_sleep(cogui_app_t *app, co_uint32_t sleepTick);
 
 /* api for get current running application */
