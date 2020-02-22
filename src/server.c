@@ -36,20 +36,7 @@ void cogui_server_handler_mouse_btn(struct cogui_event *event)
 
 void cogui_server_handler_mouse_motion(struct cogui_event *event)
 {
-    /* the topwin contains current mouse */
-    //P_TopWin win    = Co_NULL;
-
-    COGUI_EVENT_INIT(event, COGUI_EVENT_MOUSE_MOTION);
-
-    /*win = GetTopWin(event->x, event->y);
-    if(win == Co_NULL){
-        return;
-    }
-
-    event->win = win->wid;*/
-    cogui_send(event->app, event);
-
-    //MouseMoveTo(event->x, event->y);
+    cogui_mouse_move_delta(event->dx, event->dy);
 }
 
 void cogui_server_event_kbd(struct cogui_event *event)
@@ -90,13 +77,13 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
     case COGUI_EVENT_MOUSE_BUTTON:
         /* handle mouse button */
 		
-        //cogui_server_event_handler_mouse_btn((struct cogui_event_mouse *)event);
+        //cogui_server_handler_mouse_motion(event);
         break;
 
     case COGUI_EVENT_MOUSE_MOTION:
         /* handle mouse motion event */
 		
-        //cogui_server_event_handler_mouse_motion((struct cogui_event_mouse *)event);
+        cogui_server_handler_mouse_motion(event);
         break;
 
     case COGUI_EVENT_WINDOW_CLOSE:

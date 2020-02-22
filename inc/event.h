@@ -53,7 +53,7 @@ struct cogui_event {
     struct cogui_app *app;
     struct cogui_window *win;
 
-    co_uint16_t x, y;
+    co_int32_t dx, dy;
     co_uint16_t button;
 
     co_uint32_t id;
