@@ -28,7 +28,6 @@ extern "C" {
 struct cogui_cursor
 {
     co_uint16_t cx, cy;
-
     co_uint8_t speed;
 
     cogui_widget_t *cursor_widget;
