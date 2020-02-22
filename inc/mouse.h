@@ -25,6 +25,8 @@ extern "C" {
     }                           \
 }                               \
 
+// test
+
 struct cogui_cursor
 {
     co_uint16_t cx, cy;
