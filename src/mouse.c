@@ -22,7 +22,6 @@ void _cogui_mouse_init()
 
     _cursor->cursor_widget = cogui_widget_create(main_page);
 	cogui_widget_set_rectangle(_cursor->cursor_widget, 0, 0, 240, 320);
-	_cursor->cursor_widget->gc.foreground = COGUI_WHITE;
     cogui_widget_set_font(_cursor->cursor_widget, &tm_symbol_16x16);
 
     _cursor->frame_buffer = ((struct cogui_dc_hw *)(_cursor->cursor_widget->dc_engine))->hw_driver->frame_buffer;
@@ -130,8 +129,8 @@ void cogui_mouse_show(void)
     cogui_rect_t rect;
     COGUI_SET_RECT(&rect, _cursor->cx, _cursor->cy, 16, 16);
 
-	_cursor->cursor_widget->gc.foreground = COGUI_WHITE;
+	_cursor->cursor_widget->gc.foreground = white;
     cogui_dc_draw_text(_cursor->cursor_widget->dc_engine, &rect, "#");
-	_cursor->cursor_widget->gc.foreground = COGUI_BLACK;
+	_cursor->cursor_widget->gc.foreground = black;
     cogui_dc_draw_text(_cursor->cursor_widget->dc_engine, &rect, "$");
 }

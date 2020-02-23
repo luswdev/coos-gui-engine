@@ -127,7 +127,7 @@ void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect)
 		return;
 	
     save_color      = COGUI_DC_FC(dc);
-	COGUI_DC_FC(dc) = COGUI_LIGHT_GRAY;
+	COGUI_DC_FC(dc) = light_grey;
 
 	cogui_dc_draw_rect(dc, &r);
 

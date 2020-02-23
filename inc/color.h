@@ -56,17 +56,17 @@ typedef co_uint64_t cogui_color_t;   /**< Color type belong to long integer */
 #define COGUI_RGB(r,g,b) COGUI_ABGR8888(255,(b),(g),(r))
 #endif
 
-extern const cogui_color_t COGUI_RED;        
-extern const cogui_color_t COGUI_GREEN;
-extern const cogui_color_t COGUI_BLUE;   
-extern const cogui_color_t COGUI_YELLOW;
-extern const cogui_color_t COGUI_PURPLE;
-extern const cogui_color_t COGUI_CYAN;
-extern const cogui_color_t COGUI_HIGH_LIGHT;
-extern const cogui_color_t COGUI_LIGHT_GRAY;
-extern const cogui_color_t COGUI_DARK_GRAY;
-extern const cogui_color_t COGUI_WHITE;
-extern const cogui_color_t COGUI_BLACK;
+extern const cogui_color_t red;
+extern const cogui_color_t green;
+extern const cogui_color_t blue;
+extern const cogui_color_t yellow;
+extern const cogui_color_t purple;
+extern const cogui_color_t cyan;
+extern const cogui_color_t high_light;
+extern const cogui_color_t light_grey;
+extern const cogui_color_t dark_grey;
+extern const cogui_color_t white;
+extern const cogui_color_t black;
 
 #ifdef __cplusplus
 }

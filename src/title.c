@@ -9,9 +9,9 @@
 
 #include <cogui.h>
 
-const cogui_color_t default_title_background  = COGUI_BLACK;
-const cogui_color_t default_title_foreground  = COGUI_LIGHT_GRAY;
-const cogui_color_t default_button_foreground = COGUI_DARK_GRAY;
+const cogui_color_t default_title_background  = COGUI_RGB(0x00, 0x00, 0x00); 
+const cogui_color_t default_title_foreground  = COGUI_RGB(0x9e, 0x9e, 0x9e);
+const cogui_color_t default_button_foreground = COGUI_RGB(0x42, 0x42, 0x42);
 
 extern cogui_font_t tm_symbol_16x16;
 

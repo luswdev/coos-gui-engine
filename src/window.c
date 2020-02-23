@@ -69,7 +69,6 @@ cogui_window_t *cogui_main_window_create(void)
 
     widget = cogui_widget_create(win);
     cogui_widget_set_rectangle(widget, 0, 0, 240, 40);
-    widget->gc.background = COGUI_BLACK;
     widget->flag |= COGUI_WIDGET_FLAG_RECT | COGUI_WIDGET_FLAG_FILLED;
     cogui_widget_set_text(widget, "CoOS");
     cogui_widget_set_font(widget, &tm_font_16x26);
@@ -79,7 +78,7 @@ cogui_window_t *cogui_main_window_create(void)
     for ( i=0; i<9; i++) {
         widget = cogui_widget_create(win);
         cogui_widget_set_rectangle(widget, 15 + (i%3)*75 , 55 + (i/3)*88, 60, 60);
-        widget->gc.foreground = COGUI_GREEN; 
+        widget->gc.foreground = green; 
         widget->flag |= COGUI_WIDGET_FLAG_RECT;
         COGUI_WIDGET_ENABLE(widget);
         cogui_widget_set_font(widget, &tm_font_16x26);
@@ -89,7 +88,6 @@ cogui_window_t *cogui_main_window_create(void)
 
         widget = cogui_widget_create(win);
         cogui_widget_set_rectangle(widget, 15 + (i%3)*75 , 115 + (i/3)*88, 60, 13);
-        widget->gc.foreground = COGUI_WHITE; 
         widget->flag |= COGUI_WIDGET_FLAG_RECT| COGUI_WIDGET_FLAG_FILLED;
         cogui_widget_set_text_align(widget, COGUI_TEXT_ALIGN_CENTER|COGUI_TEXT_ALIGN_MIDDLE);
         COGUI_WIDGET_ENABLE(widget);
@@ -115,8 +113,8 @@ static co_int16_t cogui_main_page_app_install(char* title)
     cogui_widget_set_text(widget, icon_text);
 
     widget->flag |= COGUI_WIDGET_FLAG_FILLED;
-    widget->gc.background = COGUI_GREEN;
-    widget->gc.foreground = COGUI_WHITE;
+    widget->gc.background = green;
+    widget->gc.foreground = white;
 
     widget = main_app_table[current_app_install_cnt].app_title_box;
     cogui_widget_set_text(widget, title);
@@ -138,8 +136,8 @@ static void cogui_main_page_app_uninstall(co_int16_t id)
 
     cogui_widget_t *widget;    
     widget = main_app_table[current_app_install_cnt].app_icon;
-    widget->gc.background = COGUI_BLACK;
-    widget->gc.foreground = COGUI_GREEN;
+    widget->gc.background = black;
+    widget->gc.foreground = green;
 
     /* if this app is not previous install app, we need to shift all app forward */
     if (id != --current_app_install_cnt) {
@@ -332,7 +330,7 @@ StatusType cogui_window_event_handler(struct cogui_window *win, struct cogui_eve
 void cogui_assert_failed_page(const char* ex, co_uint16_t line, const char* func)
 {
     /* let full screen background set to blue */
-    main_page->widget_list->next->gc.background = COGUI_BLUE;
+    main_page->widget_list->next->gc.background = blue;
     main_page->widget_list->next->next = Co_NULL;
 
     cogui_window_show(main_page);
@@ -340,7 +338,7 @@ void cogui_assert_failed_page(const char* ex, co_uint16_t line, const char* func
     cogui_widget_t *widget;
     widget = cogui_widget_create(main_page);
     cogui_widget_set_rectangle(widget, 15 , 55, 60, 60);
-    widget->gc.foreground = COGUI_WHITE; 
+    widget->gc.foreground = white; 
     cogui_widget_set_font(widget, &tm_font_16x26);
 
     widget->gc.padding = COGUI_PADDING(17, 0, 5, 0);
