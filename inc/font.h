@@ -32,6 +32,9 @@ extern cogui_font_t tm_font_7x10;
 extern cogui_font_t tm_font_11x18;
 extern cogui_font_t tm_font_16x26;
 
+/* extern from symbol.c */
+extern cogui_font_t tm_symbol_16x16;
+
 /* display text function */
 void cogui_lcd_puts(co_uint16_t x, co_uint16_t y, char *str, cogui_font_t *font, cogui_dc_t *dc, cogui_rect_t *rect);
 void cogui_lcd_putc(co_uint16_t x, co_uint16_t y, char c, cogui_font_t *font, cogui_dc_t *dc, cogui_rect_t *rect);

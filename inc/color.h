@@ -14,12 +14,12 @@
 extern "C" {
 #endif
 
-typedef co_int64_t cogui_color_t;   /**< Color type belong to long integer */
+typedef co_uint64_t cogui_color_t;   /**< Color type belong to long integer */
 
 /** Determine which color style used */
-//#define COGUI_USING_RGB565
+#define COGUI_USING_RGB565
 //#define COGUI_USING_BGR565
-#define COGUI_USING_RGB888
+//#define COGUI_USING_RGB888
 //#define COGUI_USING_ARGB8888
 //#define COGUI_USING_RGBA8888
 //#define COGUI_USING_ABGR8888
@@ -56,18 +56,17 @@ typedef co_int64_t cogui_color_t;   /**< Color type belong to long integer */
 #define COGUI_RGB(r,g,b) COGUI_ABGR8888(255,(b),(g),(r))
 #endif
 
-/* some default color scheme */
-#define COGUI_RED               COGUI_RGB(0xff, 0x00, 0x00)         /**< Default red color          */ 
-#define COGUI_GREEN             COGUI_RGB(0x00, 0xff, 0x00)         /**< Default green color        */ 
-#define COGUI_BLUE              COGUI_RGB(0x00, 0x00, 0xff)         /**< Default blue color         */ 
-#define COGUI_YELLOW            COGUI_RGB(0xff, 0xff, 0x00)         /**< Default yellow color       */ 
-#define COGUI_PURPLE            COGUI_RGB(0xff, 0x00, 0xff)         /**< Default purple color       */
-#define COGUI_CYAN              COGUI_RGB(0x00, 0xff, 0xff)         /**< Default cyan color         */ 
-#define COGUI_HIGH_LIGHT        COGUI_RGB(0xf5, 0xf5, 0xf5)         /**< Default high light color   */ 
-#define COGUI_LIGHT_GRAY        COGUI_RGB(0x9e, 0x9e, 0x9e)         /**< Default light gray color   */ 
-#define COGUI_DARK_GRAY         COGUI_RGB(0x42, 0x42, 0x42)         /**< Default dark gray color    */ 
-#define COGUI_WHITE             COGUI_RGB(0xff, 0xff, 0xff)         /**< Default white color        */ 
-#define COGUI_BLACK             COGUI_RGB(0x00, 0x00, 0x00)         /**< Default black color        */ 
+extern const cogui_color_t COGUI_RED;        
+extern const cogui_color_t COGUI_GREEN;
+extern const cogui_color_t COGUI_BLUE;   
+extern const cogui_color_t COGUI_YELLOW;
+extern const cogui_color_t COGUI_PURPLE;
+extern const cogui_color_t COGUI_CYAN;
+extern const cogui_color_t COGUI_HIGH_LIGHT;
+extern const cogui_color_t COGUI_LIGHT_GRAY;
+extern const cogui_color_t COGUI_DARK_GRAY;
+extern const cogui_color_t COGUI_WHITE;
+extern const cogui_color_t COGUI_BLACK;
 
 #ifdef __cplusplus
 }

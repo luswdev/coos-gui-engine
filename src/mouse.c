@@ -9,20 +9,42 @@
 
 #include <cogui.h>
 
-struct cogui_cursor *_cursor;
+struct cogui_cursor *_cursor=Co_NULL;
 extern cogui_window_t *main_page;
+co_bool_t first_show = 1;
 
 void _cogui_mouse_init()
 {
     _cursor = cogui_malloc(sizeof(struct cogui_cursor));
     COGUI_ASSERT(_cursor != Co_NULL);
 
-    _cursor->cursor_widget = cogui_widget_create(main_page);
-	cogui_widget_set_rectangle(_cursor->cursor_widget, 0, 0, 241, 321);
-	_cursor->cursor_widget->gc.foreground = COGUI_WHITE;
+    cogui_memset(_cursor, 0, sizeof(struct cogui_cursor));
 
-    cogui_mouse_set_position(105, 155);
+    _cursor->cursor_widget = cogui_widget_create(main_page);
+	cogui_widget_set_rectangle(_cursor->cursor_widget, 0, 0, 240, 320);
+	_cursor->cursor_widget->gc.foreground = COGUI_WHITE;
+    cogui_widget_set_font(_cursor->cursor_widget, &tm_symbol_16x16);
+
+    _cursor->frame_buffer = ((struct cogui_dc_hw *)(_cursor->cursor_widget->dc_engine))->hw_driver->frame_buffer;
+
+    first_show = 1;
+
     cogui_mouse_set_speed(COGUI_MOUSE_SPEED_MIDDLE);
+    cogui_mouse_set_position(105, 155);
+}
+
+static void cogui_mouse_return_picture(void)
+{
+    COGUI_CHECK_CURSOR();
+    co_uint16_t i, j;
+
+    for (i=0; i<16; i++) {
+        for (j=0; j<16; j++) {
+            //cogui_printf("%x (%d, %d)", (co_uint16_t)_cursor->save_picture[i][j], _cursor->cx+j, _cursor->cy+i);
+            cogui_dc_draw_point(_cursor->cursor_widget->dc_engine, _cursor->cx+j, _cursor->cy+i, _cursor->save_picture[i][j]);
+        }
+        //cogui_printf("\r\n");
+    }
 }
 
 void cogui_mouse_set_position(co_uint16_t x, co_uint16_t y)
@@ -53,7 +75,14 @@ void cogui_mouse_move_to(co_uint16_t x,co_uint16_t y)
         y = 310;
     }
 
-    cogui_mouse_restore();
+    if (_cursor->cx == x && _cursor->cy == y) {
+        return;
+    }
+
+    if (!first_show) {
+        cogui_mouse_return_picture();
+    }
+
     cogui_mouse_set_position(x, y);
 }
 
@@ -71,18 +100,38 @@ void cogui_mouse_move_delta(co_int32_t dx,co_int32_t dy)
         y = 0;
     }
 
-    if (x || y)
-        cogui_mouse_move_to(x, y);
+    cogui_mouse_move_to(x, y);
 }
 
 void cogui_mouse_restore(void)
 {
     COGUI_CHECK_CURSOR();
+    co_uint32_t start_pt = _cursor->frame_buffer;
+    co_uint16_t i, j;
+    co_uint16_t buf;
+
+    for (i=0; i<16; i++) {
+        start_pt = _cursor->frame_buffer + 2*(240*(_cursor->cy+i) + _cursor->cx);
+        for (j=0; j<16; j++) {
+            buf = *(co_uint16_t *)start_pt;
+            _cursor->save_picture[i][j] = buf;
+            start_pt += 2;
+        }
+    }
+    first_show = 0;
 }
 
 void cogui_mouse_show(void)
 {
     COGUI_CHECK_CURSOR();
 
-    cogui_dc_draw_line(_cursor->cursor_widget->dc_engine, _cursor->cx,  _cursor->cx+10, _cursor->cy, _cursor->cy+10);
+    cogui_mouse_restore();
+
+    cogui_rect_t rect;
+    COGUI_SET_RECT(&rect, _cursor->cx, _cursor->cy, 16, 16);
+
+	_cursor->cursor_widget->gc.foreground = COGUI_WHITE;
+    cogui_dc_draw_text(_cursor->cursor_widget->dc_engine, &rect, "#");
+	_cursor->cursor_widget->gc.foreground = COGUI_BLACK;
+    cogui_dc_draw_text(_cursor->cursor_widget->dc_engine, &rect, "$");
 }

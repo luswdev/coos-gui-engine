@@ -39,6 +39,7 @@ struct cogui_window;
 #define COGUI_WIDGET_FLAG_TITLE         0x0400       /**< Node is button             */
 #define COGUI_WIDGET_FLAG_HAS_TEXT      0x0800       /**< node need to print text    */
 #define COGUI_WIDGET_FLAG_HEADER        0x4000       /**< it is header node          */
+#define COGUI_WIDGET_FLAG_MOUSE         0x8000       /**< it is mouse node          */
 
 /* inline function */
 #define COGUI_WIDGET(w) ((struct cogui_widget *)(w))

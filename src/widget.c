@@ -619,20 +619,3 @@ StatusType cogui_widget_event_handler(cogui_widget_t *widget, struct cogui_event
 
 	return result;
 }
-
-#ifdef COGUI_DEBUG_PRINT
-void cogui_widget_list_print(struct cogui_window *top)
-{
-    cogui_widget_t *tmp = top->widget_list;
-    
-    cogui_printf("Widget list: ");
-    
-    while (tmp != Co_NULL) {
-        cogui_printf("0x%x ", tmp);
-
-        tmp = tmp->next;
-    }
-
-    cogui_printf("0x%x\r\n", tmp);
-}
-#endif

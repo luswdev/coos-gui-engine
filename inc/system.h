@@ -165,11 +165,13 @@ co_int32_t cogui_memcmp(const void *str1, const void *str2, co_uint64_t size);
 /* string function for cogui */
 char *cogui_strdup(const char *str);
 co_uint64_t cogui_strlen(const char *str);
+co_uint64_t cogui_strnlen(const char *str, co_uint64_t maxlen);
 co_int32_t cogui_strncmp(const char *str1, const char *str2, co_uint64_t size);
 co_int32_t cogui_strcmp(const char *str1, const char *str2);
 
 /* debug function */
-int cogui_printf(const char *str, ...);
+int cogui_printf(const char *fmt, ...);
+int cogui_sprintf(char *buf, const char *fmt, ...);
 void cogui_assert_handler(const char *ex_string, const char *func, U32 line);
 
 #ifdef __cplusplus

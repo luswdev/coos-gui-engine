@@ -28,7 +28,7 @@ void cogui_dc_draw_line(cogui_dc_t *dc, co_int32_t x1, co_int32_t x2, co_int32_t
     /* this is a line width 1 */
 	if (x1 == x2)
 		dc->engine->draw_vline(dc, x1, y1, y2);
-    /* this is a line height 2 */
+    /* this is a line height 1*/
 	else if (y1 == y2)
 		dc->engine->draw_hline(dc, x1, x2, y1);
     /* this is a line like rectangle */

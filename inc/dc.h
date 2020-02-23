@@ -160,6 +160,12 @@ struct cogui_widget *cogui_dc_get_owner(cogui_dc_t *dc);
 cogui_dc_t *cogui_dc_begin_drawing(struct cogui_widget *owner);
 void cogui_dc_end_drawing(cogui_dc_t *dc);
 
+#define cogui_dc_draw_point(dc, x, y, c)\
+{\
+    (dc)->engine->draw_color_point((dc), (x), (y), (c));\
+}\
+
+
 #ifdef __cplusplus
 }
 #endif

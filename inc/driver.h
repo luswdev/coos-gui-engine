@@ -69,7 +69,7 @@ struct cogui_graphic_driver
     U16 height;
 
     /* framebuffer address and ops */
-    U8 *framebuffer;
+    co_uint32_t frame_buffer;
 
     const struct graphic_driver_ops *ops;
     const struct graphic_ext_ops *ext_ops;

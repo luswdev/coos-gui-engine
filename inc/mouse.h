@@ -25,14 +25,15 @@ extern "C" {
     }                           \
 }                               \
 
-// test
-
 struct cogui_cursor
 {
     co_uint16_t cx, cy;
     co_uint8_t speed;
 
     cogui_widget_t *cursor_widget;
+
+    co_uint32_t frame_buffer;
+    cogui_color_t save_picture[16][16]; 
 };
 
 void cogui_mouse_set_position(co_uint16_t x, co_uint16_t y);

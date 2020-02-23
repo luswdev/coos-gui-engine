@@ -134,18 +134,16 @@ static void _cogui_app_event_loop(cogui_app_t *app)
 {
     StatusType  result;
     co_uint16_t current_ref;
-    co_int32_t loop_cnt = 0;
     struct cogui_event *event;
 
     event = (struct cogui_event *)app->event_buffer;
 
     current_ref = ++app->ref_cnt;
     while(current_ref <= app->ref_cnt) {
-        cogui_printf("[%10s] App event loop #%d.\r\n", app->name, loop_cnt++);
         result = cogui_recv(app->mq, event, 0);
 
         if(result == GUI_E_OK && event != Co_NULL) {
-            cogui_printf("[%10s] Got a event no.%d\r\n", app->name, event->type);
+            //cogui_printf("[%10s] Got a event no.%d\r\n", app->name, event->type);
             app->handler(event);
         }
     }
@@ -165,7 +163,6 @@ void cogui_app_run(cogui_app_t *app)
         cogui_send(cogui_get_server(), &event);
     }
     else {
-        cogui_printf("[%10s] Create main window.\r\n", cogui_app_self()->name);
         main_page = cogui_main_window_create();
     }
 
@@ -233,8 +230,6 @@ cogui_app_t *cogui_app_self(void)
 static StatusType cogui_app_event_handler(struct cogui_event *event)
 {
 	COGUI_ASSERT(event != Co_NULL);
-
-    cogui_printf("[%10s] Got event #%d.\r\n", cogui_app_self()->name, event->type);
 
     StatusType result = GUI_E_ERROR;
 
