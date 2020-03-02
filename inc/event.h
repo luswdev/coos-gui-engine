@@ -18,33 +18,34 @@ struct cogui_app;
 struct cogui_window;
 
 /* applications event */
-#define COGUI_EVENT_APP_CREATE          (co_uint8_t)0
-#define COGUI_EVENT_APP_DELE            (co_uint8_t)1
-#define COGUI_EVENT_APP_ACTIVATE        (co_uint8_t)2
+#define COGUI_EVENT_APP_CREATE          (uint8_t)0
+#define COGUI_EVENT_APP_DELE            (uint8_t)1
+#define COGUI_EVENT_APP_ACTIVATE        (uint8_t)2
 
 /* widget event */
-#define COGUI_EVENT_WIDGET_SHOW         (co_uint8_t)3
-#define COGUI_EVENT_WIDGET_HIDE         (co_uint8_t)4
-#define COGUI_EVENT_WIDGET_MOVE         (co_uint8_t)5
+#define COGUI_EVENT_WIDGET_SHOW         (uint8_t)3
+#define COGUI_EVENT_WIDGET_HIDE         (uint8_t)4
+#define COGUI_EVENT_WIDGET_MOVE         (uint8_t)5
 
 /* window event */
-#define COGUI_EVENT_WINDOW_CREATE       (co_uint8_t)6
-#define COGUI_EVENT_WINDOW_DELE         (co_uint8_t)7
-#define COGUI_EVENT_WINDOW_SHOW         (co_uint8_t)8
-#define COGUI_EVENT_WINDOW_HIDE         (co_uint8_t)9
-#define COGUI_EVENT_WINDOW_CLOSE        (co_uint8_t)10
-#define COGUI_EVENT_WINDOW_TITLE        (co_uint8_t)11
+#define COGUI_EVENT_WINDOW_CREATE       (uint8_t)6
+#define COGUI_EVENT_WINDOW_DELE         (uint8_t)7
+#define COGUI_EVENT_WINDOW_SHOW         (uint8_t)8
+#define COGUI_EVENT_WINDOW_HIDE         (uint8_t)9
+#define COGUI_EVENT_WINDOW_CLOSE        (uint8_t)10
+#define COGUI_EVENT_WINDOW_TITLE        (uint8_t)11
 
 /* mouse and keyboard event */
-#define COGUI_EVENT_MOUSE_MOTION        (co_uint8_t)12
-#define COGUI_EVENT_MOUSE_BUTTON        (co_uint8_t)13
-#define COGUI_EVENT_KBD                 (co_uint8_t)14
-#define COGUI_EVENT_PAINT               (co_uint8_t)15
-#define COGUI_EVENT_COMMAND             (co_uint8_t)16
+#define COGUI_EVENT_MOUSE_MOTION        (uint8_t)12
+#define COGUI_EVENT_MOUSE_BUTTON        (uint8_t)13
+#define COGUI_EVENT_MOUSE_CLICK         (uint8_t)14
+#define COGUI_EVENT_KBD                 (uint8_t)15
+#define COGUI_EVENT_PAINT               (uint8_t)16
+#define COGUI_EVENT_COMMAND             (uint8_t)17
 
 
 struct cogui_event {
-    co_uint8_t type;
+    uint8_t type;
 
     struct cogui_app *sender;
 
@@ -52,18 +53,19 @@ struct cogui_event {
 
     struct cogui_app *app;
     struct cogui_window *win;
+    struct cogui_widget *widget;
 
-    co_int32_t dx, dy;
-    co_uint16_t button;
+    int32_t dx, dy;
+    uint16_t button;
 
-    co_uint32_t id;
+    uint32_t id;
 
-    co_uint32_t win_acti_cnt;
+    uint32_t win_acti_cnt;
 
-    co_uint16_t kbd_type;         /* key up or down */
-    co_uint16_t key;          /* current key */
-    co_uint16_t mod;          /* current key modifiers */
-    co_uint16_t ascii_code;   /* character */
+    uint16_t kbd_type;         /* key up or down */
+    uint16_t key;          /* current key */
+    uint16_t mod;          /* current key modifiers */
+    uint16_t ascii_code;   /* character */
 
     char *title;
 };
@@ -75,12 +77,10 @@ struct cogui_event {
     (e)->ack    = 0;      			   \
 }                                      \
 
-
+#define COGUI_MOUSE_BUTTON_NONE         0x00
 #define COGUI_MOUSE_BUTTON_LEFT         0x01
 #define COGUI_MOUSE_BUTTON_RIGHT        0x02
-#define COGUI_MOUSE_BUTTON_MIDDLE       0x03
-#define COGUI_MOUSE_BUTTON_WHEELUP      0x04
-#define COGUI_MOUSE_BUTTON_WHEELDOWN    0x08
+#define COGUI_MOUSE_BUTTON_BOTH         0x03
 
 #define COGUI_MOUSE_BUTTON_DOWN         0x10
 #define COGUI_MOUSE_BUTTON_UP           0x20

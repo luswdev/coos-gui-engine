@@ -14,25 +14,17 @@
 extern "C" {
 #endif
 
-/* redefine data type define to current code style */
-typedef signed   char          co_int8_t;           /**<  8-bit signed integer       */
-typedef unsigned char          co_uint8_t;	        /**<  8-bit unsigned integer     */
-typedef signed   short         co_int16_t;          /**< 16-bit signed integer       */
-typedef unsigned short         co_uint16_t;         /**< 16-bit unsigned integer     */
-typedef signed   int           co_int32_t;          /**< 32-bit signed integer       */
-typedef unsigned int           co_uint32_t;         /**< 32-bit unsigned integer     */
-typedef signed   long long     co_int64_t;          /**< 64-bit signed integer       */
-typedef unsigned long long     co_uint64_t;         /**< 64-bit unsigned integer     */
-
-typedef co_int8_t              co_bool_t;           /**< Boolean type                */
+/* define some type variables */
+typedef signed   char           bool_t;           /**< Boolean type                */
 
 /* GUI engine status type */
 #define GUI_E_ERROR            (StatusType)22       /**< occurred error status       */
 #define GUI_E_OK               (StatusType)23       /**< everythings OK status       */
 #define GUI_E_APP_NULL         (StatusType)24       /**< run null application status */
+#define GUI_E_APP_FULL         (StatusType)25       /**< run null application status */
 
 /* some math inline function */
-#define _UI_ABS(x)             ((x)>=0? (x): -(x))  /**< simple abs function         */
+#define ABS(x)             ((x)>=0? (x): -(x))      /**< simple abs function         */
 
 /** assert function */
 #define COGUI_ASSERT(EX) 								\
@@ -121,7 +113,7 @@ typedef struct cogui_slist_node cogui_slist_t;
  */
 struct cogui_point
 {
-    co_int16_t x, y;
+    int16_t x, y;
 };
 typedef struct cogui_point cogui_point_t;
 
@@ -132,7 +124,7 @@ typedef struct cogui_point cogui_point_t;
  */
 struct cogui_rect
 {
-    co_int16_t x1, x2, y1, y2;
+    int16_t x1, x2, y1, y2;
 };
 typedef struct cogui_rect cogui_rect_t;
 
@@ -150,24 +142,24 @@ void cogui_free(void* ptr);
 StatusType cogui_ack(struct cogui_event *event, StatusType status);
 StatusType cogui_send(cogui_app_t *app, struct cogui_event *event);
 StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event);
-StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, co_int32_t timeout);
+StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, int32_t timeout);
 
 /* math function for cogui */
-co_uint64_t cogui_pow(co_int32_t base, co_int32_t exp);
-void cogui_itoa(co_int16_t n, char* ss);
+uint64_t cogui_pow(int32_t base, int32_t exp);
+void cogui_itoa(int16_t n, char* ss);
 
 /* mem function for cogui */
-void *cogui_memset(void *buf, int val, co_uint64_t size);
-void *cogui_memcpy(void *dest, const void *src, co_uint64_t size);
-void *cogui_memmove(void *dest, const void *src, co_uint64_t size);
-co_int32_t cogui_memcmp(const void *str1, const void *str2, co_uint64_t size);
+void *cogui_memset(void *buf, int val, uint64_t size);
+void *cogui_memcpy(void *dest, const void *src, uint64_t size);
+void *cogui_memmove(void *dest, const void *src, uint64_t size);
+int32_t cogui_memcmp(const void *str1, const void *str2, uint64_t size);
 
 /* string function for cogui */
 char *cogui_strdup(const char *str);
-co_uint64_t cogui_strlen(const char *str);
-co_uint64_t cogui_strnlen(const char *str, co_uint64_t maxlen);
-co_int32_t cogui_strncmp(const char *str1, const char *str2, co_uint64_t size);
-co_int32_t cogui_strcmp(const char *str1, const char *str2);
+uint64_t cogui_strlen(const char *str);
+uint64_t cogui_strnlen(const char *str, uint64_t maxlen);
+int32_t cogui_strncmp(const char *str1, const char *str2, uint64_t size);
+int32_t cogui_strcmp(const char *str1, const char *str2);
 
 /* debug function */
 int cogui_printf(const char *fmt, ...);

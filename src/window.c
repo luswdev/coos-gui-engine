@@ -10,13 +10,12 @@
 #include <cogui.h>
 
 extern cogui_window_t *main_page;
+extern struct cogui_cursor *_cursor;
+
 cogui_window_t *current_window;
-co_int16_t current_app_install_cnt = 0;
+int16_t current_app_install_cnt = 0;
 
 struct main_app_table main_app_table[9];
-
-static co_int16_t cogui_main_page_app_install(char *title);
-static void cogui_main_page_app_uninstall(co_int16_t);
 
 StatusType cogui_window_event_handler(struct cogui_window * win, struct cogui_event *event);
 
@@ -26,6 +25,7 @@ static void _cogui_window_init(cogui_window_t *win)
 
     win->app        = cogui_app_self();
     win->app->win   = win;
+    win->id         = cogui_app_self()->win_id;
 
     win->title_name = cogui_app_self()->name;
 
@@ -33,13 +33,8 @@ static void _cogui_window_init(cogui_window_t *win)
     win->handler    = cogui_window_event_handler;
 }
 
-cogui_window_t *cogui_window_create(co_uint16_t style)
+cogui_window_t *cogui_window_create(uint16_t style)
 {
-    co_int16_t id = -1;
-    if (main_page) {
-        id = cogui_main_page_app_install(cogui_app_self()->name);
-    }
-
     cogui_window_t *win;
     win = cogui_malloc(sizeof(cogui_window_t));
     if (win == Co_NULL)
@@ -56,7 +51,6 @@ cogui_window_t *cogui_window_create(co_uint16_t style)
 
     win->style = style;
     win->magic = COGUI_WINDOW_MAGIC;
-    win->id    = id;
 
     return win;
 }
@@ -65,7 +59,7 @@ cogui_window_t *cogui_main_window_create(void)
 {
     cogui_window_t *win     = cogui_window_create_without_title();
     cogui_widget_t *widget;
-    co_uint16_t     i;
+    uint16_t     i;
 
     widget = cogui_widget_create(win);
     cogui_widget_set_rectangle(widget, 0, 0, 240, 40);
@@ -80,7 +74,6 @@ cogui_window_t *cogui_main_window_create(void)
         cogui_widget_set_rectangle(widget, 15 + (i%3)*75 , 55 + (i/3)*88, 60, 60);
         widget->gc.foreground = green; 
         widget->flag |= COGUI_WIDGET_FLAG_RECT;
-        COGUI_WIDGET_ENABLE(widget);
         cogui_widget_set_font(widget, &tm_font_16x26);
         cogui_widget_set_text_align(widget, COGUI_TEXT_ALIGN_CENTER|COGUI_TEXT_ALIGN_MIDDLE);
 
@@ -90,7 +83,6 @@ cogui_window_t *cogui_main_window_create(void)
         cogui_widget_set_rectangle(widget, 15 + (i%3)*75 , 115 + (i/3)*88, 60, 13);
         widget->flag |= COGUI_WIDGET_FLAG_RECT| COGUI_WIDGET_FLAG_FILLED;
         cogui_widget_set_text_align(widget, COGUI_TEXT_ALIGN_CENTER|COGUI_TEXT_ALIGN_MIDDLE);
-        COGUI_WIDGET_ENABLE(widget);
 
         main_app_table[i].app_title_box = widget;
     }
@@ -100,10 +92,10 @@ cogui_window_t *cogui_main_window_create(void)
     return win;
 }
 
-static co_int16_t cogui_main_page_app_install(char* title)
+int16_t cogui_main_page_app_install(char* title)
 {
     if (current_app_install_cnt > 9) {
-        return GUI_E_ERROR;
+        return GUI_E_APP_FULL;
     }
 
     cogui_widget_t *widget;
@@ -115,16 +107,19 @@ static co_int16_t cogui_main_page_app_install(char* title)
     widget->flag |= COGUI_WIDGET_FLAG_FILLED;
     widget->gc.background = green;
     widget->gc.foreground = white;
+    widget->user_data = cogui_app_self();
+    COGUI_WIDGET_ENABLE(widget);
 
     widget = main_app_table[current_app_install_cnt].app_title_box;
     cogui_widget_set_text(widget, title);
+    COGUI_WIDGET_ENABLE(widget);
 
-    main_app_table[current_app_install_cnt].title = title;
+    main_app_table[current_app_install_cnt].title   = title;
 
     return current_app_install_cnt++;
 }
 
-static void cogui_main_page_app_uninstall(co_int16_t id)
+void cogui_main_page_app_uninstall(int16_t id)
 {
     COGUI_ASSERT((id < current_app_install_cnt) && (id >= 0));
 
@@ -135,18 +130,161 @@ static void cogui_main_page_app_uninstall(co_int16_t id)
     cogui_widget_clear_text(main_app_table[id].app_title_box);
 
     cogui_widget_t *widget;    
-    widget = main_app_table[current_app_install_cnt].app_icon;
+    widget = main_app_table[id].app_icon;
     widget->gc.background = black;
     widget->gc.foreground = green;
 
-    /* if this app is not previous install app, we need to shift all app forward */
-    if (id != --current_app_install_cnt) {
-        co_uint16_t i;
-        for ( i=id+1; i<=current_app_install_cnt; i++) {
-            cogui_memcpy(main_app_table+(i-1), main_app_table+i, sizeof(struct main_app_table));
+    
+    uint16_t i;
+    for ( i=id+1; i<=current_app_install_cnt; i++) {                                            /* shift all app icon forward           */
+        main_app_table[i-1].app_icon->flag      =  main_app_table[i].app_icon->flag;            /* copy useful data for icon widget     */
+        main_app_table[i-1].app_icon->user_data =  main_app_table[i].app_icon->user_data;
+        main_app_table[i-1].app_icon->gc        =  main_app_table[i].app_icon->gc;
+        main_app_table[i-1].app_icon->text      =  main_app_table[i].app_icon->text;
+
+        main_app_table[i-1].app_title_box->text =  main_app_table[i].app_title_box->text;       /* copy useful data for title widget    */
+        main_app_table[i-1].app_title_box->flag =  main_app_table[i].app_title_box->flag;
+        
+        if (main_app_table[i-1].app_icon->user_data) {                                          /* update window id if need             */
+            ((cogui_app_t *)(main_app_table[i-1].app_icon->user_data))->win->id = i-1;
+            ((cogui_app_t *)(main_app_table[i-1].app_icon->user_data))->win_id  = i-1;
         }
     }
-}   
+
+    --current_app_install_cnt;
+}
+
+static cogui_widget_t *cpgui_window_inverse_widgets_list(cogui_window_t *top)
+{
+    cogui_widget_t *inverse_list = top->widget_list; 
+    cogui_widget_t *tmp_list = top->widget_list,*tmp_node = Co_NULL;
+
+    while (tmp_list->next != Co_NULL) {
+        inverse_list = tmp_list->next;
+        tmp_list->next = tmp_node;
+        tmp_node = tmp_list;
+        tmp_list = inverse_list;
+    }
+    inverse_list-> next = tmp_node;
+
+    top->widget_list = inverse_list;
+
+    return inverse_list;
+}
+
+cogui_widget_t *cogui_window_get_mouse_event_widget(cogui_window_t *top, uint16_t cx, uint16_t cy)
+{
+    COGUI_ASSERT(top != Co_NULL);
+
+    if (top != cogui_get_current_window()) {
+        return Co_NULL;
+    }
+
+    cogui_widget_t *event_wgt = Co_NULL;
+
+    cpgui_window_inverse_widgets_list(top);                         /* inverse widgets list to find event widget from top */
+
+    cogui_widget_t *tmp_list = top->widget_list;
+    while (!(tmp_list->flag & COGUI_WIDGET_FLAG_HEADER)) {
+        if (!(tmp_list->flag & COGUI_WIDGET_FLAG_SHOWN)) {
+            tmp_list=tmp_list->next;
+            continue;
+        }
+
+        if ((cx >= tmp_list->extent.x1) && (cx <=tmp_list->extent.x2) &&
+            (cy >= tmp_list->extent.y1) && (cy <=tmp_list->extent.y2)) {
+            event_wgt = tmp_list;
+            break;
+        }
+
+        tmp_list=tmp_list->next;
+    }
+
+    cpgui_window_inverse_widgets_list(top);                         /* inverse back to turn everythings back */
+
+    if (top->focus_widget && top->focus_widget != event_wgt) {
+        cogui_widget_unfocus(top->focus_widget);
+    }
+
+    top->last_mouse_event_widget = event_wgt;
+
+    return event_wgt;
+}
+
+/**
+ *******************************************************************************
+ * @brief      Refresh screen by list
+ * @param[in]  None
+ * @param[out] None
+ * @retval     None
+ *
+ * @par Description
+ * @details    This function is called to refresh screen by list.
+ *******************************************************************************
+ */
+StatusType cogui_window_update(cogui_window_t *top, cogui_widget_t *widget)
+{
+    COGUI_ASSERT(top != Co_NULL);
+
+    if (!COGUI_WINDOW_IS_ENABLE(top) && top != main_page) {
+        top = main_page;
+    }
+
+    if (!COGUI_WINDOW_IS_ENABLE(top) && top == main_page) {
+        return GUI_E_ERROR;
+    }
+
+    cogui_widget_t *list = top->widget_list->next;
+
+    while (list != widget && widget!= Co_NULL) {
+        list = list->next;
+    }
+
+    while (list != Co_NULL) {
+        /* if this node is disabled, skip it */
+        if (!COGUI_WIDGET_IS_ENABLE(list)){
+            list = list->next;
+            continue;
+        }
+
+        /* draw shape if needed */
+        if (list->flag & COGUI_WIDGET_FLAG_RECT) {
+            if (list->flag & COGUI_WIDGET_FLAG_FILLED) {
+                list->dc_engine->engine->fill_rect(list->dc_engine, &list->inner_extent);
+			}
+            else {
+                cogui_dc_draw_rect(list->dc_engine, &list->inner_extent);
+            }
+        }
+        
+        /* draw text if needed */
+        if (list->flag & COGUI_WIDGET_FLAG_HAS_TEXT) {
+            cogui_rect_t pr = list->inner_extent;
+            uint64_t padding = list->gc.padding;
+            COGUI_RECT_PADDING(&pr, padding);
+
+            cogui_dc_draw_text(list->dc_engine, &pr, list->text);
+        }
+
+        /* draw border at last if needed */
+        if (list->flag & COGUI_WIDGET_BORDER) {
+            cogui_dc_draw_border(list->dc_engine, &list->inner_extent);
+        }        
+
+        /* go forward to next node */
+        list = list->next;
+    }
+
+    if (_cursor) {
+        //cogui_mouse_show();
+    }
+
+    return GUI_E_OK;
+}
+
+StatusType cogui_window_refresh(cogui_window_t *top) {
+    return cogui_window_update(top, Co_NULL);
+}
 
 void cogui_window_delete(cogui_window_t *win)
 {
@@ -154,19 +292,20 @@ void cogui_window_delete(cogui_window_t *win)
     win->magic = 0;
 
     /* delete title widget */
-    cogui_title_delete(win);
-    cogui_widget_delete(win->title);
+    //cogui_title_delete(win);
+    //cogui_widget_delete(win->title);
 
     /* delete all widget */
     cogui_widget_t *tmp_widget = win->widget_list->next;
-    cogui_widget_t *next_delete_widget = tmp_widget;
-    while ((next_delete_widget = next_delete_widget->next) != Co_NULL) {
+    cogui_widget_t *next_delete_widget = tmp_widget->next;
+    while (next_delete_widget != Co_NULL) {
         cogui_widget_delete(tmp_widget);
         tmp_widget = next_delete_widget;
+        next_delete_widget = next_delete_widget->next;
     }
 
     /* last delete header widget */
-    cogui_widget_delete(win->widget_list);
+    //cogui_widget_delete(win->widget_list);
 
     /* remove window pointer in app structure */
     win->app->win = Co_NULL;
@@ -272,7 +411,7 @@ StatusType cogui_window_onshow(cogui_window_t *win)
         return GUI_E_ERROR;
     }
 
-	cogui_screen_refresh(win);
+	cogui_window_refresh(win);
 
     current_window = win;
 
@@ -285,6 +424,10 @@ StatusType cogui_window_onhide(cogui_window_t *win)
         return GUI_E_ERROR;
     }
 
+    if (win->focus_widget != Co_NULL) {
+        cogui_widget_unfocus(win->focus_widget);
+    }
+
     struct cogui_event event;
     COGUI_EVENT_INIT(&event, COGUI_EVENT_WINDOW_HIDE);
     event.win = win;
@@ -292,11 +435,14 @@ StatusType cogui_window_onhide(cogui_window_t *win)
     return cogui_send(cogui_get_server(), &event);
 }
 
-cogui_window_t *cogui_get_current_window()
+cogui_window_t *cogui_get_main_window(void)
 {
-    cogui_app_t *app = cogui_app_self();
+    return main_page;
+}
 
-    return app->win;
+cogui_window_t *cogui_get_current_window(void)
+{
+    return current_window;
 }
 
 StatusType cogui_window_event_handler(struct cogui_window *win, struct cogui_event *event)
@@ -327,10 +473,10 @@ StatusType cogui_window_event_handler(struct cogui_window *win, struct cogui_eve
 	return result;
 }
 
-void cogui_assert_failed_page(const char* ex, co_uint16_t line, const char* func)
+void cogui_assert_failed_page(const char* ex, uint16_t line, const char* func)
 {
     /* let full screen background set to blue */
-    main_page->widget_list->next->gc.background = blue;
+    main_page->widget_list->next->gc.foreground = blue;
     main_page->widget_list->next->next = Co_NULL;
 
     cogui_window_show(main_page);

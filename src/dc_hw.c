@@ -9,10 +9,10 @@
 
 #include <cogui.h>
 
-static void cogui_dc_hw_draw_point(cogui_dc_t *dc, co_int32_t x, co_int32_t y);
-static void cogui_dc_hw_draw_color_point(cogui_dc_t *dc, co_int32_t x, co_int32_t y, cogui_color_t color);
-static void cogui_dc_hw_draw_vline(cogui_dc_t *dc, co_int32_t x, co_int32_t y1, co_int32_t y2);
-static void cogui_dc_hw_draw_hline(cogui_dc_t *dc, co_int32_t x1, co_int32_t x2, co_int32_t y);
+static void cogui_dc_hw_draw_point(cogui_dc_t *dc, int32_t x, int32_t y);
+static void cogui_dc_hw_draw_color_point(cogui_dc_t *dc, int32_t x, int32_t y, cogui_color_t color);
+static void cogui_dc_hw_draw_vline(cogui_dc_t *dc, int32_t x, int32_t y1, int32_t y2);
+static void cogui_dc_hw_draw_hline(cogui_dc_t *dc, int32_t x1, int32_t x2, int32_t y);
 static void cogui_dc_hw_fill_rect(cogui_dc_t *dc, cogui_rect_t *rect);
 static StatusType cogui_dc_hw_fini(cogui_dc_t *dc);
 
@@ -85,7 +85,7 @@ static StatusType cogui_dc_hw_fini(cogui_dc_t *dc)
  * @retval     None
  *******************************************************************************
  */
-static void cogui_dc_hw_draw_point(cogui_dc_t *self, co_int32_t x, co_int32_t y)
+static void cogui_dc_hw_draw_point(cogui_dc_t *self, int32_t x, int32_t y)
 {
     struct cogui_dc_hw *dc;
 
@@ -121,7 +121,7 @@ static void cogui_dc_hw_draw_point(cogui_dc_t *self, co_int32_t x, co_int32_t y)
  * @retval     None
  *******************************************************************************
  */
-static void cogui_dc_hw_draw_color_point(cogui_dc_t *self, co_int32_t x, co_int32_t y, cogui_color_t color)
+static void cogui_dc_hw_draw_color_point(cogui_dc_t *self, int32_t x, int32_t y, cogui_color_t color)
 {
     struct cogui_dc_hw *dc;
 
@@ -161,7 +161,7 @@ static void cogui_dc_hw_draw_color_point(cogui_dc_t *self, co_int32_t x, co_int3
  *             DC, this line is (y2-y1) height.
  *******************************************************************************
  */
-static void cogui_dc_hw_draw_vline(cogui_dc_t *self, co_int32_t x, co_int32_t y1, co_int32_t y2)
+static void cogui_dc_hw_draw_vline(cogui_dc_t *self, int32_t x, int32_t y1, int32_t y2)
 {
     struct cogui_dc_hw *dc;
 
@@ -215,7 +215,7 @@ static void cogui_dc_hw_draw_vline(cogui_dc_t *self, co_int32_t x, co_int32_t y1
  *             DC, this line is (x2-x1) width.
  *******************************************************************************
  */
-static void cogui_dc_hw_draw_hline(cogui_dc_t *self, co_int32_t x1, co_int32_t x2, co_int32_t y)
+static void cogui_dc_hw_draw_hline(cogui_dc_t *self, int32_t x1, int32_t x2, int32_t y)
 {
     struct cogui_dc_hw *dc;
 
@@ -270,7 +270,7 @@ static void cogui_dc_hw_draw_hline(cogui_dc_t *self, co_int32_t x1, co_int32_t x
 static void cogui_dc_hw_fill_rect(cogui_dc_t *self, cogui_rect_t *rect)
 {
     cogui_color_t color;
-    co_int32_t y1, y2, x1, x2;
+    int32_t y1, y2, x1, x2;
     struct cogui_dc_hw *dc;
 
     COGUI_ASSERT(rect);

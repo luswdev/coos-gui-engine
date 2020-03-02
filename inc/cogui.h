@@ -14,6 +14,9 @@
 extern "C" {
 #endif
 
+/* System library */
+#include "stdint.h"
+
 /* CooCox CoOS library */
 #include "coocox.h"
 

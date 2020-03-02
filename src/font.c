@@ -24,7 +24,7 @@ cogui_font_t *default_font = &tm_font_7x10;
  * @retval     None 
  *******************************************************************************
  */
-void cogui_lcd_puts(co_uint16_t x, co_uint16_t y, char *str, cogui_font_t *font, cogui_dc_t *dc, cogui_rect_t *rect)
+void cogui_lcd_puts(uint16_t x, uint16_t y, char *str, cogui_font_t *font, cogui_dc_t *dc, cogui_rect_t *rect)
 {
     while (*str) {
         if (*str == '\n') {
@@ -59,9 +59,9 @@ void cogui_lcd_puts(co_uint16_t x, co_uint16_t y, char *str, cogui_font_t *font,
  * @retval     None 
  *******************************************************************************
  */
-void cogui_lcd_putc(co_uint16_t x, co_uint16_t y, char c, cogui_font_t *font, cogui_dc_t *dc, cogui_rect_t *rect)
+void cogui_lcd_putc(uint16_t x, uint16_t y, char c, cogui_font_t *font, cogui_dc_t *dc, cogui_rect_t *rect)
 {	
-	co_uint16_t i, j, f;
+	uint16_t i, j, f;
 	for ( i=0; i<font->height; i++) {
 		/* first element in font table is "space", which is 32 in ASCII */
 		f = font->data[(c - 32)*font->height + i];
@@ -82,12 +82,12 @@ void cogui_lcd_putc(co_uint16_t x, co_uint16_t y, char c, cogui_font_t *font, co
  * @retval     text_width       Result of string widget.
  *******************************************************************************
  */
-co_uint32_t cogui_get_text_width(char *str, cogui_font_t *font)
+uint32_t cogui_get_text_width(char *str, cogui_font_t *font)
 {
     COGUI_ASSERT(font != Co_NULL);
 
-    co_uint32_t text_width;
-    co_uint64_t str_len = str != Co_NULL ? cogui_strlen(str) : 0;
+    uint32_t text_width;
+    uint64_t str_len = str != Co_NULL ? cogui_strlen(str) : 0;
 
     /* compute text widget */
     text_width = str_len * font->width;
@@ -105,15 +105,15 @@ co_uint32_t cogui_get_text_width(char *str, cogui_font_t *font)
  * @retval     text_height      Result of string height.
  *******************************************************************************
  */
-co_uint32_t cogui_get_text_height(char *str, cogui_font_t *font, cogui_rect_t *rect)
+uint32_t cogui_get_text_height(char *str, cogui_font_t *font, cogui_rect_t *rect)
 {
     COGUI_ASSERT(rect != Co_NULL);
     COGUI_ASSERT(font != Co_NULL);
 
-    co_uint32_t rect_width = COGUI_RECT_WIDTH(rect);
-    co_uint32_t text_width;
-    co_uint32_t text_height;
-    co_uint32_t lines;
+    uint32_t rect_width = COGUI_RECT_WIDTH(rect);
+    uint32_t text_width;
+    uint32_t text_height;
+    uint32_t lines;
 
     /* how many lines does this text has in this rectangle */
     text_width = cogui_get_text_width(str, font);

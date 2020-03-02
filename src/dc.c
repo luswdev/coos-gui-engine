@@ -21,7 +21,7 @@
  * @retval     None
  *******************************************************************************
  */
-void cogui_dc_draw_line(cogui_dc_t *dc, co_int32_t x1, co_int32_t x2, co_int32_t y1, co_int32_t y2)
+void cogui_dc_draw_line(cogui_dc_t *dc, int32_t x1, int32_t x2, int32_t y1, int32_t y2)
 {
 	COGUI_ASSERT(dc != Co_NULL);
 	
@@ -57,7 +57,7 @@ void cogui_dc_draw_rect(cogui_dc_t *dc, cogui_rect_t *rect)
 	if (rect == Co_NULL)
 		return;
 	
-	co_int32_t x1, x2, y1, y2;
+	int32_t x1, x2, y1, y2;
 	
 	x1 = rect->x1;
 	x2 = rect->x2;
@@ -147,16 +147,16 @@ void cogui_dc_draw_text(cogui_dc_t *dc, cogui_rect_t *rect, char *str)
         return;
     }
 
-    co_uint16_t text_align = COGUI_DC_TA(dc);
-    co_int16_t  tx, ty;
+    uint16_t text_align = COGUI_DC_TA(dc);
+    int16_t  tx, ty;
 
     /* default style setting */
     if (text_align == COGUI_TEXT_ALIGN_NONE) {
         tx = ty = 0;
     }
 
-    co_uint32_t text_width = cogui_get_text_width(str, COGUI_DC_FONT(dc));
-    co_uint32_t rect_width = COGUI_RECT_WIDTH(rect);
+    uint32_t text_width = cogui_get_text_width(str, COGUI_DC_FONT(dc));
+    uint32_t rect_width = COGUI_RECT_WIDTH(rect);
 
     /* if text is too long, it will no longer align */
     if (text_width > rect_width) {
@@ -175,8 +175,8 @@ void cogui_dc_draw_text(cogui_dc_t *dc, cogui_rect_t *rect, char *str)
         tx = rect_width - text_width;
     }
 
-    co_uint32_t text_height = cogui_get_text_height(str, COGUI_DC_FONT(dc), rect);
-    co_uint32_t rect_height = COGUI_RECT_HEIGHT(rect);
+    uint32_t text_height = cogui_get_text_height(str, COGUI_DC_FONT(dc), rect);
+    uint32_t rect_height = COGUI_RECT_HEIGHT(rect);
 
     /* text overflow-y: hidden */
     if (text_height > rect_height) {

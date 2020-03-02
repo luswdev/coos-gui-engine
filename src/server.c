@@ -11,26 +11,37 @@
 
 cogui_app_t *server_app = Co_NULL;
 OS_STK   server_Stk[512]={0};
+extern cogui_window_t *main_page;
+extern struct main_app_table main_app_table[9];
 
-void cogui_server_handler_mouse_btn(struct cogui_event *event)
+void cogui_server_handler_mouse_button(struct cogui_event *event)
 {
-    /* the topwin contains current mouse */
-    //P_TopWin win    = Co_NULL;
+    cogui_mouse_return_picture();
+    if (cogui_get_current_window() == cogui_get_main_window()) {
+        cogui_point_t cursor_pt;
+        cogui_widget_t *event_wgt, *last_ewgt = main_page->last_mouse_event_widget;
+        cogui_mouse_get_position(&cursor_pt);
+        event_wgt = cogui_window_get_mouse_event_widget(cogui_app_self()->win, cursor_pt.x, cursor_pt.y);
 
-    COGUI_EVENT_INIT(event, COGUI_EVENT_MOUSE_BUTTON);
-
-    /* set cursor position */
-    //MouseSetPos(event->x, event->y);
-
-    /*win = GetTopWin(event->x, event->y);
-    if(win == Co_NULL){
-        return;
+        if (event_wgt && event_wgt->user_data) {
+            if ((event->button & COGUI_MOUSE_BUTTON_UP) && last_ewgt == event_wgt) {
+                cogui_app_t *eapp = (cogui_app_t *)event_wgt->user_data;
+                COGUI_EVENT_INIT(event, COGUI_EVENT_PAINT);
+                event->app = eapp;
+            }
+        } else {
+            cogui_mouse_show();
+            return;
+        }
+    } else {
+        COGUI_EVENT_INIT(event, COGUI_EVENT_MOUSE_BUTTON);
+        event->app = cogui_get_current_window()->app;
     }
 
-    event->win = win->wid;*/
-
-    while(cogui_send(event->app, event) != E_OK){
-        CoTickDelay(50);
+    if (event->app != Co_NULL) {
+        while(cogui_send(event->app, event) != GUI_E_OK){
+            CoTickDelay(50);
+        }
     }
 }
 
@@ -62,6 +73,8 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
 
     StatusType result = GUI_E_ERROR;
 
+    //cogui_printf("[Server] Got a event no.%d\r\n", event->type);
+
     switch (event->type)
     {
 	case COGUI_EVENT_APP_CREATE:
@@ -70,23 +83,29 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
 		break;
 
     case COGUI_EVENT_PAINT:
-        result = cogui_send(event->sender, event);
+        //result = cogui_send(event->sender, event);
         break;
 		
     /* mouse and keyboard event */
     case COGUI_EVENT_MOUSE_BUTTON:
-        /* handle mouse button */
-		
-        //cogui_server_handler_mouse_motion(event);
+        cogui_server_handler_mouse_button(event);
         break;
 
     case COGUI_EVENT_MOUSE_MOTION:
-        /* handle mouse motion event */
-		
         cogui_server_handler_mouse_motion(event);
         break;
 
     case COGUI_EVENT_WINDOW_CLOSE:
+    {
+        if (event->win) {
+            result = GUI_E_ERROR;
+        }
+
+        result = cogui_window_show(server_app->win);    
+        cogui_mouse_show();
+        break;
+    }
+
     case COGUI_EVENT_WINDOW_HIDE:
     {
         if (COGUI_WINDOW_IS_ENABLE(event->win)) {
@@ -94,6 +113,7 @@ StatusType cogui_server_event_handler(struct cogui_event *event)
         }
 
         result = cogui_window_show(server_app->win);    
+        cogui_mouse_show();
         break;
     }
         

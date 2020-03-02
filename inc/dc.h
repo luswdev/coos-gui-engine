@@ -59,12 +59,12 @@ struct cogui_gc
 
     struct cogui_font * font;                   /**< font structure pointer         */
 
-    co_uint16_t         text_align;             /**< text alignment                 */
-    co_uint64_t         padding;                /**< rectangle padding (for text)   */
+    uint16_t         text_align;             /**< text alignment                 */
+    uint64_t         padding;                /**< rectangle padding (for text)   */
 };
 
-#define COGUI_PADDING(top, bottom, left, right) ((co_uint64_t)(((top)<<24)|((bottom)<<16)|((left)<<8)|(right)))
-#define COGUI_PADDING_SIMPLE(pa)                ((co_uint64_t)(((pa)<<24)|((pa)<<16)|((pa)<<8)|(pa)))
+#define COGUI_PADDING(top, bottom, left, right) ((uint64_t)(((top)<<24)|((bottom)<<16)|((left)<<8)|(right)))
+#define COGUI_PADDING_SIMPLE(pa)                ((uint64_t)(((pa)<<24)|((pa)<<16)|((pa)<<8)|(pa)))
 
 /* dc type define */
 #define COGUI_DC_INIT           0x00          /**< DC initial type      */
@@ -79,10 +79,10 @@ struct cogui_gc
 struct cogui_dc_engine
 {
     /* interface */
-    void (*draw_point)(cogui_dc_t *dc, co_int32_t x, co_int32_t y);
-    void (*draw_color_point)(cogui_dc_t *dc, co_int32_t x, co_int32_t y, cogui_color_t color);
-    void (*draw_vline)(cogui_dc_t *dc, co_int32_t x, co_int32_t y1, co_int32_t y2);
-    void (*draw_hline)(cogui_dc_t *dc, co_int32_t x1, co_int32_t x2, co_int32_t y);
+    void (*draw_point)(cogui_dc_t *dc, int32_t x, int32_t y);
+    void (*draw_color_point)(cogui_dc_t *dc, int32_t x, int32_t y, cogui_color_t color);
+    void (*draw_vline)(cogui_dc_t *dc, int32_t x, int32_t y1, int32_t y2);
+    void (*draw_hline)(cogui_dc_t *dc, int32_t x1, int32_t x2, int32_t y);
     void (*fill_rect)(cogui_dc_t *dc, cogui_rect_t *rect);
 
     StatusType (*fini)(cogui_dc_t * dc);
@@ -95,7 +95,7 @@ struct cogui_dc_engine
  */
 struct cogui_dc
 {
-    co_uint8_t               type;          /**< type of device context */
+    uint8_t               type;          /**< type of device context */
     struct cogui_dc_engine  *engine;        /**< DC engine */
 };
 
@@ -124,28 +124,28 @@ struct cogui_dc_buffer
     /*
     struct cogui_gc gc;
 
-    co_uint8_t pixel_format;
-    co_uint8_t blend_mode;		
+    uint8_t pixel_format;
+    uint8_t blend_mode;		
 
-    co_uint16_t width, height;
-    co_uint16_t pitch;
+    uint16_t width, height;
+    uint16_t pitch;
 
-    co_uint8_t pixel_alpha;
-    co_uint8_t *pixel;*/
+    uint8_t pixel_alpha;
+    uint8_t *pixel;*/
 };
 
 /* create a hardware DC */
 cogui_dc_t *cogui_dc_hw_create(struct cogui_widget *owner);
 
-void cogui_dc_draw_line(cogui_dc_t *dc, co_int32_t x1, co_int32_t x2, co_int32_t y1, co_int32_t y2);
+void cogui_dc_draw_line(cogui_dc_t *dc, int32_t x1, int32_t x2, int32_t y1, int32_t y2);
 void cogui_dc_draw_rect(cogui_dc_t *dc, cogui_rect_t *rect);
 void cogui_dc_draw_shaded_rect(cogui_dc_t *dc, cogui_rect_t *rect, cogui_color_t c1, cogui_color_t c2);
 void cogui_dc_fill_rect_forecolor(cogui_dc_t *dc, cogui_rect_t *rect);
-//void cogui_dc_draw_round_rect(cogui_dc_t *dc, cogui_rect_t *rect, co_int32_t r);
-//void cogui_dc_fill_round_rect(cogui_dc_t *dc, cogui_rect_t *rect, co_int32_t r);
+//void cogui_dc_draw_round_rect(cogui_dc_t *dc, cogui_rect_t *rect, int32_t r);
+//void cogui_dc_fill_round_rect(cogui_dc_t *dc, cogui_rect_t *rect, int32_t r);
 
-void cogui_dc_draw_horizontal_line(cogui_dc_t *dc, co_int32_t x1, co_int32_t x2, co_int32_t y);
-void rtgui_dc_draw_vertical_line(cogui_dc_t *dc, co_int32_t x, co_int32_t y1, co_int32_t y2);
+void cogui_dc_draw_horizontal_line(cogui_dc_t *dc, int32_t x1, int32_t x2, int32_t y);
+void rtgui_dc_draw_vertical_line(cogui_dc_t *dc, int32_t x, int32_t y1, int32_t y2);
 
 void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect);
 

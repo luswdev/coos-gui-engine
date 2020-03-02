@@ -11,7 +11,7 @@
 
 struct cogui_cursor *_cursor=Co_NULL;
 extern cogui_window_t *main_page;
-co_bool_t first_show = 1;
+bool_t first_show = 1;
 
 void _cogui_mouse_init()
 {
@@ -32,21 +32,19 @@ void _cogui_mouse_init()
     cogui_mouse_set_position(105, 155);
 }
 
-static void cogui_mouse_return_picture(void)
+void cogui_mouse_return_picture(void)
 {
     COGUI_CHECK_CURSOR();
-    co_uint16_t i, j;
+    uint16_t i, j;
 
     for (i=0; i<16; i++) {
         for (j=0; j<16; j++) {
-            //cogui_printf("%x (%d, %d)", (co_uint16_t)_cursor->save_picture[i][j], _cursor->cx+j, _cursor->cy+i);
             cogui_dc_draw_point(_cursor->cursor_widget->dc_engine, _cursor->cx+j, _cursor->cy+i, _cursor->save_picture[i][j]);
         }
-        //cogui_printf("\r\n");
     }
 }
 
-void cogui_mouse_set_position(co_uint16_t x, co_uint16_t y)
+void cogui_mouse_set_position(uint16_t x, uint16_t y)
 {
     COGUI_CHECK_CURSOR();
 
@@ -56,22 +54,22 @@ void cogui_mouse_set_position(co_uint16_t x, co_uint16_t y)
     cogui_mouse_show();
 }
 
-void cogui_mouse_set_speed(co_uint8_t speed)
+void cogui_mouse_set_speed(uint8_t speed)
 {
     COGUI_CHECK_CURSOR();
 
     _cursor->speed = speed;
 }
 
-void cogui_mouse_move_to(co_uint16_t x,co_uint16_t y)
+void cogui_mouse_move_to(uint16_t x,uint16_t y)
 {
     COGUI_CHECK_CURSOR();
 
-    if (x > 230) {
-        x = 230;
+    if (x > 238) {
+        x = 238;
     }
-    if (y > 310) {
-        y = 310;
+    if (y > 318) {
+        y = 318;
     }
 
     if (_cursor->cx == x && _cursor->cy == y) {
@@ -85,12 +83,12 @@ void cogui_mouse_move_to(co_uint16_t x,co_uint16_t y)
     cogui_mouse_set_position(x, y);
 }
 
-void cogui_mouse_move_delta(co_int32_t dx,co_int32_t dy)
+void cogui_mouse_move_delta(int32_t dx,int32_t dy)
 {
     COGUI_CHECK_CURSOR();
     
-    co_int32_t x = _cursor->cx + dx/_cursor->speed;
-    co_int32_t y = _cursor->cy + dy/_cursor->speed;
+    int32_t x = _cursor->cx + dx/_cursor->speed;
+    int32_t y = _cursor->cy + dy/_cursor->speed;
 
     if (x < 0) {
         x = 0;
@@ -102,17 +100,23 @@ void cogui_mouse_move_delta(co_int32_t dx,co_int32_t dy)
     cogui_mouse_move_to(x, y);
 }
 
+void cogui_mouse_get_position(cogui_point_t *pt)
+{
+    pt->x = _cursor->cx;
+    pt->y = _cursor->cy;
+}
+
 void cogui_mouse_restore(void)
 {
     COGUI_CHECK_CURSOR();
-    co_uint32_t start_pt = _cursor->frame_buffer;
-    co_uint16_t i, j;
-    co_uint16_t buf;
+    uint32_t start_pt = _cursor->frame_buffer;
+    uint16_t i, j;
+    uint16_t buf;
 
     for (i=0; i<16; i++) {
         start_pt = _cursor->frame_buffer + 2*(240*(_cursor->cy+i) + _cursor->cx);
         for (j=0; j<16; j++) {
-            buf = *(co_uint16_t *)start_pt;
+            buf = *(uint16_t *)start_pt;
             _cursor->save_picture[i][j] = buf;
             start_pt += 2;
         }

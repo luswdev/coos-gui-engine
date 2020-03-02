@@ -42,15 +42,15 @@ extern "C" {
 struct cogui_window
 {
     /* window magic word field */
-    co_uint32_t         magic;                          /**< should be 0x57696E00                   */
+    uint32_t         magic;                          /**< should be 0x57696E00                   */
 
     /* meta data field */
     cogui_widget_t *    widget_list;                    /**< widget list under this window          */
-    co_int16_t          id;                             /**< window id (-1 for main window          */
-    co_uint16_t         style;                          /**< window style                           */
-    co_int32_t          flag;                           /**< window flag                            */
-    co_int64_t          update;                         /**< window update count                    */
-    co_int32_t          widget_cnt;                     /**< how many widgets this window have      */
+    int16_t          id;                             /**< window id (-1 for main window          */
+    uint16_t         style;                          /**< window style                           */
+    int32_t          flag;                           /**< window flag                            */
+    int64_t          update;                         /**< window update count                    */
+    int32_t          widget_cnt;                     /**< how many widgets this window have      */
     cogui_widget_t *    focus_widget;                   /**< current focus widget                   */
     cogui_app_t *       app;                            /**< window belongs to which application    */
     cogui_widget_t *    title;                          /**< title bar widget set                   */
@@ -66,7 +66,7 @@ struct cogui_window
     StatusType (*on_activate)(cogui_widget_t *widget, struct cogui_event *event);   /**<*/
     StatusType (*on_deactivate)(cogui_widget_t *widget, struct cogui_event *event); /**<*/
     StatusType (*on_key)(cogui_widget_t *widget, struct cogui_event *event);        /**<*/
-    co_uint64_t (*_do_show)(struct cogui_window *win);                              /**<*/
+    uint64_t (*_do_show)(struct cogui_window *win);                              /**<*/
     StatusType  (*handler)(struct cogui_window *widget ,struct cogui_event *event); /**<*/
 };
 typedef struct cogui_window cogui_window_t;
@@ -79,15 +79,23 @@ typedef struct cogui_window cogui_window_t;
 struct main_app_table {
     cogui_widget_t *app_icon;
     cogui_widget_t *app_title_box;
-    char *          title;    
+    char *          title;
 };
 
-cogui_window_t *cogui_window_create(co_uint16_t style);
+cogui_window_t *cogui_window_create(uint16_t style);
 void cogui_window_delete(cogui_window_t *win);
 
 cogui_window_t *cogui_main_window_create(void);
 
+cogui_widget_t *cogui_window_get_mouse_event_widget(cogui_window_t *top, uint16_t cx, uint16_t cy);
+StatusType cogui_window_update(cogui_window_t *top, cogui_widget_t *widget);
+StatusType cogui_window_refresh(cogui_window_t *top);
+
+cogui_window_t *cogui_get_main_window(void);
 cogui_window_t *cogui_get_current_window(void);
+
+int16_t cogui_main_page_app_install(char *title);
+void cogui_main_page_app_uninstall(int16_t);
 
 StatusType cogui_window_close(cogui_window_t *win);
 
@@ -105,9 +113,9 @@ void cogui_window_set_ondeactive(cogui_window_t *win, event_handler_ptr handler)
 void cogui_window_set_onkey(cogui_window_t *win, event_handler_ptr handler);
 
 void cogui_window_set_title(cogui_window_t *win, const U8 *title);
-co_uint8_t *cogui_window_get_title(cogui_window_t *win);
+uint8_t *cogui_window_get_title(cogui_window_t *win);
 
-void cogui_assert_failed_page(const char* ex, co_uint16_t line, const char* func);
+void cogui_assert_failed_page(const char* ex, uint16_t line, const char* func);
 
 #ifdef __cplusplus
 }

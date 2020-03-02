@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-typedef co_uint64_t cogui_color_t;   /**< Color type belong to long integer */
+typedef uint64_t cogui_color_t;   /**< Color type belong to long integer */
 
 /** Determine which color style used */
 #define COGUI_USING_RGB565
@@ -57,9 +57,11 @@ typedef co_uint64_t cogui_color_t;   /**< Color type belong to long integer */
 #endif
 
 extern const cogui_color_t red;
+extern const cogui_color_t orange;
 extern const cogui_color_t green;
 extern const cogui_color_t blue;
 extern const cogui_color_t yellow;
+extern const cogui_color_t indigo;
 extern const cogui_color_t purple;
 extern const cogui_color_t cyan;
 extern const cogui_color_t high_light;

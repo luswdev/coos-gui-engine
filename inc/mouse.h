@@ -27,19 +27,23 @@ extern "C" {
 
 struct cogui_cursor
 {
-    co_uint16_t cx, cy;
-    co_uint8_t speed;
+    uint16_t cx, cy;
+    uint8_t speed;
 
     cogui_widget_t *cursor_widget;
 
-    co_uint32_t frame_buffer;
+    uint32_t frame_buffer;
     cogui_color_t save_picture[16][16]; 
 };
 
-void cogui_mouse_set_position(co_uint16_t x, co_uint16_t y);
-void cogui_mouse_set_speed(co_uint8_t speed);
-void cogui_mouse_move_to(co_uint16_t x, co_uint16_t y);
-void cogui_mouse_move_delta(co_int32_t dx,co_int32_t dy);
+void cogui_mouse_return_picture(void);
+
+void cogui_mouse_set_position(uint16_t x, uint16_t y);
+void cogui_mouse_set_speed(uint8_t speed);
+void cogui_mouse_move_to(uint16_t x, uint16_t y);
+void cogui_mouse_move_delta(int32_t dx,int32_t dy);
+
+void cogui_mouse_get_position(cogui_point_t *pt);
 
 void cogui_mouse_restore(void);
 void cogui_mouse_show(void);

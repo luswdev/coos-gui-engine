@@ -36,27 +36,27 @@ enum
 struct graphic_driver_ops
 {
     /* set and get pixel in (x, y) */
-    void (*set_pixel)(cogui_color_t *c, co_int32_t x, co_int32_t y);
-    void (*get_pixel)(cogui_color_t *c, co_int32_t x, co_int32_t y);
+    void (*set_pixel)(cogui_color_t *c, int32_t x, int32_t y);
+    void (*get_pixel)(cogui_color_t *c, int32_t x, int32_t y);
 
-    void (*draw_hline)(cogui_color_t *c, co_int32_t x1, co_int32_t x2, co_int32_t y);
-    void (*draw_vline)(cogui_color_t *c, co_int32_t x , co_int32_t y1, co_int32_t y2);
+    void (*draw_hline)(cogui_color_t *c, int32_t x1, int32_t x2, int32_t y);
+    void (*draw_vline)(cogui_color_t *c, int32_t x , int32_t y1, int32_t y2);
 };
 
 /* graphic extension operations */
 struct graphic_ext_ops
 {
     /* some 2D operations */
-    void (*draw_line)(cogui_color_t *c, co_int32_t x1, co_int32_t y1, co_int32_t x2, co_int32_t y2);
+    void (*draw_line)(cogui_color_t *c, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 
-    void (*draw_rect)(cogui_color_t *c, co_int32_t x1, co_int32_t y1, co_int32_t x2, co_int32_t y2);
-    void (*fill_rect)(cogui_color_t *c, co_int32_t x1, co_int32_t y1, co_int32_t x2, co_int32_t y2);
+    void (*draw_rect)(cogui_color_t *c, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+    void (*fill_rect)(cogui_color_t *c, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 
-    void (*draw_circle)(cogui_color_t *c, co_int32_t x, co_int32_t y, co_int32_t r);
-    void (*fill_circle)(cogui_color_t *c, co_int32_t x, co_int32_t y, co_int32_t r);
+    void (*draw_circle)(cogui_color_t *c, int32_t x, int32_t y, int32_t r);
+    void (*fill_circle)(cogui_color_t *c, int32_t x, int32_t y, int32_t r);
 
-    void (*draw_ellipse)(cogui_color_t *c, co_int32_t x, co_int32_t y, co_int32_t rx, co_int32_t ry);
-    void (*fill_ellipse)(cogui_color_t *c, co_int32_t x, co_int32_t y, co_int32_t rx, co_int32_t ry);
+    void (*draw_ellipse)(cogui_color_t *c, int32_t x, int32_t y, int32_t rx, int32_t ry);
+    void (*fill_ellipse)(cogui_color_t *c, int32_t x, int32_t y, int32_t rx, int32_t ry);
 };
 
 struct cogui_graphic_driver
@@ -69,7 +69,7 @@ struct cogui_graphic_driver
     U16 height;
 
     /* framebuffer address and ops */
-    co_uint32_t frame_buffer;
+    uint32_t frame_buffer;
 
     const struct graphic_driver_ops *ops;
     const struct graphic_ext_ops *ext_ops;

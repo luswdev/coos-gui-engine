@@ -20,9 +20,7 @@
  */
 void cogui_system_init(void)
 {
-    cogui_printf("[%10s] Initial server...", "Server");
     cogui_server_init();
-    cogui_printf("\t\t\x1b[;32;1m[OK]\x1b[0;m\r\n");
 }
 
 /**
@@ -41,7 +39,7 @@ void *cogui_malloc(U32 size)
 
     /* if malloc failed, print error message */
 	if(ptr == Co_NULL){
-		cogui_printf("[%10s] out of memory\r\n", "system");
+		cogui_printf("[System] out of memory\r\n");
 	}
 	
     return ptr;
@@ -154,7 +152,7 @@ StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event)
  * @retval     GUI_E_ERROR      Something wrong when receiveing a event
  *******************************************************************************
  */
-StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, co_int32_t timeout)
+StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, int32_t timeout)
 {
     StatusType result;
     cogui_app_t *app;
@@ -186,7 +184,7 @@ StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, co_int32_t timeo
  * @retval     *buf             Result after setting.
  *******************************************************************************
  */
-void *cogui_memset(void *buf, int val, co_uint64_t size)
+void *cogui_memset(void *buf, int val, uint64_t size)
 {
     char *tmp = (char *)buf;
 
@@ -207,7 +205,7 @@ void *cogui_memset(void *buf, int val, co_uint64_t size)
  * @retval     *dest            Result after pasting.
  *******************************************************************************
  */
-void *cogui_memcpy(void *dest, const void *src, co_uint64_t size)
+void *cogui_memcpy(void *dest, const void *src, uint64_t size)
 {
     char *tar = (char *)dest;
     char *tmp = (char *)src;
@@ -229,7 +227,7 @@ void *cogui_memcpy(void *dest, const void *src, co_uint64_t size)
  * @retval     *dest            Result after moving.
  *******************************************************************************
  */
-void *cogui_memmove(void *dest, const void *src, co_uint64_t size)
+void *cogui_memmove(void *dest, const void *src, uint64_t size)
 {
     char *ds = (char *)dest;
     char *ss = (char *)src;
@@ -265,7 +263,7 @@ void *cogui_memmove(void *dest, const void *src, co_uint64_t size)
  * @retval     res              Value of first different slot.
  *******************************************************************************
  */
-co_int32_t cogui_memcmp(const void *buf1, const void *buf2, co_uint64_t size)
+int32_t cogui_memcmp(const void *buf1, const void *buf2, uint64_t size)
 {
     const unsigned char *s1, *s2;
     int res = 0;
@@ -304,14 +302,14 @@ char *cogui_strstr(const char *src, const char *tar)
     /* only if target's length is shorten then source's length should search */
     ls = cogui_strlen(tar);
     while (ls >= lt) {
-        ls--;
+        --ls;
 
         /* if we found one, return occurred point */
         if (!cogui_memcmp(src, tar, lt)) {
             return (char *)src;
         }
 
-        src++;
+        ++src;
     }     
 
     /* if we can't find substring, return Co_NULL */
@@ -326,7 +324,28 @@ char *cogui_strstr(const char *src, const char *tar)
  * @retval     length    Result of string length. 
  *******************************************************************************
  */
-co_uint64_t cogui_strlen(const char *str)
+uint64_t cogui_strnlen(const char *str, uint64_t maxlen)
+{
+    const char *s;
+
+    /* goto the end of the string */
+    for (s = str; *s && maxlen; ++s, --maxlen) {
+        /* passing */
+    }
+    
+    /* return memory address's differece */
+    return s-str;
+}
+
+/**
+ *******************************************************************************
+ * @brief      Get string length.
+ * @param[in]  *str      To get the length of string.
+ * @param[out] None
+ * @retval     length    Result of string length. 
+ *******************************************************************************
+ */
+uint64_t cogui_strlen(const char *str)
 {
     const char *s;
 
@@ -350,7 +369,7 @@ co_uint64_t cogui_strlen(const char *str)
 char *cogui_strdup(const char *str)
 {   
     /* allocate a memory for duplicate */
-    co_uint64_t len = cogui_strlen(str) + 1; /* need to plus one for '/0' */
+    uint64_t len = cogui_strlen(str) + 1; /* need to plus one for '/0' */
     char *tmp =  (char *)cogui_malloc(len);
 
     /* if allocate failed, return Co_NULL */
@@ -375,10 +394,10 @@ char *cogui_strdup(const char *str)
  * @retval     0          Return 0 if two strings are equal.
  *******************************************************************************
  */
-co_int32_t cogui_strncmp(const char *str1, const char *str2, co_uint64_t len)
+int32_t cogui_strncmp(const char *str1, const char *str2, uint64_t len)
 {
     /* if two strings value are different or out of range, will break this loop */
-    for (; *str1 && *str1 == *str2 && len; str1++, str2++, len--) {
+    for (; *str1 && *str1 == *str2 && len; ++str1, ++str2, --len) {
         /* passing */
     }
 
@@ -396,10 +415,10 @@ co_int32_t cogui_strncmp(const char *str1, const char *str2, co_uint64_t len)
  * @retval     0          Return 0 if two strings are equal.
  *******************************************************************************
  */
-co_int32_t cogui_strcmp(const char *str1, const char *str2)
+int32_t cogui_strcmp(const char *str1, const char *str2)
 {
     /* if two strings value are different, will break this loop */
-    for (; *str1 && *str1 == *str2; str1++, str2++) {
+    for (; *str1 && *str1 == *str2; ++str1, ++str2) {
         /* passing */
     }
 
@@ -416,9 +435,9 @@ co_int32_t cogui_strcmp(const char *str1, const char *str2)
  * @retval     sum      Result of x power by y. 
  *******************************************************************************
  */
-co_uint64_t cogui_pow(co_int32_t base, co_int32_t exp)
+uint64_t cogui_pow(int32_t base, int32_t exp)
 {
-    co_uint64_t sum = 1;
+    uint64_t sum = 1;
 
     /* multiplicative base */
     while (exp--)
@@ -435,7 +454,7 @@ co_uint64_t cogui_pow(co_int32_t base, co_int32_t exp)
  * @retval     None
  *******************************************************************************
  */
-void cogui_itoa(co_int16_t n, char *ss)
+void cogui_itoa(int16_t n, char *ss)
 {
     int i, j, sign, k;
     char s[10];
@@ -476,28 +495,19 @@ void cogui_itoa(co_int16_t n, char *ss)
 #ifdef COGUI_DEBUG_PRINT
 int cogui_printf(const char *str,...)
 {
-	va_list ap;
-    int val,r_val,space=0,align=0;
+    va_list ap;
+    int val,r_val,space=0;
 	char count, ch;
 	char *s = Co_NULL;
     int res = 0;
 
+    //CoSchedLock();
     va_start(ap,str);
     while ('\0' != *str) { 
-        space=0;
-        align=0;
-        switch (*str)
-        {
+          switch (*str)
+          {
             case '%':
                 str++;
-
-                /* if add a minor symbol before data type, align by left */
-                if (*str == '-') {
-                    align = 1;
-                    str++;
-                }
-
-                /* transform output length to integer */
                 while (*str >= '0' && *str <= '9') {
                     space *= 10;
                     space += *str - '0';
@@ -518,11 +528,6 @@ int cogui_printf(const char *str,...)
                         else if (val == 0) {
                             cogui_putchar('0');
                         }
-
-                        // TODO
-                        if (val < space*10) {
-
-                        }
                         
                         r_val = val; 
                         count = 0; 
@@ -539,13 +544,7 @@ int cogui_printf(const char *str,...)
 							count--;
 						}
                         break;
-                    
-                    /* case p to pointer */
-                    case 'p':
-                        /* first print a "0x" */
-                        cogui_putstr("0x");
-                        /* remain work will finish with case 'x' */
-                        
+
                     /* handle integer var with hex output */
                     case 'x':
                         val = va_arg(ap, int);
@@ -570,14 +569,10 @@ int cogui_printf(const char *str,...)
                         while(count) { 
                             ch = r_val / cogui_pow(16, count - 1);
 							r_val %= cogui_pow(16, count - 1);
-
-							if (ch <= 9) {
+							if (ch <= 9)
                                 cogui_putchar(ch + '0');
-                            }
-                            else {
+                            else
 								cogui_putchar(ch - 10 + 'a');
-                            }
-
 							count--;
 						}
 						break;
@@ -585,37 +580,17 @@ int cogui_printf(const char *str,...)
                     /* handle string var */
                     case 's':
 						s = va_arg(ap, char *);
-                        int len = cogui_strlen(s);
                         
-                        if (len < space && !align) {
-
+                        if (space) {
+                            int len = cogui_strlen(s);
                             while (len < space) {
                                 cogui_putchar(' ');
                                 space --;
-                                res ++;
                             }
                         }
-                        
-                        if (len > space && space) {
-                            while (space --) {
-                                cogui_putchar(*s++);
-                                res++;
-                            }
-                        }
-                        else {
-                            cogui_putstr(s);
-                            res += cogui_strlen(s);                                
-                        }
-						
 
-                        if (len < space && align) {
-
-                            while (len < space) {
-                                cogui_putchar(' ');
-                                space --;
-                                res ++;
-                            }
-                        }
+						cogui_putstr(s);
+                        res += cogui_strlen(s);
 						break;
 					
                     /* handle character var */
@@ -647,8 +622,9 @@ int cogui_printf(const char *str,...)
 				res += 1;
 		}
 		str++;
-    }
+     }
     va_end(ap);
+	//CoSchedUnlock();
 
 	return res;
 }

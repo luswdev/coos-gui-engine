@@ -15,6 +15,9 @@ const cogui_color_t default_button_foreground = COGUI_RGB(0x42, 0x42, 0x42);
 
 extern cogui_font_t tm_symbol_16x16;
 
+static StatusType cogui_title_button_on_focus_in(struct cogui_widget *widget, struct cogui_event *event);
+static StatusType cogui_title_button_on_focus_out(struct cogui_widget *widget, struct cogui_event *event);
+
 /**
  *******************************************************************************
  * @brief      Create a title widget set for new window.
@@ -45,9 +48,9 @@ void cogui_title_create(cogui_window_t *win)
     COGUI_WIDGET_ENABLE(mini_btn);
 
     /* give this three widgets flags */
-    win->title->flag |= COGUI_WIDGET_FLAG_TITLE | COGUI_WIDGET_FLAG_RECT | COGUI_WIDGET_FLAG_FILLED;
-    close_btn->flag  |= COGUI_WIDGET_FLAG_TITLE;
-    mini_btn->flag   |= COGUI_WIDGET_FLAG_TITLE;
+    win->title->flag |= COGUI_WIDGET_FLAG_TITLE | COGUI_WIDGET_FLAG_RECT | COGUI_WIDGET_FLAG_FILLED | COGUI_WIDGET_FLAG_HEADER;
+    close_btn->flag  |= COGUI_WIDGET_FLAG_TITLE | COGUI_WIDGET_FLAG_CLOSE_BTN;
+    mini_btn->flag   |= COGUI_WIDGET_FLAG_TITLE | COGUI_WIDGET_FLAG_MINI_BTN;
 
     /* set three widgets sizes */
     cogui_widget_set_rectangle(win->title, 65, 0, 240, COGUI_WINTITLE_HEIGHT);
@@ -69,6 +72,12 @@ void cogui_title_create(cogui_window_t *win)
     cogui_widget_set_text_align(mini_btn, COGUI_TEXT_ALIGN_CENTER|COGUI_TEXT_ALIGN_MIDDLE);
     cogui_widget_set_font(mini_btn, &tm_symbol_16x16);
     cogui_widget_set_text(mini_btn, "\"");
+
+    /* set callbacks */
+    close_btn->on_focus_in = cogui_title_button_on_focus_in;
+    close_btn->on_focus_out = cogui_title_button_on_focus_out;
+    mini_btn->on_focus_in = cogui_title_button_on_focus_in; 
+    mini_btn->on_focus_out = cogui_title_button_on_focus_out; 
 }
 
 /**
@@ -89,4 +98,18 @@ void cogui_title_delete(cogui_window_t *win)
 
     /* title widget will delete at window deletion */
     COGUI_WIDGET_DISABLE(win->title);
+}
+
+static StatusType cogui_title_button_on_focus_in(struct cogui_widget *widget, struct cogui_event *event)
+{
+    widget->gc.foreground = high_light;
+
+    return GUI_E_OK;
+}
+
+static StatusType cogui_title_button_on_focus_out(struct cogui_widget *widget, struct cogui_event *event)
+{
+    widget->gc.foreground = dark_grey;
+
+    return GUI_E_OK;
 }

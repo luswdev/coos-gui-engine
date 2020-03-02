@@ -21,9 +21,9 @@ extern "C" {
  */
 struct cogui_font {
     char *                      family;     /**< Which font family belongs to   */
-    co_uint16_t                 width;      /**< Font width                     */
-    co_uint16_t                 height;     /**< Font height                    */
-    const co_uint16_t *         data;       /**< Real font table pointer        */
+    uint16_t                 width;      /**< Font width                     */
+    uint16_t                 height;     /**< Font height                    */
+    const uint16_t *         data;       /**< Real font table pointer        */
 };
 typedef struct cogui_font cogui_font_t;
 
@@ -36,12 +36,12 @@ extern cogui_font_t tm_font_16x26;
 extern cogui_font_t tm_symbol_16x16;
 
 /* display text function */
-void cogui_lcd_puts(co_uint16_t x, co_uint16_t y, char *str, cogui_font_t *font, cogui_dc_t *dc, cogui_rect_t *rect);
-void cogui_lcd_putc(co_uint16_t x, co_uint16_t y, char c, cogui_font_t *font, cogui_dc_t *dc, cogui_rect_t *rect);
+void cogui_lcd_puts(uint16_t x, uint16_t y, char *str, cogui_font_t *font, cogui_dc_t *dc, cogui_rect_t *rect);
+void cogui_lcd_putc(uint16_t x, uint16_t y, char c, cogui_font_t *font, cogui_dc_t *dc, cogui_rect_t *rect);
 
 /* get text attributes */
-co_uint32_t cogui_get_text_width(char *str, cogui_font_t *font);
-co_uint32_t cogui_get_text_height(char *str, cogui_font_t *font, cogui_rect_t *rect);
+uint32_t cogui_get_text_width(char *str, cogui_font_t *font);
+uint32_t cogui_get_text_height(char *str, cogui_font_t *font, cogui_rect_t *rect);
 
 #ifdef __cplusplus
 }

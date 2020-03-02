@@ -58,13 +58,11 @@ cogui_app_t *cogui_app_create(char *title)
     /* filled meta data */
     app->tid = tid;
     app->name = cogui_strdup((char *)title);
-    app->mq = CoCreateMbox(EVENT_SORT_TYPE_PRIO);
+    app->mq = CoCreateMbox(EVENT_SORT_TYPE_FIFO);
 
     srv_app = cogui_get_server();
     if(srv_app == Co_NULL) {
-
-        /* if we are creating server, just return here */
-        TCBTbl[tid].userData = app;
+        TCBTbl[tid].userData = app;     /* if we are creating server, just return here */
         return app;
     }
 	
@@ -133,17 +131,19 @@ void cogui_app_delete(cogui_app_t *app)
 static void _cogui_app_event_loop(cogui_app_t *app)
 {
     StatusType  result;
-    co_uint16_t current_ref;
+    uint16_t current_ref;
+    //uint8_t loop=0;
     struct cogui_event *event;
 
     event = (struct cogui_event *)app->event_buffer;
 
     current_ref = ++app->ref_cnt;
     while(current_ref <= app->ref_cnt) {
+        //cogui_printf("[%s] App event loop #%d\r\n", app->name, loop++);
         result = cogui_recv(app->mq, event, 0);
 
         if(result == GUI_E_OK && event != Co_NULL) {
-            //cogui_printf("[%10s] Got a event no.%d\r\n", app->name, event->type);
+            //cogui_printf("[%s] Got a event no.%d\r\n", app->name, event->type);
             app->handler(event);
         }
     }
@@ -155,21 +155,18 @@ void cogui_app_run(cogui_app_t *app)
     COGUI_ASSERT(app->tid);
     COGUI_ASSERT(TCBTbl[app->tid].userData);
 
-    if (app != cogui_get_server()){
-        struct cogui_event event;
-        COGUI_EVENT_INIT(&event, COGUI_EVENT_PAINT);
-        event.app = app;
-
-        cogui_send(cogui_get_server(), &event);
-    }
-    else {
+    if (app == cogui_get_server()){
         main_page = cogui_main_window_create();
+    } else {
+        app->win_id = cogui_main_page_app_install(app->name);
+        cogui_window_refresh(main_page);
     }
 
+    cogui_printf("[%s] app start loops.\r\n", app->name);
     _cogui_app_event_loop(app);
 }
 
-void cogui_app_exit(cogui_app_t *app, U16 code)
+void cogui_app_exit(cogui_app_t *app, uint16_t code)
 {
     if (app->ref_cnt == 0) {
         return;
@@ -189,7 +186,7 @@ StatusType cogui_app_close(cogui_app_t *app)
     return cogui_send(app, &event);
 }
 
-void cogui_app_sleep(cogui_app_t *app, U32 sleep_tick)
+void cogui_app_sleep(cogui_app_t *app, uint32_t sleep_tick)
 {
     COGUI_ASSERT(app != Co_NULL);
     COGUI_ASSERT(app->tid);
@@ -233,6 +230,8 @@ static StatusType cogui_app_event_handler(struct cogui_event *event)
 
     StatusType result = GUI_E_ERROR;
 
+    //cogui_printf("[%s] Got a event no.%d\r\n", cogui_app_self(), event->type);
+
 	switch (event->type)
     {
 	case COGUI_EVENT_APP_DELE:
@@ -241,16 +240,52 @@ static StatusType cogui_app_event_handler(struct cogui_event *event)
 		break;
 
 	case COGUI_EVENT_PAINT:
-        if (cogui_app_self()->optional_handler != Co_NULL) {
+        if (cogui_app_self()->win) {
+            cogui_window_show(cogui_app_self()->win);
+        } else if (cogui_app_self()->optional_handler != Co_NULL) {
             result = cogui_app_self()->optional_handler(event);
-        }
-        else {
+        } else {
             result = GUI_E_ERROR;
         }
+        cogui_mouse_show();
         break;
+    
+    /* mouse and keyboard event */
+    case COGUI_EVENT_MOUSE_BUTTON:
+    {
+        cogui_point_t cursor_pt;
+        cogui_app_t *eapp = cogui_app_self();
+        cogui_window_t *ewin = eapp->win;
+        cogui_widget_t *ewgt, *last_ewgt = ewin->last_mouse_event_widget;;
+        cogui_mouse_get_position(&cursor_pt);
+        ewgt = cogui_window_get_mouse_event_widget(ewin, cursor_pt.x, cursor_pt.y);
+
+        if (ewgt != Co_NULL) {
+            if (event->button & COGUI_MOUSE_BUTTON_DOWN) {
+                cogui_widget_focus(ewgt);
+                cogui_mouse_show();
+            } else {
+                if (ewgt->flag & COGUI_WIDGET_FLAG_TITLE) {
+                    if (ewgt->flag & COGUI_WIDGET_FLAG_CLOSE_BTN && last_ewgt == ewgt) {
+                        cogui_window_close(ewin);
+                    } else if (ewgt->flag & COGUI_WIDGET_FLAG_MINI_BTN && last_ewgt == ewgt) {
+                        cogui_window_hide(ewin);
+                    }
+                } else if (last_ewgt == ewgt && eapp->optional_handler != Co_NULL) {
+                    COGUI_EVENT_INIT(event, COGUI_EVENT_MOUSE_CLICK);
+                    event->widget = ewgt;
+                    result = eapp->optional_handler(event);
+                    cogui_mouse_show();
+                } else {
+                    cogui_mouse_show();
+                }
+            }
+        }
+        break;
+    }
 
 	default:
-		return result = GUI_E_ERROR;	
+		result = GUI_E_ERROR;	
 	}
 		
 	return result;

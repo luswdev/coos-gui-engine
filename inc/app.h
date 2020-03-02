@@ -28,13 +28,14 @@ extern ECB      EventTbl[CFG_MAX_EVENT];
 struct cogui_app
 {
     /* meta data field */
-    co_uint8_t              id;                                             /**< application id                         */
+    uint8_t                 id;                                             /**< application id                         */
     char *                  name;                                           /**< appilcation name                       */
-    co_uint32_t             flag;                                           /**< application flag                       */
-    co_uint16_t             ref_cnt;                                        /**< application reference count            */
-    co_uint16_t             exit_code;                                      /**< application exit code number           */
+    uint32_t                flag;                                           /**< application flag                       */
+    uint16_t                ref_cnt;                                        /**< application reference count            */
+    uint16_t                exit_code;                                      /**< application exit code number           */
+    int16_t                 win_id;                                         /**< window which belong this application   */
     struct cogui_window *   win;                                            /**< window which belong this application   */
-    co_uint8_t              event_buffer[sizeof(struct cogui_event)];       /**< application event buffer for loops     */
+    uint8_t                 event_buffer[sizeof(struct cogui_event)];       /**< application event buffer for loops     */
 
     /* CoOS kernel data field */
     OS_TID                  tid;                                            /**< which task its belong to               */
@@ -54,9 +55,9 @@ void cogui_app_delete(cogui_app_t *app);
 
 /* operation a appication */
 void cogui_app_run(cogui_app_t *app);
-void cogui_app_exit(cogui_app_t *app, co_uint16_t code);
+void cogui_app_exit(cogui_app_t *app, uint16_t code);
 StatusType cogui_app_close(cogui_app_t *app);
-void cogui_app_sleep(cogui_app_t *app, co_uint32_t sleepTick);
+void cogui_app_sleep(cogui_app_t *app, uint32_t sleepTick);
 
 /* api for get current running application */
 cogui_app_t *cogui_app_self(void);
