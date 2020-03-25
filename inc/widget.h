@@ -7,19 +7,18 @@
  *******************************************************************************
  */ 
 
-#ifndef __COGUI_WIDGET_H__
-#define __COGUI_WIDGET_H__
+#ifndef __GUI_WIDGET_H__
+#define __GUI_WIDGET_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-struct cogui_dc;
-struct cogui_gc;
-struct cogui_event;
-struct cogui_widget;
-struct cogui_screen;
-struct cogui_window;
+struct dc;
+struct gc;
+struct event;
+struct widget;
+struct window;
 
 /* widget flag define field */
 #define COGUI_WIDGET_FLAG_INIT          0x000
@@ -44,7 +43,7 @@ struct cogui_window;
 #define COGUI_WIDGET_FLAG_MINI_BTN      0x20000       /**< it is hide bnt            */
 
 /* inline function */
-#define COGUI_WIDGET(w) ((struct cogui_widget *)(w))
+#define COGUI_WIDGET(w) ((struct widget *)(w))
 
 /* enable (shown) */
 #define COGUI_WIDGET_ENABLE(w)          COGUI_WIDGET((w))->flag |= COGUI_WIDGET_FLAG_SHOWN
@@ -56,105 +55,105 @@ struct cogui_window;
 #define COGUI_WIDGET_UNFOCUS(w)         COGUI_WIDGET((w))->flag &= ~COGUI_WIDGET_FLAG_FOCUS
 #define COGUI_WIDGET_IS_FOCUS(w)        (COGUI_WIDGET((w))->flag & COGUI_WIDGET_FLAG_FOCUS)
 
-typedef StatusType (*event_handler_ptr)(struct cogui_widget *widget, struct cogui_event *event);
+typedef StatusType (*event_handler_ptr)(struct widget *widget, struct event *event);
 
 /**
  * @struct   cogui_widget
  * @brief    Widget struct
  * @details  This struct is for widget.
  */
-struct cogui_widget
+struct widget
 {
     /* node data field */
-    struct cogui_widget *   next;                       /**< the next widget                        */
-    struct cogui_window *   top;                        /**< the window that contains this widget   */
+    struct widget *   next;                       /**< the next widget                        */
+    struct window *   top;                        /**< the window that contains this widget   */
 
     /* meta data field */
     uint64_t              flag;                       /**< widget flag                            */
     int32_t              id;                         /**< widget id (belong to top window)       */
     uint16_t             dc_type;                    /**< hardware device context                */
-    struct cogui_rect       extent;                     /**< the widget extent                      */
-    struct cogui_rect       inner_extent;               /**< the widget extent for drawing          */
+    struct rect       extent;                     /**< the widget extent                      */
+    struct rect       inner_extent;               /**< the widget extent for drawing          */
     int16_t              min_width, min_height;      /**< minimal width and height of widget     */
    
     /* graphic driver field */
-    struct cogui_dc *       dc_engine;                  /**< DC engine                              */
-    struct cogui_gc         gc;                         /**< the graphic context of widget          */
+    struct dc *       dc_engine;                  /**< DC engine                              */
+    struct gc         gc;                         /**< the graphic context of widget          */
 
     /* user private data field */
     char *                  text;                       /**< text need to print                     */
     void *                  user_data;                  /**< user private data                      */
 
     /* event handler field */
-    StatusType (*on_focus_in)(struct cogui_widget *widget, struct cogui_event *event);      /**< on focus in call back function  */
-    StatusType (*on_focus_out)(struct cogui_widget *widget, struct cogui_event *event);     /**< on focus out call back function */
-    StatusType (*handler)(struct cogui_widget *widget ,struct cogui_event *event);          /**< event handler function          */
+    StatusType (*on_focus_in)(struct widget *widget, struct event *event);      /**< on focus in call back function  */
+    StatusType (*on_focus_out)(struct widget *widget, struct event *event);     /**< on focus out call back function */
+    StatusType (*handler)(struct widget *widget ,struct event *event);          /**< event handler function          */
 };
-typedef struct cogui_widget cogui_widget_t;
+typedef struct widget widget_t;
 
 /* new\kill a widget */
-cogui_widget_t *cogui_widget_create(struct cogui_window *top);
-void cogui_widget_delete(cogui_widget_t *widget);
+widget_t *cogui_widget_create(struct window *top);
+void cogui_widget_delete(widget_t *widget);
 
 /* for widget list */
-cogui_widget_t *cogui_widget_list_init(struct cogui_window *top);
+widget_t *cogui_widget_list_init(struct window *top);
 
 /* screen list operation function */
-void cogui_widget_list_insert(cogui_widget_t *node);
-void cogui_widget_list_remove(uint32_t id, struct cogui_window *top);
-cogui_widget_t *cogui_widget_list_pop(uint32_t id, struct cogui_window *top);
+void cogui_widget_list_insert(widget_t *node);
+void cogui_widget_list_remove(uint32_t id, struct window *top);
+widget_t *cogui_widget_list_pop(uint32_t id, struct window *top);
 
 /* screen node operation function */
-cogui_widget_t *cogui_get_widget_node(uint32_t id, struct cogui_window *top);
+widget_t *cogui_get_widget_node(uint32_t id, struct window *top);
 
 /* do focus */
-void cogui_widget_focus(cogui_widget_t *widget);
-void cogui_widget_unfocus(cogui_widget_t *widget);
+void gui_widget_focus(widget_t *widget);
+void cogui_widget_unfocus(widget_t *widget);
 
 /* set widget attributes */
-void cogui_widget_set_focus(cogui_widget_t *widget, event_handler_ptr handler);
-void cogui_widget_set_unfocus(cogui_widget_t *widget, event_handler_ptr handler);
+void cogui_widget_set_focus(widget_t *widget, event_handler_ptr handler);
+void cogui_widget_set_unfocus(widget_t *widget, event_handler_ptr handler);
 
-void cogui_widget_set_minsize(cogui_widget_t *widget, int32_t width, int32_t height);
-void cogui_widget_set_minwidth(cogui_widget_t *widget, int32_t width);
-void cogui_widget_set_minheight(cogui_widget_t *widget, int32_t height);
+void cogui_widget_set_minsize(widget_t *widget, int32_t width, int32_t height);
+void cogui_widget_set_minwidth(widget_t *widget, int32_t width);
+void cogui_widget_set_minheight(widget_t *widget, int32_t height);
 
-void cogui_widget_set_rectangle(cogui_widget_t *widget, int32_t x, int32_t y, int32_t width, int32_t height);
-void cogui_widget_enable_border(cogui_widget_t *widget);
+void cogui_widget_set_rectangle(widget_t *widget, int32_t x, int32_t y, int32_t width, int32_t height);
+void cogui_widget_enable_border(widget_t *widget);
 
 /* get widget size */
-void cogui_widget_get_rect(cogui_widget_t *widget, cogui_rect_t *rect);
-void cogui_widget_get_extent(cogui_widget_t *widget, cogui_rect_t *rect);
+void cogui_widget_get_rect(widget_t *widget, rect_t *rect);
+void cogui_widget_get_extent(widget_t *widget, rect_t *rect);
 
 /* set widget text */
-void cogui_widget_set_font(cogui_widget_t* widget, cogui_font_t *font);
-void cogui_widget_set_text_align(cogui_widget_t *widget, uint16_t style);
-void cogui_widget_set_text(cogui_widget_t *widget, const char *text);
-void cogui_widget_append_text(cogui_widget_t *widget, const char *text);
-void cogui_widget_clear_text(cogui_widget_t *widget);
+void cogui_widget_set_font(widget_t* widget, font_t *font);
+void cogui_widget_set_text_align(widget_t *widget, uint16_t style);
+void cogui_widget_set_text(widget_t *widget, const char *text);
+void cogui_widget_append_text(widget_t *widget, const char *text);
+void cogui_widget_clear_text(widget_t *widget);
 
 /* show/hide widget */
-StatusType cogui_widget_show(cogui_widget_t *widget);
-StatusType cogui_widget_onshow(cogui_widget_t *widget, struct cogui_event *event);
-StatusType cogui_widget_hide(cogui_widget_t *widget);
-StatusType cogui_widget_onhide(cogui_widget_t *widget, struct cogui_event *event);
+StatusType cogui_widget_show(widget_t *widget);
+StatusType cogui_widget_onshow(widget_t *widget, struct event *event);
+StatusType cogui_widget_hide(widget_t *widget);
+StatusType cogui_widget_onhide(widget_t *widget, struct event *event);
 
 /* get the physical position of a logic point on widget */
-void cogui_widget_point_l2p(cogui_widget_t *widget, cogui_point_t *point);
+void cogui_widget_point_l2p(widget_t *widget, point_t *point);
 /* get the physical position of a logic rect on widget */
-void cogui_widget_rect_l2p(cogui_widget_t *widget, cogui_rect_t *rect);
+void cogui_widget_rect_l2p(widget_t *widget, rect_t *rect);
 
 /* get the logic position of a physical point on widget */
-void cogui_widget_point_p2l(cogui_widget_t *widget, cogui_point_t *point);
+void cogui_widget_point_p2l(widget_t *widget, point_t *point);
 /* get the logic position of a physical rect on widget */
-void cogui_widget_rect_p2l(cogui_widget_t *widget, cogui_rect_t *rect);
+void cogui_widget_rect_p2l(widget_t *widget, rect_t *rect);
 
 /* move widget and its children to a logic point */
-void cogui_widget_move_to_logic(cogui_widget_t *widget, int32_t dx, int32_t dy);
-void cogui_widget_move_to_phy(cogui_widget_t *widget, int32_t dx, int32_t dy);
+void cogui_widget_move_to_logic(widget_t *widget, int32_t dx, int32_t dy);
+void cogui_widget_move_to_phy(widget_t *widget, int32_t dx, int32_t dy);
 
 /* debug */
-void cogui_widget_list_print(struct cogui_window *top);
+void cogui_widget_list_print(struct window *top);
 
 #ifdef __cplusplus
 }

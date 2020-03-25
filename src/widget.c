@@ -9,17 +9,17 @@
 
 #include <cogui.h>
 
-const cogui_color_t default_foreground = COGUI_RGB(0xff, 0xff, 0xff);;        /**< Set default foreground to white */
-const cogui_color_t default_background = COGUI_RGB(0x00, 0x00, 0x00);;        /**< Set default background to black */
+const color_t default_foreground = COGUI_RGB(0xff, 0xff, 0xff);;        /**< Set default foreground to white */
+const color_t default_background = COGUI_RGB(0x00, 0x00, 0x00);;        /**< Set default background to black */
 
-extern cogui_font_t *default_font; 
+extern font_t *default_font; 
 extern struct cogui_window *main_page;
 
-StatusType cogui_widget_event_handler(cogui_widget_t *widget, struct cogui_event *event);
+StatusType cogui_widget_event_handler(widget_t *widget, struct event *event);
 
-static void _cogui_widget_init(cogui_widget_t *widget)
+static void _cogui_widget_init(widget_t *widget)
 {
-    cogui_memset(widget, 0, sizeof(cogui_widget_t));
+    cogui_memset(widget, 0, sizeof(widget_t));
 
     /* init flag and type */
     widget->flag = COGUI_WIDGET_FLAG_INIT | COGUI_WIDGET_TYPE_INIT;
@@ -36,13 +36,13 @@ static void _cogui_widget_init(cogui_widget_t *widget)
     widget->handler = cogui_widget_event_handler;
 }
 
-cogui_widget_t *cogui_widget_create(struct cogui_window *top)
+widget_t *cogui_widget_create(struct window *top)
 {
-    cogui_widget_t *widget;
+    widget_t *widget;
 
-    COGUI_ASSERT(top != Co_NULL);
+    ASSERT(top != Co_NULL);
 
-    widget = cogui_malloc(sizeof(cogui_widget_t));
+    widget = gui_malloc(sizeof(widget_t));
     if (widget == Co_NULL) {
         return Co_NULL;
     }
@@ -55,8 +55,8 @@ cogui_widget_t *cogui_widget_create(struct cogui_window *top)
     widget->flag |= COGUI_WIDGET_TYPE_WIDGET;
 
     /* create a dc engine */
-    widget->dc_engine = cogui_dc_begin_drawing(widget);
-    COGUI_ASSERT(widget->dc_engine != Co_NULL);
+    widget->dc_engine = gui_dc_begin_drawing(widget);
+    ASSERT(widget->dc_engine != Co_NULL);
 
     widget->top = top;
     widget->id  = top->widget_cnt++;
@@ -67,17 +67,17 @@ cogui_widget_t *cogui_widget_create(struct cogui_window *top)
     return widget;
 }
 
-void cogui_widget_delete(cogui_widget_t *widget)
+void cogui_widget_delete(widget_t *widget)
 {
     cogui_widget_list_pop(widget->id, widget->top);
-    cogui_dc_end_drawing(widget->dc_engine);
+    gui_dc_end_drawing(widget->dc_engine);
     cogui_widget_clear_text(widget);
 
     if (widget->user_data) {
-        cogui_free(widget->user_data);
+        gui_free(widget->user_data);
     }
 
-    cogui_free(widget);
+    gui_free(widget);
 }
 
 /**
@@ -92,16 +92,16 @@ void cogui_widget_delete(cogui_widget_t *widget)
  *             and a full screen widget, and refresh screen currently.    
  *******************************************************************************
  */
-cogui_widget_t *cogui_widget_list_init(struct cogui_window *top)
+widget_t *cogui_widget_list_init(struct window *top)
 {	
     /* create header node */
-	cogui_widget_t *header = cogui_widget_create(top);
-    COGUI_ASSERT(header != Co_NULL);
+	widget_t *header = cogui_widget_create(top);
+    ASSERT(header != Co_NULL);
     header->flag |= COGUI_WIDGET_FLAG_HEADER;
     
     /* first object should be a fill screen */
-    cogui_widget_t *widget = cogui_widget_create(top);
-    COGUI_ASSERT(widget != Co_NULL);	
+    widget_t *widget = cogui_widget_create(top);
+    ASSERT(widget != Co_NULL);	
 
     /* enabled it */
     widget->flag |= COGUI_WIDGET_FLAG_SHOWN;
@@ -129,12 +129,12 @@ cogui_widget_t *cogui_widget_list_init(struct cogui_window *top)
  *             and refresh screen currently.
  *******************************************************************************
  */
-void cogui_widget_list_insert(cogui_widget_t *node)
+void cogui_widget_list_insert(widget_t *node)
 {  
-    COGUI_ASSERT(node != Co_NULL);
+    ASSERT(node != Co_NULL);
 
-    struct cogui_window *top = node->top;
-    COGUI_ASSERT(top != Co_NULL);
+    struct window *top = node->top;
+    ASSERT(top != Co_NULL);
 
     /* if it is header node */
     if (top->widget_list == Co_NULL) {
@@ -143,7 +143,7 @@ void cogui_widget_list_insert(cogui_widget_t *node)
         return;
     }
 
-    cogui_widget_t *list = top->widget_list;
+    widget_t *list = top->widget_list;
 
     while (list->next != Co_NULL)
         list = list->next;
@@ -152,7 +152,7 @@ void cogui_widget_list_insert(cogui_widget_t *node)
     node->next = Co_NULL;
     
     /* after inserted, refresh screen */
-    //cogui_window_refresh(top);
+    //gui_window_refresh(top);
 }
 
 /**
@@ -167,10 +167,10 @@ void cogui_widget_list_insert(cogui_widget_t *node)
  *             and not delete it right now. 
  *******************************************************************************
  */
-cogui_widget_t *cogui_widget_list_pop(uint32_t id, struct cogui_window *top)
+widget_t *cogui_widget_list_pop(uint32_t id, struct window *top)
 {
-    COGUI_ASSERT(top != Co_NULL);
-    cogui_widget_t *list = top->widget_list;
+    ASSERT(top != Co_NULL);
+    widget_t *list = top->widget_list;
     if (list == Co_NULL) {
         return Co_NULL;
     }
@@ -178,14 +178,14 @@ cogui_widget_t *cogui_widget_list_pop(uint32_t id, struct cogui_window *top)
     /* recursive from first node */
     while (list->next != Co_NULL) {
         if (list->next->id == id) {
-            cogui_widget_t *tmp_widget = list->next;
+            widget_t *tmp_widget = list->next;
             
             list->next = tmp_widget->next;
 
             tmp_widget->next = Co_NULL;
             
 			/* after pop function, refresh screen */
-			//cogui_window_refresh(top);
+			//gui_window_refresh(top);
 			
             return tmp_widget;
         }
@@ -206,9 +206,9 @@ cogui_widget_t *cogui_widget_list_pop(uint32_t id, struct cogui_window *top)
  * @retval     Co_NULL      Or we did not find it
  *******************************************************************************
  */
-cogui_widget_t *cogui_get_widget_node(uint32_t id, struct cogui_window *top)
+widget_t *cogui_get_widget_node(uint32_t id, struct window *top)
 {
-    cogui_widget_t *list = top->widget_list->next;
+    widget_t *list = top->widget_list->next;
 
     /* recursive from first node */
     while (list != Co_NULL) {
@@ -224,25 +224,25 @@ cogui_widget_t *cogui_get_widget_node(uint32_t id, struct cogui_window *top)
     return Co_NULL;
 }
 
-void cogui_widget_set_focus(cogui_widget_t *widget, event_handler_ptr handler)
+void cogui_widget_set_focus(widget_t *widget, event_handler_ptr handler)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
 
     widget->on_focus_in = handler;
 }
 
-void cogui_widget_set_unfocus(cogui_widget_t *widget, event_handler_ptr handler)
+void cogui_widget_set_unfocus(widget_t *widget, event_handler_ptr handler)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
     
     widget->on_focus_out = handler;
 }
 
-void cogui_widget_focus(cogui_widget_t *widget)
+void gui_widget_focus(widget_t *widget)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
 
-    cogui_window_t *win = widget->top;
+    window_t *win = widget->top;
 
     if (win->focus_widget != Co_NULL) {
         cogui_widget_unfocus(win->focus_widget);
@@ -251,7 +251,7 @@ void cogui_widget_focus(cogui_widget_t *widget)
     widget->flag |= COGUI_WIDGET_FLAG_FOCUS;
 
     if (win->focus_widget == widget) {
-        cogui_window_refresh(win);
+        gui_window_refresh(win);
         return;
     }
     else {
@@ -268,9 +268,9 @@ void cogui_widget_focus(cogui_widget_t *widget)
     cogui_window_update(win, widget);
 }
 
-void cogui_widget_unfocus(cogui_widget_t *widget)
+void cogui_widget_unfocus(widget_t *widget)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
 
     widget->flag &= ~COGUI_WIDGET_FLAG_FOCUS;
 
@@ -280,12 +280,12 @@ void cogui_widget_unfocus(cogui_widget_t *widget)
         widget->on_focus_out(widget, Co_NULL);
     }
 
-    cogui_window_refresh(widget->top);
+    gui_window_refresh(widget->top);
 }
 
-void cogui_widget_get_rect(cogui_widget_t *widget, cogui_rect_t *rect)
+void cogui_widget_get_rect(widget_t *widget, rect_t *rect)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
 
     if (rect != Co_NULL) {
         rect->x1 = rect->y1 = 0;
@@ -294,15 +294,15 @@ void cogui_widget_get_rect(cogui_widget_t *widget, cogui_rect_t *rect)
     }
 }
 
-void cogui_widget_get_extent(cogui_widget_t *widget, cogui_rect_t *rect)
+void cogui_widget_get_extent(widget_t *widget, rect_t *rect)
 {
-    COGUI_ASSERT(widget != Co_NULL);
-    COGUI_ASSERT(rect != Co_NULL);
+    ASSERT(widget != Co_NULL);
+    ASSERT(rect != Co_NULL);
 
     *rect = widget->extent;
 }
 
-static void cogui_widget_set_rect(cogui_widget_t *widget, cogui_rect_t *rect)
+static void cogui_widget_set_rect(widget_t *widget, rect_t *rect)
 {
     if (widget == Co_NULL || rect == Co_NULL)
 	    return;
@@ -313,14 +313,14 @@ static void cogui_widget_set_rect(cogui_widget_t *widget, cogui_rect_t *rect)
     widget->min_height = widget->extent.y2 - widget->extent.y1;
 }
 
-void cogui_widget_set_rectangle(cogui_widget_t *widget, int32_t x, int32_t y, int32_t width, int32_t height)
+void cogui_widget_set_rectangle(widget_t *widget, int32_t x, int32_t y, int32_t width, int32_t height)
 {
     if (!(widget->top->style & COGUI_WINDOW_STYLE_NO_TITLE) && !(widget->flag & COGUI_WIDGET_FLAG_TITLE) && !(widget->flag & COGUI_WIDGET_FLAG_HEADER) ) {
         if (y <= COGUI_WINTITLE_HEIGHT)
             y = COGUI_WINTITLE_HEIGHT+1;
     }
 
-    cogui_rect_t rect;
+    rect_t rect;
 
     COGUI_SET_RECT(&rect, x, y, width, height);
     cogui_widget_set_rect(widget, &rect);
@@ -328,64 +328,64 @@ void cogui_widget_set_rectangle(cogui_widget_t *widget, int32_t x, int32_t y, in
     COGUI_SET_RECT(&widget->inner_extent, 0, 0, width, height);
 }
 
-void cogui_widget_set_minsize(cogui_widget_t *widget, int32_t width, int32_t height)
+void cogui_widget_set_minsize(widget_t *widget, int32_t width, int32_t height)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
 
     widget->min_width = width;
     widget->min_height = height;
 }
 
-void cogui_widget_set_minwidth(cogui_widget_t *widget, int32_t width)
+void cogui_widget_set_minwidth(widget_t *widget, int32_t width)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
 
     widget->min_width = width;
 }
 
-void cogui_widget_set_mingheight(cogui_widget_t *widget, int32_t height)
+void cogui_widget_set_mingheight(widget_t *widget, int32_t height)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
 
     widget->min_height = height;
 }
 
-void cogui_widget_enable_border(cogui_widget_t *widget)
+void cogui_widget_enable_border(widget_t *widget)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
 
     widget->flag |= COGUI_WIDGET_BORDER;
 
-    cogui_window_refresh(widget->top);
+    gui_window_refresh(widget->top);
 }
 
-void cogui_widget_set_font(cogui_widget_t* widget, cogui_font_t *font)
+void cogui_widget_set_font(widget_t* widget, font_t *font)
 {
-    COGUI_ASSERT(widget != Co_NULL);
-    COGUI_ASSERT(font != Co_NULL);
+    ASSERT(widget != Co_NULL);
+    ASSERT(font != Co_NULL);
 
     widget->gc.font = font;
 }
 
-void cogui_widget_set_text_align(cogui_widget_t *widget, uint16_t style)
+void cogui_widget_set_text_align(widget_t *widget, uint16_t style)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
 
     widget->gc.text_align = style;
 }
 
-void cogui_widget_set_text(cogui_widget_t *widget, const char *text)
+void cogui_widget_set_text(widget_t *widget, const char *text)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
 
     widget->flag |= COGUI_WIDGET_FLAG_HAS_TEXT;
     
-    widget->text = cogui_strdup(text);
+    widget->text = gui_strdup(text);
 }
 
-void cogui_widget_append_text(cogui_widget_t *widget, const char *text)
+void cogui_widget_append_text(widget_t *widget, const char *text)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
     
     /* if this is first text, just call set_text to do finish work */
     if (!(widget->flag & COGUI_WIDGET_FLAG_HAS_TEXT)) {
@@ -394,29 +394,29 @@ void cogui_widget_append_text(cogui_widget_t *widget, const char *text)
     }
     
     uint64_t len = cogui_strlen(text) + cogui_strlen(widget->text) + 1;
-    char * new_text = (char *)cogui_malloc(len);
+    char * new_text = (char *)gui_malloc(len);
 
     /* create new string and put 'text' on original text's end */
     cogui_memcpy(new_text, widget->text, cogui_strlen(widget->text));
     cogui_memcpy(new_text+cogui_strlen(widget->text), text, cogui_strlen(text)+1);
 
     /* after copy original text, free it */
-    cogui_free(widget->text);
+    gui_free(widget->text);
 
     widget->text = new_text;
 }
 
-void cogui_widget_clear_text(cogui_widget_t *widget)
+void cogui_widget_clear_text(widget_t *widget)
 {
     widget->flag &= ~COGUI_WIDGET_FLAG_HAS_TEXT;
 
     /* free text pointer if needed */
     if (widget->text) {
-        cogui_free(widget->text);
+        gui_free(widget->text);
     }
 }
 
-static void _cogui_widget_move(cogui_widget_t *widget, int32_t dx, int32_t dy)
+static void _cogui_widget_move(widget_t *widget, int32_t dx, int32_t dy)
 {
     widget->extent.x1 += dx;
     widget->extent.x2 += dx;
@@ -424,10 +424,10 @@ static void _cogui_widget_move(cogui_widget_t *widget, int32_t dx, int32_t dy)
     widget->extent.y1 += dy;
     widget->extent.y2 += dy;
 
-	cogui_window_refresh(widget->top);
+	gui_window_refresh(widget->top);
 }
 
-void cogui_widget_move_to_logic(cogui_widget_t *widget, int32_t dx, int32_t dy)
+void cogui_widget_move_to_logic(widget_t *widget, int32_t dx, int32_t dy)
 {
     if (widget == Co_NULL) {
         return;
@@ -436,7 +436,7 @@ void cogui_widget_move_to_logic(cogui_widget_t *widget, int32_t dx, int32_t dy)
 	_cogui_widget_move(widget, dx, dy);
 }
 
-void cogui_widget_move_to_phy(cogui_widget_t *widget, int32_t x, int32_t y)
+void cogui_widget_move_to_phy(widget_t *widget, int32_t x, int32_t y)
 {
     if (widget == Co_NULL) {
         return;
@@ -448,9 +448,9 @@ void cogui_widget_move_to_phy(cogui_widget_t *widget, int32_t x, int32_t y)
 	_cogui_widget_move(widget, dx, dy);
 }
 
-void cogui_widget_point_l2p(cogui_widget_t *widget, cogui_point_t *point)
+void cogui_widget_point_l2p(widget_t *widget, point_t *point)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
 
     if (point != Co_NULL) {
         point->x += widget->extent.x1;
@@ -458,9 +458,9 @@ void cogui_widget_point_l2p(cogui_widget_t *widget, cogui_point_t *point)
     }
 }
 
-void cogui_widget_rect_l2p(cogui_widget_t *widget, cogui_rect_t *rect)
+void cogui_widget_rect_l2p(widget_t *widget, rect_t *rect)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
 
     if (rect != Co_NULL) {
         rect->x1 += widget->extent.x1;
@@ -471,9 +471,9 @@ void cogui_widget_rect_l2p(cogui_widget_t *widget, cogui_rect_t *rect)
     }
 }
 
-void cogui_widget_point_p2l(cogui_widget_t *widget, cogui_point_t *point)
+void cogui_widget_point_p2l(widget_t *widget, point_t *point)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
 
     if (point != Co_NULL) {
         point->x -= widget->extent.x1;
@@ -481,9 +481,9 @@ void cogui_widget_point_p2l(cogui_widget_t *widget, cogui_point_t *point)
     }    
 }
 
-void cogui_widget_rect_p2l(cogui_widget_t *widget, cogui_rect_t *rect)
+void cogui_widget_rect_p2l(widget_t *widget, rect_t *rect)
 {
-    COGUI_ASSERT(widget != Co_NULL);
+    ASSERT(widget != Co_NULL);
     
     if (rect != Co_NULL) {
         rect->x1 -= widget->extent.x1;
@@ -494,10 +494,10 @@ void cogui_widget_rect_p2l(cogui_widget_t *widget, cogui_rect_t *rect)
     }
 }
 
-StatusType cogui_widget_show(cogui_widget_t *widget)
+StatusType cogui_widget_show(widget_t *widget)
 {
-    struct cogui_event event;
-    COGUI_ASSERT(widget != Co_NULL);
+    struct event event;
+    ASSERT(widget != Co_NULL);
 
     StatusType result;
 
@@ -506,7 +506,7 @@ StatusType cogui_widget_show(cogui_widget_t *widget)
 
     widget->flag |= COGUI_WIDGET_FLAG_SHOWN;
 
-    COGUI_EVENT_INIT(&event, COGUI_EVENT_WIDGET_SHOW);
+    EVENT_INIT(&event, EVENT_WIDGET_SHOW);
 
     if (widget->handler != Co_NULL)
         result = widget->handler(widget, &event);
@@ -514,10 +514,10 @@ StatusType cogui_widget_show(cogui_widget_t *widget)
     return result;
 }
 
-StatusType cogui_widget_hide(cogui_widget_t *widget)
+StatusType cogui_widget_hide(widget_t *widget)
 {
-    struct cogui_event event;
-    COGUI_ASSERT(widget != Co_NULL);
+    struct event event;
+    ASSERT(widget != Co_NULL);
 
     StatusType result;
 
@@ -526,7 +526,7 @@ StatusType cogui_widget_hide(cogui_widget_t *widget)
     
     widget->flag &= ~COGUI_WIDGET_FLAG_SHOWN;
 
-    COGUI_EVENT_INIT(&event, COGUI_EVENT_WIDGET_HIDE);
+    EVENT_INIT(&event, EVENT_WIDGET_HIDE);
     
     if (widget->handler != Co_NULL)
         result = widget->handler(widget, &event);
@@ -534,43 +534,43 @@ StatusType cogui_widget_hide(cogui_widget_t *widget)
     return result;
 }
 
-StatusType cogui_widget_onshow(cogui_widget_t *widget, struct cogui_event *event)
+StatusType cogui_widget_onshow(widget_t *widget, struct event *event)
 {
     if (!(widget->flag & COGUI_WIDGET_FLAG_SHOWN))
         return GUI_E_ERROR;
 
-    cogui_widget_focus(widget);
+    gui_widget_focus(widget);
 
     return GUI_E_OK;
 }
 
-StatusType cogui_widget_onhide(cogui_widget_t *widget, struct cogui_event *event)
+StatusType cogui_widget_onhide(widget_t *widget, struct event *event)
 {
     if (widget->flag & COGUI_WIDGET_FLAG_SHOWN) {
         return GUI_E_ERROR;
     }
 
-	cogui_window_refresh(widget->top);
+	gui_window_refresh(widget->top);
 
     return GUI_E_OK;
 }
 
-void cogui_widget_update(cogui_widget_t *widget);
+void cogui_widget_update(widget_t *widget);
 
-StatusType cogui_widget_event_handler(cogui_widget_t *widget, struct cogui_event *event)
+StatusType cogui_widget_event_handler(widget_t *widget, struct event *event)
 {
-    COGUI_ASSERT(widget != Co_NULL);
-    COGUI_ASSERT(event != Co_NULL);
+    ASSERT(widget != Co_NULL);
+    ASSERT(event != Co_NULL);
 
     StatusType result = GUI_E_ERROR;
 
     switch (event->type)
     {
-    case COGUI_EVENT_WIDGET_SHOW:
+    case EVENT_WIDGET_SHOW:
         result = cogui_widget_onshow(widget, event);
         return result;
 
-     case COGUI_EVENT_WIDGET_HIDE:
+     case EVENT_WIDGET_HIDE:
         result = cogui_widget_onhide(widget, event);
         return result;
     }

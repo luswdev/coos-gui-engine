@@ -7,8 +7,8 @@
  *******************************************************************************
  */ 
 
-#ifndef __COGUI_DRIVER_H__
-#define __COGUI_DRIVER_H__
+#ifndef __GUI_DRIVER_H__
+#define __GUI_DRIVER_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,37 +36,37 @@ enum
 struct graphic_driver_ops
 {
     /* set and get pixel in (x, y) */
-    void (*set_pixel)(cogui_color_t *c, int32_t x, int32_t y);
-    void (*get_pixel)(cogui_color_t *c, int32_t x, int32_t y);
+    void (*set_pixel)(color_t *c, int32_t x, int32_t y);
+    void (*get_pixel)(color_t *c, int32_t x, int32_t y);
 
-    void (*draw_hline)(cogui_color_t *c, int32_t x1, int32_t x2, int32_t y);
-    void (*draw_vline)(cogui_color_t *c, int32_t x , int32_t y1, int32_t y2);
+    void (*draw_hline)(color_t *c, int32_t x1, int32_t x2, int32_t y);
+    void (*draw_vline)(color_t *c, int32_t x , int32_t y1, int32_t y2);
 };
 
 /* graphic extension operations */
 struct graphic_ext_ops
 {
     /* some 2D operations */
-    void (*draw_line)(cogui_color_t *c, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+    void (*draw_line)(color_t *c, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 
-    void (*draw_rect)(cogui_color_t *c, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
-    void (*fill_rect)(cogui_color_t *c, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+    void (*draw_rect)(color_t *c, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+    void (*fill_rect)(color_t *c, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 
-    void (*draw_circle)(cogui_color_t *c, int32_t x, int32_t y, int32_t r);
-    void (*fill_circle)(cogui_color_t *c, int32_t x, int32_t y, int32_t r);
+    void (*draw_circle)(color_t *c, int32_t x, int32_t y, int32_t r);
+    void (*fill_circle)(color_t *c, int32_t x, int32_t y, int32_t r);
 
-    void (*draw_ellipse)(cogui_color_t *c, int32_t x, int32_t y, int32_t rx, int32_t ry);
-    void (*fill_ellipse)(cogui_color_t *c, int32_t x, int32_t y, int32_t rx, int32_t ry);
+    void (*draw_ellipse)(color_t *c, int32_t x, int32_t y, int32_t rx, int32_t ry);
+    void (*fill_ellipse)(color_t *c, int32_t x, int32_t y, int32_t rx, int32_t ry);
 };
 
-struct cogui_graphic_driver
+struct graphic_driver
 {
     /* pixel format and byte per pixel */
-    U8 pixel_format;
+    uint8_t pixel_format;
 
     /* screen width and height */
-    U16 width;
-    U16 height;
+    uint16_t width;
+    uint16_t height;
 
     /* framebuffer address and ops */
     uint32_t frame_buffer;
@@ -74,10 +74,10 @@ struct cogui_graphic_driver
     const struct graphic_driver_ops *ops;
     const struct graphic_ext_ops *ext_ops;
 };
-typedef struct cogui_graphic_driver cogui_graphic_driver_t;
+typedef struct graphic_driver graphic_driver_t;
 
-cogui_graphic_driver_t *cogui_graphic_driver_get_default(void);
-void cogui_set_graphic_driver(cogui_graphic_driver_t *driver);
+graphic_driver_t *gui_graphic_driver_get_default(void);
+void gui_set_graphic_driver(graphic_driver_t *driver);
 
 #ifdef __cplusplus
 }

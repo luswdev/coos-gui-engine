@@ -320,21 +320,21 @@ const uint16_t tm_font16x26[] = {
 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x3F07,0x7FC7,0x73E7,0xF1FF,0xF07E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000, // Ascii = [~]
 };
 
-cogui_font_t tm_font_7x10 = {
+font_t tm_font_7x10 = {
     "tm",
 	7,
 	10,
 	tm_font7x10
 };
 
-cogui_font_t tm_font_11x18 = {
+font_t tm_font_11x18 = {
     "tm",
 	11,
 	18,
 	tm_font11x18
 };
 
-cogui_font_t tm_font_16x26 = {
+font_t tm_font_16x26 = {
     "tm",
 	16,
 	26,

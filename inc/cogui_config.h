@@ -7,8 +7,8 @@
  *******************************************************************************
  */ 
 
-#ifndef __COGUI_CONFIG_H__
-#define __COGUI_CONFIG_H__
+#ifndef __GUI_CONFIG_H__
+#define __GUI_CONFIG_H__
 
 #ifdef __cplusplus
 extern "C" {

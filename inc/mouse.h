@@ -7,8 +7,8 @@
  *******************************************************************************
  */ 
 
-#ifndef __COGUI_MOUSE_H__
-#define __COGUI_MOUSE_H__
+#ifndef __GUI_MOUSE_H__
+#define __GUI_MOUSE_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,15 +25,15 @@ extern "C" {
     }                           \
 }                               \
 
-struct cogui_cursor
+struct cursor
 {
     uint16_t cx, cy;
     uint8_t speed;
 
-    cogui_widget_t *cursor_widget;
+    widget_t *cursor_widget;
 
     uint32_t frame_buffer;
-    cogui_color_t save_picture[16][16]; 
+    color_t save_picture[16][16]; 
 };
 
 void cogui_mouse_return_picture(void);
@@ -43,10 +43,10 @@ void cogui_mouse_set_speed(uint8_t speed);
 void cogui_mouse_move_to(uint16_t x, uint16_t y);
 void cogui_mouse_move_delta(int32_t dx,int32_t dy);
 
-void cogui_mouse_get_position(cogui_point_t *pt);
+void gui_mouse_get_position(point_t *pt);
 
 void cogui_mouse_restore(void);
-void cogui_mouse_show(void);
+void gui_mouse_show(void);
 
 #ifdef __cplusplus
 }

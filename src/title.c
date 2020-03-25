@@ -9,14 +9,14 @@
 
 #include <cogui.h>
 
-const cogui_color_t default_title_background  = COGUI_RGB(0x00, 0x00, 0x00); 
-const cogui_color_t default_title_foreground  = COGUI_RGB(0x9e, 0x9e, 0x9e);
-const cogui_color_t default_button_foreground = COGUI_RGB(0x42, 0x42, 0x42);
+const color_t default_title_background  = COGUI_RGB(0x00, 0x00, 0x00); 
+const color_t default_title_foreground  = COGUI_RGB(0x9e, 0x9e, 0x9e);
+const color_t default_button_foreground = COGUI_RGB(0x42, 0x42, 0x42);
 
-extern cogui_font_t tm_symbol_16x16;
+extern font_t tm_symbol_16x16;
 
-static StatusType cogui_title_button_on_focus_in(struct cogui_widget *widget, struct cogui_event *event);
-static StatusType cogui_title_button_on_focus_out(struct cogui_widget *widget, struct cogui_event *event);
+static StatusType cogui_title_button_on_focus_in(struct widget *widget, struct event *event);
+static StatusType cogui_title_button_on_focus_out(struct widget *widget, struct event *event);
 
 /**
  *******************************************************************************
@@ -31,10 +31,10 @@ static StatusType cogui_title_button_on_focus_out(struct cogui_widget *widget, s
  *             name field.
  *******************************************************************************
  */
-void cogui_title_create(cogui_window_t *win)
+void cogui_title_create(window_t *win)
 {
-    cogui_widget_t *close_btn = cogui_widget_create(win);
-    cogui_widget_t  *mini_btn = cogui_widget_create(win);
+    widget_t *close_btn = cogui_widget_create(win);
+    widget_t  *mini_btn = cogui_widget_create(win);
 
     /* filled default color scheme for title */
     win->title->gc.foreground = default_title_foreground;
@@ -58,18 +58,18 @@ void cogui_title_create(cogui_window_t *win)
     cogui_widget_set_rectangle(mini_btn, 32, 0, 20, 40);
 
     /* set title font style */
-    cogui_widget_set_text_align(win->title, COGUI_TEXT_ALIGN_LEFT|COGUI_TEXT_ALIGN_MIDDLE);
+    cogui_widget_set_text_align(win->title, GUI_TEXT_ALIGN_LEFT|GUI_TEXT_ALIGN_MIDDLE);
     cogui_widget_set_font(win->title, &tm_font_16x26);
     cogui_widget_set_text(win->title, win->title_name);
 
     /* symbol "X" */
-    cogui_widget_set_text_align(close_btn, COGUI_TEXT_ALIGN_CENTER|COGUI_TEXT_ALIGN_MIDDLE);
+    cogui_widget_set_text_align(close_btn, GUI_TEXT_ALIGN_CENTER|GUI_TEXT_ALIGN_MIDDLE);
     cogui_widget_set_font(close_btn, &tm_symbol_16x16);
     cogui_widget_set_text(close_btn, "!");
-    close_btn->gc.padding = COGUI_PADDING(0,2,0,0);
+    close_btn->gc.padding = GUI_PADDING(0,2,0,0);
 
     /* symbol "-" */
-    cogui_widget_set_text_align(mini_btn, COGUI_TEXT_ALIGN_CENTER|COGUI_TEXT_ALIGN_MIDDLE);
+    cogui_widget_set_text_align(mini_btn, GUI_TEXT_ALIGN_CENTER|GUI_TEXT_ALIGN_MIDDLE);
     cogui_widget_set_font(mini_btn, &tm_symbol_16x16);
     cogui_widget_set_text(mini_btn, "\"");
 
@@ -88,11 +88,11 @@ void cogui_title_create(cogui_window_t *win)
  * @retval     None 
  *******************************************************************************
  */
-void cogui_title_delete(cogui_window_t *win)
+void cogui_title_delete(window_t *win)
 {
     /* delete two button */
-    cogui_widget_t *close_btn = win->title->next;
-    cogui_widget_t  *mini_btn = win->title->next->next;
+    widget_t *close_btn = win->title->next;
+    widget_t  *mini_btn = win->title->next->next;
     cogui_widget_delete(close_btn);
     cogui_widget_delete(mini_btn);
 
@@ -100,14 +100,14 @@ void cogui_title_delete(cogui_window_t *win)
     COGUI_WIDGET_DISABLE(win->title);
 }
 
-static StatusType cogui_title_button_on_focus_in(struct cogui_widget *widget, struct cogui_event *event)
+static StatusType cogui_title_button_on_focus_in(struct widget *widget, struct event *event)
 {
     widget->gc.foreground = high_light;
 
     return GUI_E_OK;
 }
 
-static StatusType cogui_title_button_on_focus_out(struct cogui_widget *widget, struct cogui_event *event)
+static StatusType cogui_title_button_on_focus_out(struct widget *widget, struct event *event)
 {
     widget->gc.foreground = dark_grey;
 

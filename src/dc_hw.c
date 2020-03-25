@@ -9,22 +9,22 @@
 
 #include <cogui.h>
 
-static void cogui_dc_hw_draw_point(cogui_dc_t *dc, int32_t x, int32_t y);
-static void cogui_dc_hw_draw_color_point(cogui_dc_t *dc, int32_t x, int32_t y, cogui_color_t color);
-static void cogui_dc_hw_draw_vline(cogui_dc_t *dc, int32_t x, int32_t y1, int32_t y2);
-static void cogui_dc_hw_draw_hline(cogui_dc_t *dc, int32_t x1, int32_t x2, int32_t y);
-static void cogui_dc_hw_fill_rect(cogui_dc_t *dc, cogui_rect_t *rect);
-static StatusType cogui_dc_hw_fini(cogui_dc_t *dc);
+static void dc_hw_draw_point(dc_t *dc, int32_t x, int32_t y);
+static void dc_hw_draw_color_point(dc_t *dc, int32_t x, int32_t y, color_t color);
+static void dc_hw_draw_vline(dc_t *dc, int32_t x, int32_t y1, int32_t y2);
+static void dc_hw_draw_hline(dc_t *dc, int32_t x1, int32_t x2, int32_t y);
+static void dc_hw_fill_rect(dc_t *dc, rect_t *rect);
+static StatusType dc_hw_fini(dc_t *dc);
 
-struct cogui_dc_engine dc_hw_engine =
+struct dc_engine dc_hw_engine =
 {
-    cogui_dc_hw_draw_point,
-    cogui_dc_hw_draw_color_point,
-    cogui_dc_hw_draw_vline,
-    cogui_dc_hw_draw_hline,
-    cogui_dc_hw_fill_rect,
+    dc_hw_draw_point,
+    dc_hw_draw_color_point,
+    dc_hw_draw_vline,
+    dc_hw_draw_hline,
+    dc_hw_fill_rect,
 
-    cogui_dc_hw_fini,
+    dc_hw_fini,
 };
 
 /**
@@ -35,21 +35,21 @@ struct cogui_dc_engine dc_hw_engine =
  * @retval     *dc		DC pointer which we create     
  *******************************************************************************
  */
-cogui_dc_t *cogui_dc_hw_create(cogui_widget_t *owner)
+dc_t *dc_hw_create(widget_t *owner)
 {
-    struct cogui_dc_hw *dc;
+    struct dc_hw_t *dc;
 
     if (owner == Co_NULL)
         return Co_NULL;
 
-    dc = (struct cogui_dc_hw *) cogui_malloc(sizeof(struct cogui_dc_hw));
+    dc = (struct dc_hw_t *) gui_malloc(sizeof(struct dc_hw_t));
     if (dc) {
-        dc->parent.type = COGUI_DC_HW;
+        dc->parent.type = GUI_DC_HW;
         dc->parent.engine = &dc_hw_engine;
         dc->owner = owner;
-        dc->hw_driver = cogui_graphic_driver_get_default();
+        dc->hw_driver = gui_graphic_driver_get_default();
 		
-        return (cogui_dc_t *)dc;
+        return (dc_t *)dc;
     }
 
     return Co_NULL;
@@ -64,13 +64,13 @@ cogui_dc_t *cogui_dc_hw_create(cogui_widget_t *owner)
  * @retval     GUI_E_ERROR	Something wrong with this DC
  *******************************************************************************
  */
-static StatusType cogui_dc_hw_fini(cogui_dc_t *dc)
+static StatusType dc_hw_fini(dc_t *dc)
 {
-    if (dc == Co_NULL || dc->type != COGUI_DC_HW)
+    if (dc == Co_NULL || dc->type != GUI_DC_HW)
         return GUI_E_ERROR;
 
     /* release hardware DC */
-    cogui_free(dc);
+    gui_free(dc);
 
     return GUI_E_OK;
 }
@@ -85,12 +85,12 @@ static StatusType cogui_dc_hw_fini(cogui_dc_t *dc)
  * @retval     None
  *******************************************************************************
  */
-static void cogui_dc_hw_draw_point(cogui_dc_t *self, int32_t x, int32_t y)
+static void dc_hw_draw_point(dc_t *self, int32_t x, int32_t y)
 {
-    struct cogui_dc_hw *dc;
+    struct dc_hw_t *dc;
 
-    COGUI_ASSERT(self != Co_NULL);
-    dc = (struct cogui_dc_hw *) self;
+    ASSERT(self != Co_NULL);
+    dc = (struct dc_hw_t *) self;
 
     /* determine the point is vaild or not */
     if (x < 0 || y < 0)
@@ -121,12 +121,12 @@ static void cogui_dc_hw_draw_point(cogui_dc_t *self, int32_t x, int32_t y)
  * @retval     None
  *******************************************************************************
  */
-static void cogui_dc_hw_draw_color_point(cogui_dc_t *self, int32_t x, int32_t y, cogui_color_t color)
+static void dc_hw_draw_color_point(dc_t *self, int32_t x, int32_t y, color_t color)
 {
-    struct cogui_dc_hw *dc;
+    struct dc_hw_t *dc;
 
-    COGUI_ASSERT(self != Co_NULL);
-    dc = (struct cogui_dc_hw *) self;
+    ASSERT(self != Co_NULL);
+    dc = (struct dc_hw_t *) self;
 
     /* determine the point is vaild or not */
     if (x < 0 || y < 0)
@@ -161,12 +161,12 @@ static void cogui_dc_hw_draw_color_point(cogui_dc_t *self, int32_t x, int32_t y,
  *             DC, this line is (y2-y1) height.
  *******************************************************************************
  */
-static void cogui_dc_hw_draw_vline(cogui_dc_t *self, int32_t x, int32_t y1, int32_t y2)
+static void dc_hw_draw_vline(dc_t *self, int32_t x, int32_t y1, int32_t y2)
 {
-    struct cogui_dc_hw *dc;
+    struct dc_hw_t *dc;
 
-    COGUI_ASSERT(self != Co_NULL);
-    dc = (struct cogui_dc_hw *) self;
+    ASSERT(self != Co_NULL);
+    dc = (struct dc_hw_t *) self;
 
     /* determine x is vaild or not */
     if (x < 0)
@@ -215,12 +215,12 @@ static void cogui_dc_hw_draw_vline(cogui_dc_t *self, int32_t x, int32_t y1, int3
  *             DC, this line is (x2-x1) width.
  *******************************************************************************
  */
-static void cogui_dc_hw_draw_hline(cogui_dc_t *self, int32_t x1, int32_t x2, int32_t y)
+static void dc_hw_draw_hline(dc_t *self, int32_t x1, int32_t x2, int32_t y)
 {
-    struct cogui_dc_hw *dc;
+    struct dc_hw_t *dc;
 
-    COGUI_ASSERT(self != Co_NULL);
-    dc = (struct cogui_dc_hw *) self;
+    ASSERT(self != Co_NULL);
+    dc = (struct dc_hw_t *) self;
 
     /* determine y is vaild or not */
     if (y < 0)
@@ -267,15 +267,15 @@ static void cogui_dc_hw_draw_hline(cogui_dc_t *self, int32_t x1, int32_t x2, int
  *             DC, and choose graph context's background to fill.
  *******************************************************************************
  */
-static void cogui_dc_hw_fill_rect(cogui_dc_t *self, cogui_rect_t *rect)
+static void dc_hw_fill_rect(dc_t *self, rect_t *rect)
 {
-    cogui_color_t color;
+    color_t color;
     int32_t y1, y2, x1, x2;
-    struct cogui_dc_hw *dc;
+    struct dc_hw_t *dc;
 
-    COGUI_ASSERT(rect);
-    COGUI_ASSERT(self != Co_NULL);
-    dc = (struct cogui_dc_hw *) self;
+    ASSERT(rect);
+    ASSERT(self != Co_NULL);
+    dc = (struct dc_hw_t *) self;
 
     /* get background color */
     color = dc->owner->gc.background;

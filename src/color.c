@@ -9,16 +9,16 @@
 
 #include <cogui.h>
 
-const cogui_color_t red          = COGUI_RGB(0xff, 0x00, 0x00);         /**< Default red color               */ 
-const cogui_color_t orange       = COGUI_RGB(0xff, 0x7f, 0x00);         /**< Default orange color            */ 
-const cogui_color_t yellow       = COGUI_RGB(0xff, 0xff, 0x00);         /**< Default yellow color            */ 
-const cogui_color_t green        = COGUI_RGB(0x00, 0xff, 0x00);         /**< Default green color             */ 
-const cogui_color_t blue         = COGUI_RGB(0x00, 0x00, 0xff);         /**< Default blue color              */ 
-const cogui_color_t indigo       = COGUI_RGB(0x4B, 0x00, 0x82);         /**< Default indigo color            */
-const cogui_color_t purple       = COGUI_RGB(0xff, 0x00, 0xff);         /**< Default purple color            */
-const cogui_color_t cyan         = COGUI_RGB(0x00, 0xff, 0xff);         /**< Default cyan color              */ 
-const cogui_color_t high_light   = COGUI_RGB(0xf5, 0xf5, 0xf5);         /**< Default high light color        */ 
-const cogui_color_t light_grey   = COGUI_RGB(0x9e, 0x9e, 0x9e);         /**< Default light gray color        */ 
-const cogui_color_t dark_grey    = COGUI_RGB(0x42, 0x42, 0x42);         /**< Default dark gray color         */ 
-const cogui_color_t white        = COGUI_RGB(0xff, 0xff, 0xff);         /**< Default white color             */ 
-const cogui_color_t black        = COGUI_RGB(0x00, 0x00, 0x00);         /**< Default black color             */ 
+const color_t red          = COGUI_RGB(0xff, 0x00, 0x00);         /**< default red color               */ 
+const color_t orange       = COGUI_RGB(0xff, 0x7f, 0x00);         /**< default orange color            */ 
+const color_t yellow       = COGUI_RGB(0xff, 0xff, 0x00);         /**< default yellow color            */ 
+const color_t green        = COGUI_RGB(0x00, 0xff, 0x00);         /**< default green color             */ 
+const color_t blue         = COGUI_RGB(0x00, 0x00, 0xff);         /**< default blue color              */ 
+const color_t indigo       = COGUI_RGB(0x4B, 0x00, 0x82);         /**< default indigo color            */
+const color_t purple       = COGUI_RGB(0xff, 0x00, 0xff);         /**< default purple color            */
+const color_t cyan         = COGUI_RGB(0x00, 0xff, 0xff);         /**< default cyan color              */ 
+const color_t high_light   = COGUI_RGB(0xf5, 0xf5, 0xf5);         /**< default high light color        */ 
+const color_t light_grey   = COGUI_RGB(0x9e, 0x9e, 0x9e);         /**< default light gray color        */ 
+const color_t dark_grey    = COGUI_RGB(0x42, 0x42, 0x42);         /**< default dark gray color         */ 
+const color_t white        = COGUI_RGB(0xff, 0xff, 0xff);         /**< default white color             */ 
+const color_t black        = COGUI_RGB(0x00, 0x00, 0x00);         /**< default black color             */ 

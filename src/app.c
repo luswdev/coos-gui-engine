@@ -9,9 +9,8 @@
 
 #include <cogui.h>
 
-cogui_window_t *main_page       = Co_NULL;
-
-static StatusType cogui_app_event_handler(struct cogui_event *event);
+window_t *main_page       = Co_NULL;
+static StatusType app_event_handler(struct event *event);
 
 /**
  *******************************************************************************
@@ -21,13 +20,10 @@ static StatusType cogui_app_event_handler(struct cogui_event *event);
  * @retval     None 
  *******************************************************************************
  */
-void _cogui_app_init(cogui_app_t *app)
+void _app_init(app_t *app)
 {
-    /* set all feild to zero first */
-    cogui_memset(app, 0, sizeof(cogui_app_t));
-
-    /* set app default event handler */
-	app->handler = cogui_app_event_handler;
+    cogui_memset(app, 0, sizeof(app_t));     /* set all feild to zero first   */
+	app->handler = app_event_handler;        /* set app default event handler */
 }
 
 /**
@@ -39,45 +35,43 @@ void _cogui_app_init(cogui_app_t *app)
  * @retval     Co_NULL   If sync to server failed.
  *******************************************************************************
  */
-cogui_app_t *cogui_app_create(char *title)
+app_t *gui_app_create(char *title)
 {
-    cogui_app_t *app;
-    cogui_app_t *srv_app;
+    ASSERT(title != Co_NULL);
+
+    app_t *app;
+    app_t *srv_app;
     OS_TID tid = CoGetCurTaskID();
-    struct cogui_event event;
+    struct event event;
 
-    COGUI_ASSERT(tid != 0);
-    COGUI_ASSERT(title != Co_NULL);
+    ASSERT(tid != 0);
 
-    app = cogui_malloc(sizeof(cogui_app_t));
-    if (app == Co_NULL)
-        return Co_NULL;
+    app = gui_malloc(sizeof(app_t));
+    if (app == Co_NULL) {
+        return Co_NULL;     /* if malloc failed, return Co_NULL               */
+    }
     
-    _cogui_app_init(app);
+    _app_init(app);         /* first initial structure data to zero           */
 
-    /* filled meta data */
-    app->tid = tid;
-    app->name = cogui_strdup((char *)title);
-    app->mq = CoCreateMbox(EVENT_SORT_TYPE_FIFO);
-
-    srv_app = cogui_get_server();
-    if(srv_app == Co_NULL) {
-        TCBTbl[tid].userData = app;     /* if we are creating server, just return here */
-        return app;
+    app->tid = tid;         /* filled meta data                               */
+    app->name = gui_strdup((char *)title);   /* record application name       */
+    app->mq = CoCreateMbox(EVENT_SORT_TYPE_FIFO); /* create a mailbox 
+                                                                    for event */
+    srv_app = gui_get_server();     /* check if server created or not         */
+    if (srv_app == Co_NULL) {
+        TCBTbl[tid].userData = app;     /* put app pointer to TCBTbl userData */
+        return app;     /* if we are creating server, just return here        */
     }
 	
-    /* if server is already created, sync with it */
-    COGUI_EVENT_INIT(&event, COGUI_EVENT_APP_CREATE);
-    event.app = app;
-
-    /* if server ack OK, return here */
-    if(cogui_server_post_event_sync(&event) == GUI_E_OK) {
-        TCBTbl[tid].userData = app;
-        return app;
+    EVENT_INIT(&event, EVENT_APP_CREATE);     
+    event.app = app;            /* if server is already created, sync with it */
+    
+    if (gui_server_post_event_sync(&event) == GUI_E_OK) {
+        TCBTbl[tid].userData = app;     /* put app pointer to TCBTbl userData */             
+        return app;            /* if server ack OK, return here               */
     }
 
-    /* if server not ack OK, free pointer and return Co_NULL */
-    cogui_free(app);
+    gui_free(app);   /* if server not ack OK, free pointer and return Co_NULL */
     return Co_NULL;
 }
 
@@ -89,35 +83,28 @@ cogui_app_t *cogui_app_create(char *title)
  * @retval     None
  *******************************************************************************
  */
-void cogui_app_delete(cogui_app_t *app)
+void gui_app_delete(app_t *app)
 {
-    COGUI_ASSERT(app != Co_NULL);
-    COGUI_ASSERT(app->tid);
-    COGUI_ASSERT(app->mq);
+    ASSERT(app != Co_NULL);
+    ASSERT(app->tid);
+    ASSERT(app->mq);
 
-    cogui_app_t *srv_app;
-    struct cogui_event event;
+    struct event event;
 
-    /* free application name buffer */
-    cogui_free(app->name);
+    gui_free(app->name);        /* free application name buffer               */
     app->name = Co_NULL;
-	
-    /* free event buffer */
-    CoDelMbox(app->mq, OPT_DEL_ANYWAY);
+    
+    CoDelMbox(app->mq, OPT_DEL_ANYWAY);     /* free event buffer              */
     TCBTbl[app->tid].userData = 0;
 	
-    /* we should sync to server */
-    srv_app = cogui_get_server();
-    COGUI_EVENT_INIT(&event, COGUI_EVENT_APP_DELE);
+    EVENT_INIT(&event, EVENT_APP_DELE);     /* we should sync to server       */
     event.app = app;
 
-    /* if server not ack OK, just return */
-    if(cogui_send_sync(srv_app, &event) != GUI_E_OK) {
-       return;
+    if (gui_server_post_event_sync(&event) != GUI_E_OK) {
+       return;              /* if server not ack OK, just return              */
     }
 	
-    /* if server ack OK, free application buffer */
-	cogui_free(app);
+	gui_free(app);          /* if server ack OK, free application buffer      */
 }
 
 /**
@@ -128,71 +115,100 @@ void cogui_app_delete(cogui_app_t *app)
  * @retval     None
  *******************************************************************************
  */
-static void _cogui_app_event_loop(cogui_app_t *app)
+static void _app_event_loop(app_t *app)
 {
     StatusType  result;
     uint16_t current_ref;
-    //uint8_t loop=0;
-    struct cogui_event *event;
+    struct event *event;
 
-    event = (struct cogui_event *)app->event_buffer;
+    event = (struct event *)app->event_buffer;  /* set event buffer for recv  */
 
     current_ref = ++app->ref_cnt;
-    while(current_ref <= app->ref_cnt) {
-        //cogui_printf("[%s] App event loop #%d\r\n", app->name, loop++);
-        result = cogui_recv(app->mq, event, 0);
-
-        if(result == GUI_E_OK && event != Co_NULL) {
-            //cogui_printf("[%s] Got a event no.%d\r\n", app->name, event->type);
-            app->handler(event);
+    while (current_ref <= app->ref_cnt) {
+        result = gui_recv(app->mq, event, 0);   /* recv event WAIT FOREVER    */
+        if (result == GUI_E_OK && event != Co_NULL) {
+            app->handler(event);     /* call event handler if recv currently  */
         }
     }
 }
 
-void cogui_app_run(cogui_app_t *app)
+/**
+ *******************************************************************************
+ * @brief      Run a application.
+ * @param[in]  *app       Application pointer which should run.
+ * @param[out] None
+ * @retval     None
+ *******************************************************************************
+ */
+void gui_app_run(app_t *app)
 {
-    COGUI_ASSERT(app != Co_NULL);
-    COGUI_ASSERT(app->tid);
-    COGUI_ASSERT(TCBTbl[app->tid].userData);
+    ASSERT(app != Co_NULL);
+    ASSERT(app->tid);
+    ASSERT(TCBTbl[app->tid].userData);
 
-    if (app == cogui_get_server()){
-        main_page = cogui_main_window_create();
+    if (app == gui_get_server()){           /* create main window if it       */
+        main_page = gui_main_window_create();           /* is server running  */
     } else {
-        app->win_id = cogui_main_page_app_install(app->name);
-        cogui_window_refresh(main_page);
+        app->win_id = gui_main_page_app_install(app->name); /* install app if */
+        gui_window_refresh(main_page);              /* it is user app running */
     }
 
-    cogui_printf("[%s] app start loops.\r\n", app->name);
-    _cogui_app_event_loop(app);
+    _app_event_loop(app);       /* then run loop while everythings done       */
 }
 
-void cogui_app_exit(cogui_app_t *app, uint16_t code)
+/**
+ *******************************************************************************
+ * @brief      Exit a application.
+ * @param[in]  *app       Application pointer which should exit.
+ * @param[in]  code       Application exit code.
+ * @param[out] None
+ * @retval     None
+ *******************************************************************************
+ */
+void gui_app_exit(app_t *app, uint16_t code)
 {
     if (app->ref_cnt == 0) {
         return;
     }
     
-    app->ref_cnt--;
+    app->ref_cnt--;         /* minor reference count to kill loops            */
     app->exit_code = code;
 }
 
-StatusType cogui_app_close(cogui_app_t *app)
+/**
+ *******************************************************************************
+ * @brief      Close a application.
+ * @param[in]  *app       Application pointer which should close.
+ * @param[out] None
+ * @retval     None
+ *******************************************************************************
+ */
+StatusType gui_app_close(app_t *app)
 {
-	struct cogui_event event;
+	struct event event;
 
-    COGUI_EVENT_INIT(&event, COGUI_EVENT_APP_DELE);
-    event.app = app;
+    EVENT_INIT(&event, EVENT_APP_DELE);
+    event.app = app;            /* post delete event to app                   */
 
-    return cogui_send(app, &event);
+    return gui_send(app, &event);
 }
 
-void cogui_app_sleep(cogui_app_t *app, uint32_t sleep_tick)
+/**
+ *******************************************************************************
+ * @brief      Sleep application.
+ * @param[in]  *app        Application pointer which should sleep.
+ * @param[in]  sleep_tick  How much tick to sleep.
+ * @param[out] None
+ * @retval     None
+ *******************************************************************************
+ */
+void gui_app_sleep(app_t *app, uint32_t sleep_tick)
 {
-    COGUI_ASSERT(app != Co_NULL);
-    COGUI_ASSERT(app->tid);
-    COGUI_ASSERT(app->user_data);
+    ASSERT(app != Co_NULL);
+    ASSERT(app->tid);
+    ASSERT(app->user_data);
 
-    CoTickDelay(sleep_tick);
+    CoTickDelay(sleep_tick);        /* call CoOS delay function               */
 }
 
 /**
@@ -203,14 +219,13 @@ void cogui_app_sleep(cogui_app_t *app, uint32_t sleep_tick)
  * @retval     *app      Current application pointer.
  *******************************************************************************
  */
-cogui_app_t *cogui_app_self(void)
+app_t *gui_app_self(void)
 {
-    cogui_app_t *app;
+    app_t *app;
     OS_TID self;
-
-    /* get current application in TCBTbl */
-    self = CoGetCurTaskID();
-    app  = (cogui_app_t *)TCBTbl[self].userData;
+    
+    self = CoGetCurTaskID();    /* get current application in TCBTbl          */
+    app  = (app_t *)TCBTbl[self].userData;  /* pointer saved in user data     */
 
     return app;
 }
@@ -224,68 +239,68 @@ cogui_app_t *cogui_app_self(void)
  * @retval     GUI_E_ERROR      Occured some error while handle event.
  *******************************************************************************
  */
-static StatusType cogui_app_event_handler(struct cogui_event *event)
+static StatusType app_event_handler(struct event *event)
 {
-	COGUI_ASSERT(event != Co_NULL);
+	ASSERT(event != Co_NULL);
 
     StatusType result = GUI_E_ERROR;
 
-    //cogui_printf("[%s] Got a event no.%d\r\n", cogui_app_self(), event->type);
-
 	switch (event->type)
     {
-	case COGUI_EVENT_APP_DELE:
-		cogui_app_exit((event)->app, 0);
+	case EVENT_APP_DELE:    /* handler app delete event                       */
+		gui_app_exit((event)->app, 0);      /* call app exit with code 0      */
         result = GUI_E_OK;
 		break;
 
-	case COGUI_EVENT_PAINT:
-        if (cogui_app_self()->win) {
-            cogui_window_show(cogui_app_self()->win);
-        } else if (cogui_app_self()->optional_handler != Co_NULL) {
-            result = cogui_app_self()->optional_handler(event);
+	case EVENT_PAINT:       /* handler app paint event                        */
+        if (gui_app_self()->win) {      /* if app window is already created   */
+            gui_window_show(gui_app_self()->win);   /* show window currently  */
+        } else if (gui_app_self()->optional_handler != Co_NULL) {/* otherwise */
+            /* call app to create window                                      */
+            result = gui_app_self()->optional_handler(event);   
         } else {
             result = GUI_E_ERROR;
         }
-        cogui_mouse_show();
+        gui_mouse_show();               /* show cursor                        */
         break;
     
-    /* mouse and keyboard event */
-    case COGUI_EVENT_MOUSE_BUTTON:
+    case EVENT_MOUSE_BUTTON:    /* handler mouse and keyboard event           */
     {
-        cogui_point_t cursor_pt;
-        cogui_app_t *eapp = cogui_app_self();
-        cogui_window_t *ewin = eapp->win;
-        cogui_widget_t *ewgt, *last_ewgt = ewin->last_mouse_event_widget;;
-        cogui_mouse_get_position(&cursor_pt);
-        ewgt = cogui_window_get_mouse_event_widget(ewin, cursor_pt.x, cursor_pt.y);
+        point_t cpt;
+        app_t *eapp = gui_app_self();
+        window_t *ewin = eapp->win;
+        widget_t *ewgt, *last_ewgt = ewin->last_mouse_event_widget;
+        gui_mouse_get_position(&cpt);    /* get current cursor position */
+        ewgt = gui_window_get_mouse_event_widget(ewin, cpt.x, cpt.y);
 
         if (ewgt != Co_NULL) {
-            if (event->button & COGUI_MOUSE_BUTTON_DOWN) {
-                cogui_widget_focus(ewgt);
-                cogui_mouse_show();
-            } else {
+            if (event->button & MOUSE_BUTTON_DOWN) {
+                gui_widget_focus(ewgt); /* focus widget if mouse down         */
+                gui_mouse_show();       /* show cursor                        */
+            } else if (last_ewgt == ewgt) { /* click event raise              */
                 if (ewgt->flag & COGUI_WIDGET_FLAG_TITLE) {
-                    if (ewgt->flag & COGUI_WIDGET_FLAG_CLOSE_BTN && last_ewgt == ewgt) {
-                        cogui_window_close(ewin);
-                    } else if (ewgt->flag & COGUI_WIDGET_FLAG_MINI_BTN && last_ewgt == ewgt) {
-                        cogui_window_hide(ewin);
+                    if (ewgt->flag & COGUI_WIDGET_FLAG_CLOSE_BTN) {    
+                        gui_window_close(ewin);     /* close window           */
+                    } else if (ewgt->flag & COGUI_WIDGET_FLAG_MINI_BTN) { 
+                        gui_window_hide(ewin);      /* hide  window           */
                     }
-                } else if (last_ewgt == ewgt && eapp->optional_handler != Co_NULL) {
-                    COGUI_EVENT_INIT(event, COGUI_EVENT_MOUSE_CLICK);
-                    event->widget = ewgt;
-                    result = eapp->optional_handler(event);
-                    cogui_mouse_show();
+                } else if (eapp->optional_handler != Co_NULL) {
+                    EVENT_INIT(event, EVENT_MOUSE_CLICK);  
+                    event->widget = ewgt;           /* send click event to    */   
+                    result = eapp->optional_handler(event);/*  dest handler   */
+                    gui_mouse_show();       /* show cursor                    */
                 } else {
-                    cogui_mouse_show();
+                    gui_mouse_show();       /* show cursor                    */
                 }
+            } else {
+                gui_mouse_show();           /* show cursor                    */
             }
         }
         break;
     }
 
 	default:
-		result = GUI_E_ERROR;	
+		result = GUI_E_ERROR;	/* set result to error                        */
 	}
 		
 	return result;

@@ -7,8 +7,8 @@
  *******************************************************************************
  */ 
 
-#ifndef __COGUI_SYSTEM_H__
-#define __COGUI_SYSTEM_H__
+#ifndef __GUI_SYSTEM_H__
+#define __GUI_SYSTEM_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,9 +27,9 @@ typedef signed   char           bool_t;           /**< Boolean type             
 #define ABS(x)             ((x)>=0? (x): -(x))      /**< simple abs function         */
 
 /** assert function */
-#define COGUI_ASSERT(EX) 								\
+#define ASSERT(EX) 								\
 if(!(EX)){											    \
-	cogui_assert_handler(#EX, __FUNCTION__, __LINE__);	\
+	assert_handler(#EX, __FUNCTION__, __LINE__);	\
 }													    \
 
 /** initial a rectangle to zero */
@@ -51,7 +51,7 @@ if(!(EX)){											    \
 }                                       \
 
 /** expand a rectangle */
-#define COGUI_RECT_EXPAND(r, d)         \
+#define GUI_RECT_EXPAND(r, d)           \
 {                                       \
     (r)->x1 -= (d);                     \
     (r)->x2 += (d);                     \
@@ -88,61 +88,61 @@ if(!(EX)){											    \
  * @brief    Double linked list struct
  * @details  This struct is double linked list.
  */
-struct cogui_list_node
+struct list_node
 {
     struct list_node *prev;
     struct list_node *next;
 };
-typedef struct cogui_list_node cogui_list_t;
+typedef struct list_node list_t;
 
 /**
  * @struct   cogui_slist_node	
  * @brief    Single linked list struct
  * @details  This struct is single linked list.
  */
-struct cogui_slist_node
+struct slist_node
 {
-    struct cogui_slist_node *next;
+    struct slist_node *next;
 };
-typedef struct cogui_slist_node cogui_slist_t;
+typedef struct slist_node slist_t;
 
 /**
  * @struct   cogui_point
  * @brief    2D point struct
  * @details  This struct is 2D point.
  */
-struct cogui_point
+struct point
 {
     int16_t x, y;
 };
-typedef struct cogui_point cogui_point_t;
+typedef struct point point_t;
 
 /**
  * @struct   cogui_rect	
  * @brief    Rectangle struct
  * @details  This struct is rectangle.
  */
-struct cogui_rect
+struct rect
 {
     int16_t x1, x2, y1, y2;
 };
-typedef struct cogui_rect cogui_rect_t;
+typedef struct rect rect_t;
 
-struct cogui_event;
-struct cogui_app;
-typedef struct cogui_app cogui_app_t;
+struct event;
+struct app;
+typedef struct app app_t;
 
 void cogui_system_init(void);
 
 /* memory manange from CoOS */
-void *cogui_malloc(U32 size);
-void cogui_free(void* ptr);
+void *gui_malloc(uint32_t size);
+void gui_free(void* ptr);
 
 /* sync function from CoOS */
-StatusType cogui_ack(struct cogui_event *event, StatusType status);
-StatusType cogui_send(cogui_app_t *app, struct cogui_event *event);
-StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event);
-StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, int32_t timeout);
+StatusType cogui_ack(struct event *event, StatusType status);
+StatusType gui_send(app_t *app, struct event *event);
+StatusType gui_send_sync(app_t *app, struct event *event);
+StatusType gui_recv(OS_EventID mq, struct event *event, int32_t timeout);
 
 /* math function for cogui */
 uint64_t cogui_pow(int32_t base, int32_t exp);
@@ -155,16 +155,16 @@ void *cogui_memmove(void *dest, const void *src, uint64_t size);
 int32_t cogui_memcmp(const void *str1, const void *str2, uint64_t size);
 
 /* string function for cogui */
-char *cogui_strdup(const char *str);
+char *gui_strdup(const char *str);
 uint64_t cogui_strlen(const char *str);
 uint64_t cogui_strnlen(const char *str, uint64_t maxlen);
 int32_t cogui_strncmp(const char *str1, const char *str2, uint64_t size);
 int32_t cogui_strcmp(const char *str1, const char *str2);
 
 /* debug function */
-int cogui_printf(const char *fmt, ...);
+int gui_printf(const char *fmt, ...);
 int cogui_sprintf(char *buf, const char *fmt, ...);
-void cogui_assert_handler(const char *ex_string, const char *func, U32 line);
+void assert_handler(const char *ex_string, const char *func, uint32_t line);
 
 #ifdef __cplusplus
 }

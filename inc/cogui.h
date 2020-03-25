@@ -7,14 +7,14 @@
  *******************************************************************************
  */ 
 
-#ifndef __COGUI_H__
-#define __COGUI_H__
+#ifndef __GUI_H__
+#define __GUI_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* System library */
+/* system library */
 #include "stdint.h"
 
 /* CooCox CoOS library */
@@ -23,7 +23,7 @@ extern "C" {
 /* configuation */
 #include "cogui_config.h"
 
-/* GUI */
+/* GUI component library */
 #include "system.h"
 #include "color.h"
 #include "driver.h"

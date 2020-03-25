@@ -7,16 +7,16 @@
  *******************************************************************************
  */ 
 
-#ifndef __COGUI_COLOR_H__
-#define __COGUI_COLOR_H__
+#ifndef __GUI_COLOR_H__
+#define __GUI_COLOR_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef uint64_t cogui_color_t;   /**< Color type belong to long integer */
+typedef uint64_t color_t;   /**< color type belong to unsigned long integer */
 
-/** Determine which color style used */
+/** determine which color style used */
 #define COGUI_USING_RGB565
 //#define COGUI_USING_BGR565
 //#define COGUI_USING_RGB888
@@ -25,12 +25,12 @@ typedef uint64_t cogui_color_t;   /**< Color type belong to long integer */
 //#define COGUI_USING_ABGR8888
 
 /* RGB into integer by different style */
-#define COGUI_RGB565(r,g,b)     ((cogui_color_t)((((r)>>3)<<11)|(((g)>>2)<<5)|((b)>>3)))
-#define COGUI_BGR565(b,g,r)     ((cogui_color_t)((((b)>>3)<<11)|(((g)>>2)<<5)|((r)>>3)))
-#define COGUI_RGB888(r,g,b)     ((cogui_color_t)(((r)<<16)|((g)<<8)|(b)))
-#define COGUI_ARGB8888(a,r,g,b) ((cogui_color_t)(((a)<<24)|((r)<<16)|((g)<<8)|(b)))
-#define COGUI_RGBA8888(r,g,b,a) ((cogui_color_t)(((r)<<24)|((g)<<16)|((b)<<8)|(a)))
-#define COGUI_ABGR8888(a,b,g,r) ((cogui_color_t)(((a)<<24)|((b)<<16)|((g)<<8)|(r)))
+#define COGUI_RGB565(r,g,b)     ((color_t)((((r)>>3)<<11)|(((g)>>2)<<5)|((b)>>3)))
+#define COGUI_BGR565(b,g,r)     ((color_t)((((b)>>3)<<11)|(((g)>>2)<<5)|((r)>>3)))
+#define COGUI_RGB888(r,g,b)     ((color_t)(((r)<<16)|((g)<<8)|(b)))
+#define COGUI_ARGB8888(a,r,g,b) ((color_t)(((a)<<24)|((r)<<16)|((g)<<8)|(b)))
+#define COGUI_RGBA8888(r,g,b,a) ((color_t)(((r)<<24)|((g)<<16)|((b)<<8)|(a)))
+#define COGUI_ABGR8888(a,b,g,r) ((color_t)(((a)<<24)|((b)<<16)|((g)<<8)|(r)))
 
 #ifdef COGUI_USING_RGB565
 #define COGUI_RGB(r,g,b) COGUI_RGB565((r),(g),(b))
@@ -56,19 +56,20 @@ typedef uint64_t cogui_color_t;   /**< Color type belong to long integer */
 #define COGUI_RGB(r,g,b) COGUI_ABGR8888(255,(b),(g),(r))
 #endif
 
-extern const cogui_color_t red;
-extern const cogui_color_t orange;
-extern const cogui_color_t green;
-extern const cogui_color_t blue;
-extern const cogui_color_t yellow;
-extern const cogui_color_t indigo;
-extern const cogui_color_t purple;
-extern const cogui_color_t cyan;
-extern const cogui_color_t high_light;
-extern const cogui_color_t light_grey;
-extern const cogui_color_t dark_grey;
-extern const cogui_color_t white;
-extern const cogui_color_t black;
+/* extern from color.c */
+extern const color_t red;
+extern const color_t orange;
+extern const color_t green;
+extern const color_t blue;
+extern const color_t yellow;
+extern const color_t indigo;
+extern const color_t purple;
+extern const color_t cyan;
+extern const color_t high_light;
+extern const color_t light_grey;
+extern const color_t dark_grey;
+extern const color_t white;
+extern const color_t black;
 
 #ifdef __cplusplus
 }

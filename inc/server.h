@@ -7,8 +7,8 @@
  *******************************************************************************
  */ 
 
-#ifndef __COGUI_SERVER_H__
-#define __COGUI_SERVER_H__
+#ifndef __GUI_SERVER_H__
+#define __GUI_SERVER_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,11 +18,11 @@ extern "C" {
 void cogui_server_init(void);
 
 /* post event to server */
-StatusType cogui_server_post_event(struct cogui_event *event);
-StatusType cogui_server_post_event_sync(struct cogui_event *event);
+StatusType cogui_server_post_event(struct event *event);
+StatusType gui_server_post_event_sync(struct event *event);
 
 /* get server pointer */
-cogui_app_t *cogui_get_server(void);
+app_t *gui_get_server(void);
 
 #ifdef __cplusplus
 }

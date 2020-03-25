@@ -31,7 +31,7 @@ void cogui_system_init(void)
  * @retval     *ptr     Allocated memory pointer.
  *******************************************************************************
  */
-void *cogui_malloc(U32 size)
+void *gui_malloc(uint32_t size)
 {
     void *ptr;
     
@@ -39,7 +39,7 @@ void *cogui_malloc(U32 size)
 
     /* if malloc failed, print error message */
 	if(ptr == Co_NULL){
-		cogui_printf("[System] out of memory\r\n");
+		gui_printf("[System] out of memory\r\n");
 	}
 	
     return ptr;
@@ -53,7 +53,7 @@ void *cogui_malloc(U32 size)
  * @retval     None
  *******************************************************************************
  */
-void cogui_free(void* ptr)
+void gui_free(void* ptr)
 {
     CoKfree(ptr);
 }
@@ -67,10 +67,10 @@ void cogui_free(void* ptr)
  * @retval     GUI_E_OK     Always return GUI_E_OK .  
  *******************************************************************************
  */
-StatusType cogui_ack(struct cogui_event *event, StatusType status)
+StatusType cogui_ack(struct event *event, StatusType status)
 {
-    COGUI_ASSERT(event != Co_NULL);
-    COGUI_ASSERT(event->ack);
+    ASSERT(event != Co_NULL);
+    ASSERT(event->ack);
 	
     /* ACK status */
     CoPostMail(event->ack, (void *)&status);
@@ -88,12 +88,12 @@ StatusType cogui_ack(struct cogui_event *event, StatusType status)
  * @retval     GUI_E_ERROR      If some error occurred.          
  *******************************************************************************
  */
-StatusType cogui_send(cogui_app_t *app, struct cogui_event *event)
+StatusType gui_send(app_t *app, struct event *event)
 {
     StatusType result;
 
-    COGUI_ASSERT(event != Co_NULL);
-    COGUI_ASSERT(app != Co_NULL);
+    ASSERT(event != Co_NULL);
+    ASSERT(app != Co_NULL);
 
     /* send event to application */
     result = CoPostMail(app->mq, event);
@@ -112,12 +112,12 @@ StatusType cogui_send(cogui_app_t *app, struct cogui_event *event)
  * @retval     GUI_E_ERROR      If some error occurred.          
  *******************************************************************************
  */
-StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event)
+StatusType gui_send_sync(app_t *app, struct event *event)
 {
     StatusType result;
 
-    COGUI_ASSERT(event != Co_NULL);
-    COGUI_ASSERT(app != Co_NULL);
+    ASSERT(event != Co_NULL);
+    ASSERT(app != Co_NULL);
 
     /* create a mail box for acking */
     OS_EventID mq = CoCreateMbox(EVENT_SORT_TYPE_FIFO);
@@ -152,23 +152,23 @@ StatusType cogui_send_sync(cogui_app_t *app, struct cogui_event *event)
  * @retval     GUI_E_ERROR      Something wrong when receiveing a event
  *******************************************************************************
  */
-StatusType cogui_recv(OS_EventID mq, struct cogui_event *event, int32_t timeout)
+StatusType gui_recv(OS_EventID mq, struct event *event, int32_t timeout)
 {
     StatusType result;
-    cogui_app_t *app;
-    struct cogui_event* buf;
+    app_t *app;
+    struct event* buf;
 
-    COGUI_ASSERT(event!=Co_NULL);
+    ASSERT(event!=Co_NULL);
 
     /* check running applicate is vaild or not */
-    app = cogui_app_self();
+    app = gui_app_self();
     if (app == Co_NULL) {
         return GUI_E_APP_NULL;
     }
 
     /* receive a event and copy to event pointer */
-    buf = (struct cogui_event *)CoPendMail(mq, timeout, &result);
-    cogui_memcpy(event, buf, sizeof(struct cogui_event));
+    buf = (struct event *)CoPendMail(mq, timeout, &result);
+    cogui_memcpy(event, buf, sizeof(struct event));
 
     /* return result to GUI status type */
     COGUI_RETURN_TYPE(result);
@@ -366,11 +366,11 @@ uint64_t cogui_strlen(const char *str)
  * @retval     *tmp      Result of new string pointer.
  *******************************************************************************
  */
-char *cogui_strdup(const char *str)
+char *gui_strdup(const char *str)
 {   
     /* allocate a memory for duplicate */
     uint64_t len = cogui_strlen(str) + 1; /* need to plus one for '/0' */
-    char *tmp =  (char *)cogui_malloc(len);
+    char *tmp =  (char *)gui_malloc(len);
 
     /* if allocate failed, return Co_NULL */
     if (tmp == Co_NULL) {
@@ -493,7 +493,7 @@ void cogui_itoa(int16_t n, char *ss)
  *******************************************************************************
  */
 #ifdef COGUI_DEBUG_PRINT
-int cogui_printf(const char *str,...)
+int gui_printf(const char *str,...)
 {
     va_list ap;
     int val,r_val,space=0;
@@ -629,7 +629,7 @@ int cogui_printf(const char *str,...)
 	return res;
 }
 #else
-int cogui_printf(const char *str,...){
+int gui_printf(const char *str,...){
     /* do nothing */
 }
 #endif /* COGUI_DEBUG_PRINT */
@@ -644,7 +644,7 @@ int cogui_printf(const char *str,...){
  * @retval     None
  *******************************************************************************
  */
-void cogui_assert_handler(const char *ex_string, const char *func, U32 line)
+void assert_handler(const char *ex_string, const char *func, uint32_t line)
 {
     /* output message to screen */
     cogui_assert_failed_page(ex_string, line, func);
@@ -652,7 +652,7 @@ void cogui_assert_handler(const char *ex_string, const char *func, U32 line)
 	volatile char dummy = 0;
 
     /* print error message */
-	cogui_printf("(%s) assertion failed at function: %s, line number: %d.\r\n", ex_string, func, line);
+	gui_printf("(%s) assertion failed at function: %s, line number: %d.\r\n", ex_string, func, line);
 
     /* loop forever */
 	while(dummy == 0)

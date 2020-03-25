@@ -7,119 +7,120 @@
  *******************************************************************************
  */ 
 
-#ifndef __COGUI_DC_H__
-#define __COGUI_DC_H__
+#ifndef __GUI_DC_H__
+#define __GUI_DC_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define COGUI_DC(dc)	((cogui_dc_t *)(dc))                /**< Change type to DC pointer      */
+#define GUI_DC(dc)	((dc_t *)(dc))                /**< change type to DC pointer      */
 
-#define _int_swap(x, y) {x ^= y; y ^= x; x ^= y;}           /**< Swap two integer               */
-#define _int_comp(x, y) { if (x>y) _int_swap(x, y); }       /**< If x larger than y, swap it    */
+#define _int_swap(x, y) {x ^= y; y ^= x; x ^= y;}           /**< swap two integer               */
+#define _int_comp(x, y) { if (x>y) _int_swap(x, y); }       /**< if x larger than y, swap it    */
 
-#define COGUI_DC_FC(dc)         (cogui_dc_get_gc(COGUI_DC(dc))->foreground)  /**< get foreground    */
-#define COGUI_DC_BC(dc)         (cogui_dc_get_gc(COGUI_DC(dc))->background)  /**< get background    */
-#define COGUI_DC_TA(dc)         (cogui_dc_get_gc(COGUI_DC(dc))->text_align)  /**< get text_align    */
-#define COGUI_DC_FONT(dc)       (cogui_dc_get_gc(COGUI_DC(dc))->font)        /**< get font pointer   */
-#define COGUI_DC_PADDING(dc)    (cogui_dc_get_gc(COGUI_DC(dc))->padding)        /**< get font pointer   */
+#define GUI_DC_FC(dc)         (gui_dc_get_gc(GUI_DC(dc))->foreground)         /**< get foreground     */
+#define GUI_DC_BC(dc)         (gui_dc_get_gc(GUI_DC(dc))->background)         /**< get background     */
+#define GUI_DC_TA(dc)         (gui_dc_get_gc(GUI_DC(dc))->text_align)         /**< get text_align     */
+#define GUI_DC_FONT(dc)       (gui_dc_get_gc(GUI_DC(dc))->font)               /**< get font pointer   */
+#define GUI_DC_PADDING(dc)    (gui_dc_get_gc(GUI_DC(dc))->padding)            /**< get font pointer   */
 
-/* Border style */
-#define COGUI_BORDER_NONE       0x00                        /**< Border style none      */
-#define COGUI_BORDER_SIMPLE     0x01                        /**< Border style simple    */
+/* border style */
+#define GUI_BORDER_NONE       0x00         /**< border style none      */
+#define GUI_BORDER_SIMPLE     0x01         /**< border style simple    */
 
-#define COGUI_BORDER_DEFAULT_WIDTH  2                       /**< Default border width   */
+#define GUI_BORDER_DEFAULT_WIDTH  2        /**< default border width   */
 
-extern const cogui_color_t default_foreground;
+extern const color_t default_foreground;
 
-struct cogui_dc;
-struct cogui_widget;
-struct cogui_graphic_driver;
+struct dc;
+struct widget;
+struct graphic_driver;
 
-typedef struct cogui_dc cogui_dc_t;
+typedef struct dc dc_t;
 
-#define COGUI_TEXT_ALIGN_NONE           0x00
-#define COGUI_TEXT_ALIGN_LEFT           0x01
-#define COGUI_TEXT_ALIGN_RIGHT          0x02
-#define COGUI_TEXT_ALIGN_CENTER         0x04
-#define COGUI_TEXT_ALIGN_TOP            0x08
-#define COGUI_TEXT_ALIGN_MIDDLE         0x10
-#define COGUI_TEXT_ALIGN_BOTTOM         0x20
+/* text align style */
+#define GUI_TEXT_ALIGN_NONE           0x00        /**< no aligning                    */
+#define GUI_TEXT_ALIGN_LEFT           0x01        /**< horizontal align to left       */
+#define GUI_TEXT_ALIGN_CENTER         0x04        /**< horizontal align to center     */
+#define GUI_TEXT_ALIGN_RIGHT          0x02        /**< horizontal align to right      */
+#define GUI_TEXT_ALIGN_TOP            0x08        /**< vertical align to top          */
+#define GUI_TEXT_ALIGN_MIDDLE         0x10        /**< vertical align to middle       */
+#define GUI_TEXT_ALIGN_BOTTOM         0x20        /**< vertical align to bottom       */
 
 /**
  * @struct   cogui_gc dc.h	
  * @brief    Graph context struct
  * @details  This struct use to record graph context parameter.
  */
-struct cogui_gc
+struct gc
 {
-    cogui_color_t       foreground;             /**< foreground and background color */
-    cogui_color_t       background;             /**< background and background color */
+    color_t       foreground;             /**< foreground and background color */
+    color_t       background;             /**< background and background color */
 
-    struct cogui_font * font;                   /**< font structure pointer         */
+    struct font * font;                   /**< font structure pointer         */
 
     uint16_t         text_align;             /**< text alignment                 */
     uint64_t         padding;                /**< rectangle padding (for text)   */
 };
 
-#define COGUI_PADDING(top, bottom, left, right) ((uint64_t)(((top)<<24)|((bottom)<<16)|((left)<<8)|(right)))
-#define COGUI_PADDING_SIMPLE(pa)                ((uint64_t)(((pa)<<24)|((pa)<<16)|((pa)<<8)|(pa)))
+#define GUI_PADDING(top, bottom, left, right) ((uint64_t)(((top)<<24)|((bottom)<<16)|((left)<<8)|(right)))
+#define GUI_PADDING_SIMPLE(pa)                ((uint64_t)(((pa)<<24)|((pa)<<16)|((pa)<<8)|(pa)))
 
 /* dc type define */
-#define COGUI_DC_INIT           0x00          /**< DC initial type      */
-#define COGUI_DC_HW             0x01          /**< DC hardware type     */
-#define COGUI_DC_BUFFER         0x02          /**< DC buffer type       */
+#define GUI_DC_INIT           0x00          /**< DC initial type      */
+#define GUI_DC_HW             0x01          /**< DC hardware type     */
+#define GUI_DC_BUFFER         0x02          /**< DC buffer type       */
 
 /**
  * @struct   cogui_dc_engine dc.h	
  * @brief    DC engine struct
  * @details  This struct is a field to put dc engine interface.
  */
-struct cogui_dc_engine
+struct dc_engine
 {
     /* interface */
-    void (*draw_point)(cogui_dc_t *dc, int32_t x, int32_t y);
-    void (*draw_color_point)(cogui_dc_t *dc, int32_t x, int32_t y, cogui_color_t color);
-    void (*draw_vline)(cogui_dc_t *dc, int32_t x, int32_t y1, int32_t y2);
-    void (*draw_hline)(cogui_dc_t *dc, int32_t x1, int32_t x2, int32_t y);
-    void (*fill_rect)(cogui_dc_t *dc, cogui_rect_t *rect);
+    void (*draw_point)(dc_t *dc, int32_t x, int32_t y);
+    void (*draw_color_point)(dc_t *dc, int32_t x, int32_t y, color_t color);
+    void (*draw_vline)(dc_t *dc, int32_t x, int32_t y1, int32_t y2);
+    void (*draw_hline)(dc_t *dc, int32_t x1, int32_t x2, int32_t y);
+    void (*fill_rect)(dc_t *dc, rect_t *rect);
 
-    StatusType (*fini)(cogui_dc_t * dc);
+    StatusType (*fini)(dc_t * dc);
 };
 
 /**
- * @struct   cogui_dc dc.h	
+ * @struct   dc dc.h	
  * @brief    DC information struct
  * @details  This struct record DC information.
  */
-struct cogui_dc
+struct dc
 {
     uint8_t               type;          /**< type of device context */
-    struct cogui_dc_engine  *engine;        /**< DC engine */
+    struct dc_engine  *engine;        /**< DC engine */
 };
 
 /**
- * @struct   cogui_dc_hw dc.h	
+ * @struct   dc_hw_t dc.h	
  * @brief    Hardware DC information struct
  * @details  This struct record hardware DC information.
  */
-struct cogui_dc_hw
+struct dc_hw_t
 {
-    cogui_dc_t                  parent;         /**< parent DC pointer  */
+    dc_t                  parent;         /**< parent DC pointer  */
 
-    struct cogui_widget         *owner;         /**< DC owner widget    */
-    struct cogui_graphic_driver *hw_driver;     /**< hardware driver    */
+    struct widget         *owner;         /**< DC owner widget    */
+    struct graphic_driver *hw_driver;     /**< hardware driver    */
 };
 
 /**
- * @struct   cogui_dc_buffer dc.h	
+ * @struct   dc_buffer_t dc.h	
  * @brief    Buffer DC information struct
  * @details  This struct record buffer DC information.
  */
-struct cogui_dc_buffer
+struct dc_buffer_t
 {
-    cogui_dc_t parent;                          /**< parent DC pointer  */
+    dc_t parent;                          /**< parent DC pointer  */
 
     /*
     struct cogui_gc gc;
@@ -135,39 +136,37 @@ struct cogui_dc_buffer
 };
 
 /* create a hardware DC */
-cogui_dc_t *cogui_dc_hw_create(struct cogui_widget *owner);
+dc_t *dc_hw_create(struct widget *owner);
 
-void cogui_dc_draw_line(cogui_dc_t *dc, int32_t x1, int32_t x2, int32_t y1, int32_t y2);
-void cogui_dc_draw_rect(cogui_dc_t *dc, cogui_rect_t *rect);
-void cogui_dc_draw_shaded_rect(cogui_dc_t *dc, cogui_rect_t *rect, cogui_color_t c1, cogui_color_t c2);
-void cogui_dc_fill_rect_forecolor(cogui_dc_t *dc, cogui_rect_t *rect);
-//void cogui_dc_draw_round_rect(cogui_dc_t *dc, cogui_rect_t *rect, int32_t r);
-//void cogui_dc_fill_round_rect(cogui_dc_t *dc, cogui_rect_t *rect, int32_t r);
+void gui_dc_draw_line(dc_t *dc, int32_t x1, int32_t x2, int32_t y1, int32_t y2);
+void gui_dc_draw_rect(dc_t *dc, rect_t *rect);
+void gui_dc_draw_shaded_rect(dc_t *dc, rect_t *rect, color_t c1, color_t c2);
+void gui_dc_fill_rect_forecolor(dc_t *dc, rect_t *rect);
 
-void cogui_dc_draw_horizontal_line(cogui_dc_t *dc, int32_t x1, int32_t x2, int32_t y);
-void rtgui_dc_draw_vertical_line(cogui_dc_t *dc, int32_t x, int32_t y1, int32_t y2);
+void gui_dc_draw_horizontal_line(dc_t *dc, int32_t x1, int32_t x2, int32_t y);
+void gui_dc_draw_vertical_line(dc_t *dc, int32_t x, int32_t y1, int32_t y2);
 
-void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect);
+void gui_dc_draw_border(dc_t *dc, rect_t *rect);
 
-void cogui_dc_draw_text(cogui_dc_t *dc, cogui_rect_t *rect, char *str);
+void gui_dc_draw_text(dc_t *dc, rect_t *rect, char *str);
 
 /* get current graph context */
-struct cogui_gc *cogui_dc_get_gc(cogui_dc_t *dc);
+struct gc *gui_dc_get_gc(dc_t *dc);
 
-struct cogui_widget *cogui_dc_get_owner(cogui_dc_t *dc);
+struct widget *gui_dc_get_owner(dc_t *dc);
 
 /* DC usage function */
-cogui_dc_t *cogui_dc_begin_drawing(struct cogui_widget *owner);
-void cogui_dc_end_drawing(cogui_dc_t *dc);
+dc_t *gui_dc_begin_drawing(struct widget *owner);
+void gui_dc_end_drawing(dc_t *dc);
 
-#define cogui_dc_draw_point(dc, x, y, c)\
-{\
-    (dc)->engine->draw_color_point((dc), (x), (y), (c));\
-}\
+#define gui_dc_draw_point(dc, x, y, c)                      \
+{                                                           \
+    (dc)->engine->draw_color_point((dc), (x), (y), (c));    \
+}                                                           \
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __COGUI_DC_H__ */
+#endif /* __GUI_DC_H__ */

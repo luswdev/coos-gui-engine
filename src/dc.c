@@ -21,23 +21,23 @@
  * @retval     None
  *******************************************************************************
  */
-void cogui_dc_draw_line(cogui_dc_t *dc, int32_t x1, int32_t x2, int32_t y1, int32_t y2)
+void gui_dc_draw_line(dc_t *dc, int32_t x1, int32_t x2, int32_t y1, int32_t y2)
 {
-	COGUI_ASSERT(dc != Co_NULL);
-	
-    /* this is a line width 1 */
-	if (x1 == x2)
-		dc->engine->draw_vline(dc, x1, y1, y2);
-    /* this is a line height 1*/
-	else if (y1 == y2)
-		dc->engine->draw_hline(dc, x1, x2, y1);
-    /* this is a line like rectangle */
-	else{
+	ASSERT(dc != Co_NULL);
+
+    if (x1 == x2 && y1 == y2) {
+		dc->engine->draw_point(dc, x1, y1);        /* this is a point         */
+    } else if (x1 == x2) {
+		dc->engine->draw_vline(dc, x1, y1, y2);    /* this is a line width 1  */
+    } else if (y1 == y2) { 
+		dc->engine->draw_hline(dc, x1, x2, y1);    /* this is a line height 1 */
+    } else{        /* this is a line like rectangle                           */              
 		_int_comp(x1, x2);
 		_int_comp(y1, y2);
 		
-		for( ; y1 < y2; y1++)
+		for( ; y1 < y2; y1++) {
 			dc->engine->draw_hline(dc, x1, x2, y1);
+        }
 	}
 }
 
@@ -50,25 +50,19 @@ void cogui_dc_draw_line(cogui_dc_t *dc, int32_t x1, int32_t x2, int32_t y1, int3
  * @retval     None
  *******************************************************************************
  */
-void cogui_dc_draw_rect(cogui_dc_t *dc, cogui_rect_t *rect)
+void gui_dc_draw_rect(dc_t *dc, rect_t *rect)
 {
-	COGUI_ASSERT(dc != Co_NULL);
+	ASSERT(dc != Co_NULL);
 	
-	if (rect == Co_NULL)
-		return;
+	if (rect == Co_NULL) {
+		return;     /* if no need to draw, just return                        */
+    }
 	
-	int32_t x1, x2, y1, y2;
-	
-	x1 = rect->x1;
-	x2 = rect->x2;
-	y1 = rect->y1;
-	y2 = rect->y2;
-	
-    /* draw rectangle's 4 edges*/
-	dc->engine->draw_vline(dc, x1,   y1, y2);
-	dc->engine->draw_vline(dc, x2-1, y1, y2);
-	dc->engine->draw_hline(dc, x1,   x2, y1);
-	dc->engine->draw_hline(dc, x1,   x2, y2-1);
+    /* draw rectangle's 4 edges                                               */
+	dc->engine->draw_vline(dc, rect->x1,   rect->y1, rect->y2);
+	dc->engine->draw_vline(dc, rect->x2-1, rect->y1, rect->y2);
+	dc->engine->draw_hline(dc, rect->x1,   rect->x2, rect->y1);
+	dc->engine->draw_hline(dc, rect->x1,   rect->x2, rect->y2-1);
 }
 
 /**
@@ -84,78 +78,75 @@ void cogui_dc_draw_rect(cogui_dc_t *dc, cogui_rect_t *rect)
  *             with foreground color.
  *******************************************************************************
  */
-void cogui_dc_fill_rect_forecolor(cogui_dc_t *dc, cogui_rect_t *rect)
+void gui_dc_fill_rect_forecolor(dc_t *dc, rect_t *rect)
 {
-	COGUI_ASSERT(dc != Co_NULL);
+	ASSERT(dc != Co_NULL);
 	
-	cogui_color_t save_color;
+	color_t save_color;
 	
     /* Since the fill_rect interface will filled with background color, so we
      * should save the old background color and change background into current
-     * foreground color */
-	save_color      = COGUI_DC_BC(dc);
-	COGUI_DC_BC(dc) = COGUI_DC_FC(dc);
+     * foreground color                                                       */
+	save_color    = GUI_DC_BC(dc);
+	GUI_DC_BC(dc) = GUI_DC_FC(dc);
 	
-    /* call interface */
-	dc->engine->fill_rect(dc, rect);
+	dc->engine->fill_rect(dc, rect);    /* call de engine                     */
 	
-    /* restore background color */
-	COGUI_DC_BC(dc) = save_color;
+	GUI_DC_BC(dc) = save_color;   /* restore background color               */
 }
 
-void cogui_dc_draw_shaded_rect(cogui_dc_t *dc, cogui_rect_t *rect, cogui_color_t c1, cogui_color_t c2)
+void gui_dc_draw_shaded_rect(dc_t *dc, rect_t *rect, color_t c1, color_t c2)
 {
-	COGUI_ASSERT(dc != Co_NULL);
+	ASSERT(dc != Co_NULL);
 		
-	COGUI_DC_FC(dc) = c1;
+	GUI_DC_FC(dc) = c1;
 	dc->engine->draw_vline(dc, rect->x1,   rect->y1, rect->y2);
 	dc->engine->draw_hline(dc, rect->x1+1, rect->x2, rect->y1);
 	
-	COGUI_DC_FC(dc) = c2;
+	GUI_DC_FC(dc) = c2;
 	dc->engine->draw_vline(dc, rect->x2-1, rect->y1, rect->y2);
 	dc->engine->draw_hline(dc, rect->x1,   rect->x2, rect->y2-1);
 }
 
-void cogui_dc_draw_border(cogui_dc_t *dc, cogui_rect_t *rect)
+void gui_dc_draw_border(dc_t *dc, rect_t *rect)
 {
-	cogui_rect_t r = *rect;
-	cogui_color_t save_color;
-	
-	COGUI_ASSERT(dc != Co_NULL);
-	
-	if (rect == Co_NULL)
-		return;
-	
-    save_color      = COGUI_DC_FC(dc);
-	COGUI_DC_FC(dc) = light_grey;
+	ASSERT(dc != Co_NULL);
 
-	cogui_dc_draw_rect(dc, &r);
-
-    COGUI_RECT_EXPAND(&r, -1);
-
-	cogui_dc_draw_rect(dc, &r);
-
-    COGUI_DC_FC(dc) = save_color;
-}
-
-void cogui_dc_draw_text(cogui_dc_t *dc, cogui_rect_t *rect, char *str)
-{
-	COGUI_ASSERT(dc != Co_NULL);
-
-    /* pass if nothing to show */
-    if (str == Co_NULL) {
-        return;
+    if (rect == Co_NULL) {
+		return;     /* if no need to draw, just return                        */
     }
 
-    uint16_t text_align = COGUI_DC_TA(dc);
+	rect_t r = *rect;
+	color_t save_color;
+
+    save_color    = GUI_DC_FC(dc);
+	GUI_DC_FC(dc) = light_grey;
+
+	gui_dc_draw_rect(dc, &r);     /* first rect with light_grey for border  */
+
+    GUI_RECT_EXPAND(&r, -1);
+	gui_dc_draw_rect(dc, &r);     /* draw again since border width == 2     */
+
+    GUI_DC_FC(dc) = save_color;   /* restore original foreground color      */
+}
+
+void gui_dc_draw_text(dc_t *dc, rect_t *rect, char *str)
+{
+	ASSERT(dc != Co_NULL);
+
+    if (str == Co_NULL) {
+        return;         /* pass if nothing to show                            */
+    }
+
+    uint16_t text_align = GUI_DC_TA(dc);
     int16_t  tx, ty;
 
     /* default style setting */
-    if (text_align == COGUI_TEXT_ALIGN_NONE) {
+    if (text_align == GUI_TEXT_ALIGN_NONE) {
         tx = ty = 0;
     }
 
-    uint32_t text_width = cogui_get_text_width(str, COGUI_DC_FONT(dc));
+    uint32_t text_width = cogui_get_text_width(str, GUI_DC_FONT(dc));
     uint32_t rect_width = COGUI_RECT_WIDTH(rect);
 
     /* if text is too long, it will no longer align */
@@ -164,18 +155,18 @@ void cogui_dc_draw_text(cogui_dc_t *dc, cogui_rect_t *rect, char *str)
     }
 
     /* fixed text start point x */
-    if (text_align & COGUI_TEXT_ALIGN_LEFT) {
+    if (text_align & GUI_TEXT_ALIGN_LEFT) {
         tx = 0;
     }
-    else if (text_align & COGUI_TEXT_ALIGN_CENTER) {
+    else if (text_align & GUI_TEXT_ALIGN_CENTER) {
         tx = rect_width - text_width;
         tx /=2;
     }
-    else if (text_align & COGUI_TEXT_ALIGN_RIGHT) {
+    else if (text_align & GUI_TEXT_ALIGN_RIGHT) {
         tx = rect_width - text_width;
     }
 
-    uint32_t text_height = cogui_get_text_height(str, COGUI_DC_FONT(dc), rect);
+    uint32_t text_height = cogui_get_text_height(str, GUI_DC_FONT(dc), rect);
     uint32_t rect_height = COGUI_RECT_HEIGHT(rect);
 
     /* text overflow-y: hidden */
@@ -184,19 +175,19 @@ void cogui_dc_draw_text(cogui_dc_t *dc, cogui_rect_t *rect, char *str)
     } 
 
     /* fixed text start point y */
-    if (text_align & COGUI_TEXT_ALIGN_TOP) {
+    if (text_align & GUI_TEXT_ALIGN_TOP) {
         ty = 0;
     }
-    else if (text_align & COGUI_TEXT_ALIGN_MIDDLE) {
+    else if (text_align & GUI_TEXT_ALIGN_MIDDLE) {
         ty = rect_height - text_height;
         ty/=2;
     }
-    else if (text_align & COGUI_TEXT_ALIGN_BOTTOM) {
+    else if (text_align & GUI_TEXT_ALIGN_BOTTOM) {
         ty = rect_height - text_height;
     }
 
     /* put text in the right place */
-    cogui_lcd_puts(tx+rect->x1, ty+rect->y1, str, COGUI_DC_FONT(dc), dc, rect);
+    cogui_lcd_puts(tx+rect->x1, ty+rect->y1, str, GUI_DC_FONT(dc), dc, rect);
 }
 
 /**
@@ -211,23 +202,23 @@ void cogui_dc_draw_text(cogui_dc_t *dc, cogui_rect_t *rect, char *str)
  *             pointer.
  *******************************************************************************
  */
-struct cogui_gc *cogui_dc_get_gc(cogui_dc_t *dc)
+struct gc *gui_dc_get_gc(dc_t *dc)
 {
-	struct cogui_gc *gc = Co_NULL;
+	struct gc *gc = Co_NULL;
 	
-	COGUI_ASSERT(dc != Co_NULL);
+	ASSERT(dc != Co_NULL);
 	
 	switch(dc->type) {
-		case COGUI_DC_HW: {
-			struct cogui_dc_hw *dchw;
-			dchw = (struct cogui_dc_hw *)dc;
+		case GUI_DC_HW: {
+			struct dc_hw_t *dchw;
+			dchw = (struct dc_hw_t *)dc;
 			
             /* get graph  context by its owner */
 			gc = &dchw->owner->gc;
 			break;
 		}
 
-		case COGUI_DC_BUFFER:
+		case GUI_DC_BUFFER:
 		default:
 			break;
 	}
@@ -247,23 +238,23 @@ struct cogui_gc *cogui_dc_get_gc(cogui_dc_t *dc)
  *             pointer.
  *******************************************************************************
  */
-struct cogui_widget *cogui_dc_get_owner(cogui_dc_t *dc)
+struct widget *gui_dc_get_owner(dc_t *dc)
 {
-	cogui_widget_t *owner = Co_NULL;
+	widget_t *owner = Co_NULL;
 	
-	COGUI_ASSERT(dc != Co_NULL);
+	ASSERT(dc != Co_NULL);
 	
 	switch(dc->type) {
-		case COGUI_DC_HW: {
-			struct cogui_dc_hw *dchw;
-			dchw = (struct cogui_dc_hw *)dc;
+		case GUI_DC_HW: {
+			struct dc_hw_t *dchw;
+			dchw = (struct dc_hw_t *)dc;
 			
             /* get graph  context by its owner */
 			owner = dchw->owner;
 			break;
 		}
 
-		case COGUI_DC_BUFFER:
+		case GUI_DC_BUFFER:
 		default:
 			break;
 	}
@@ -283,15 +274,15 @@ struct cogui_widget *cogui_dc_get_owner(cogui_dc_t *dc)
  *             for it.
  *******************************************************************************
  */
-cogui_dc_t *cogui_dc_begin_drawing(cogui_widget_t *owner)
+dc_t *gui_dc_begin_drawing(widget_t *owner)
 {
-    cogui_dc_t *dc;
+    dc_t *dc;
 
-    COGUI_ASSERT(owner != Co_NULL);
+    ASSERT(owner != Co_NULL);
 
 #if (COGUI_SCREEN_TYPE == 0)
     /* call hardware interface */
-    dc = cogui_dc_hw_create(owner);
+    dc = dc_hw_create(owner);
 #else
 #endif
 
@@ -312,9 +303,9 @@ cogui_dc_t *cogui_dc_begin_drawing(cogui_widget_t *owner)
  * @details    This function is called to free a DC pointer.
  *******************************************************************************
  */
-void cogui_dc_end_drawing(cogui_dc_t *dc)
+void gui_dc_end_drawing(dc_t *dc)
 {
-    COGUI_ASSERT(dc != Co_NULL);
+    ASSERT(dc != Co_NULL);
 
     /* call DC's fini function */
     dc->engine->fini(dc);

@@ -7,8 +7,8 @@
  *******************************************************************************
  */ 
 
-#ifndef __COGUI_TITLE_H__
-#define __COGUI_TITLE_H__
+#ifndef __GUI_TITLE_H__
+#define __GUI_TITLE_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,10 +25,10 @@ extern "C" {
 #define COGUI_WINTITLE_BTN_HEIGHT           28          /**< Title button height            */
 #define COGUI_WINTITLE_BTN_INNER_HEIGHT     22          /**< Title button drawing height    */
 
-struct cogui_window;
+struct window;
 
-void cogui_title_create(struct cogui_window *win);
-void cogui_title_delete(struct cogui_window *win);
+void cogui_title_create(struct window *win);
+void cogui_title_delete(struct window *win);
 
 #ifdef __cplusplus
 }

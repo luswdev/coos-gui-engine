@@ -9,22 +9,22 @@
 
 #include <cogui.h>
 
-struct cogui_cursor *_cursor=Co_NULL;
-extern cogui_window_t *main_page;
+struct cursor *_cursor=Co_NULL;
+extern window_t *main_page;
 bool_t first_show = 1;
 
 void _cogui_mouse_init()
 {
-    _cursor = cogui_malloc(sizeof(struct cogui_cursor));
-    COGUI_ASSERT(_cursor != Co_NULL);
+    _cursor = gui_malloc(sizeof(struct cursor));
+    ASSERT(_cursor != Co_NULL);
 
-    cogui_memset(_cursor, 0, sizeof(struct cogui_cursor));
+    cogui_memset(_cursor, 0, sizeof(struct cursor));
 
     _cursor->cursor_widget = cogui_widget_create(main_page);
 	cogui_widget_set_rectangle(_cursor->cursor_widget, 0, 0, 240, 320);
     cogui_widget_set_font(_cursor->cursor_widget, &tm_symbol_16x16);
 
-    _cursor->frame_buffer = ((struct cogui_dc_hw *)(_cursor->cursor_widget->dc_engine))->hw_driver->frame_buffer;
+    _cursor->frame_buffer = ((struct dc_hw_t *)(_cursor->cursor_widget->dc_engine))->hw_driver->frame_buffer;
 
     first_show = 1;
 
@@ -39,7 +39,7 @@ void cogui_mouse_return_picture(void)
 
     for (i=0; i<16; i++) {
         for (j=0; j<16; j++) {
-            cogui_dc_draw_point(_cursor->cursor_widget->dc_engine, _cursor->cx+j, _cursor->cy+i, _cursor->save_picture[i][j]);
+            gui_dc_draw_point(_cursor->cursor_widget->dc_engine, _cursor->cx+j, _cursor->cy+i, _cursor->save_picture[i][j]);
         }
     }
 }
@@ -51,7 +51,7 @@ void cogui_mouse_set_position(uint16_t x, uint16_t y)
     _cursor->cx = x;
     _cursor->cy = y;
     
-    cogui_mouse_show();
+    gui_mouse_show();
 }
 
 void cogui_mouse_set_speed(uint8_t speed)
@@ -100,7 +100,7 @@ void cogui_mouse_move_delta(int32_t dx,int32_t dy)
     cogui_mouse_move_to(x, y);
 }
 
-void cogui_mouse_get_position(cogui_point_t *pt)
+void gui_mouse_get_position(point_t *pt)
 {
     pt->x = _cursor->cx;
     pt->y = _cursor->cy;
@@ -124,17 +124,17 @@ void cogui_mouse_restore(void)
     first_show = 0;
 }
 
-void cogui_mouse_show(void)
+void gui_mouse_show(void)
 {
     COGUI_CHECK_CURSOR();
 
     cogui_mouse_restore();
 
-    cogui_rect_t rect;
+    rect_t rect;
     COGUI_SET_RECT(&rect, _cursor->cx, _cursor->cy, 16, 16);
 
 	_cursor->cursor_widget->gc.foreground = white;
-    cogui_dc_draw_text(_cursor->cursor_widget->dc_engine, &rect, "#");
+    gui_dc_draw_text(_cursor->cursor_widget->dc_engine, &rect, "#");
 	_cursor->cursor_widget->gc.foreground = black;
-    cogui_dc_draw_text(_cursor->cursor_widget->dc_engine, &rect, "$");
+    gui_dc_draw_text(_cursor->cursor_widget->dc_engine, &rect, "$");
 }

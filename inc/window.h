@@ -7,8 +7,8 @@
  *******************************************************************************
  */ 
 
-#ifndef __COGUI_WINDOW_H__
-#define __COGUI_WINDOW_H__
+#ifndef __GUI_WINDOW_H__
+#define __GUI_WINDOW_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,7 +24,7 @@ extern "C" {
 #define COGUI_WINDOW_FLAG_INIT        0x00
 #define COGUI_WINDOW_FLAG_SHOW        0x01
 
-#define COGUI_WINDOW(w)     ((struct cogui_window *)(w))
+#define COGUI_WINDOW(w)     ((struct window *)(w))
 
 /* enable (show) */
 #define COGUI_WINDOW_ENABLE(w)          COGUI_WINDOW((w))->flag |= COGUI_WINDOW_FLAG_SHOW
@@ -39,37 +39,37 @@ extern "C" {
  * @brief    Window struct
  * @details  This struct is for window.
  */
-struct cogui_window
+struct window
 {
     /* window magic word field */
     uint32_t         magic;                          /**< should be 0x57696E00                   */
 
     /* meta data field */
-    cogui_widget_t *    widget_list;                    /**< widget list under this window          */
-    int16_t          id;                             /**< window id (-1 for main window          */
+    widget_t *    widget_list;                    /**< widget list under this window          */
+    int16_t          id;                             /**< window id -1 for main window          */
     uint16_t         style;                          /**< window style                           */
     int32_t          flag;                           /**< window flag                            */
     int64_t          update;                         /**< window update count                    */
     int32_t          widget_cnt;                     /**< how many widgets this window have      */
-    cogui_widget_t *    focus_widget;                   /**< current focus widget                   */
-    cogui_app_t *       app;                            /**< window belongs to which application    */
-    cogui_widget_t *    title;                          /**< title bar widget set                   */
+    widget_t *    focus_widget;                   /**< current focus widget                   */
+    app_t *       app;                            /**< window belongs to which application    */
+    widget_t *    title;                          /**< title bar widget set                   */
     char *              title_name;                     /**< title belongs to application           */
 
     /* event pointer feild */
-    cogui_widget_t *    last_mouse_event_widget;        /**< last mouse event widget                */
+    widget_t *    last_mouse_event_widget;        /**< last mouse event widget                */
 
     /* user private data field */
     void *              user_data;                      /**< user private data                      */
 
     /* event handler field */
-    StatusType (*on_activate)(cogui_widget_t *widget, struct cogui_event *event);   /**<*/
-    StatusType (*on_deactivate)(cogui_widget_t *widget, struct cogui_event *event); /**<*/
-    StatusType (*on_key)(cogui_widget_t *widget, struct cogui_event *event);        /**<*/
-    uint64_t (*_do_show)(struct cogui_window *win);                              /**<*/
-    StatusType  (*handler)(struct cogui_window *widget ,struct cogui_event *event); /**<*/
+    StatusType (*on_activate)(widget_t *widget, struct event *event);   /**<*/
+    StatusType (*on_deactivate)(widget_t *widget, struct event *event); /**<*/
+    StatusType (*on_key)(widget_t *widget, struct event *event);        /**<*/
+    uint64_t (*_do_show)(struct window *win);                              /**<*/
+    StatusType  (*handler)(struct window *widget ,struct event *event); /**<*/
 };
-typedef struct cogui_window cogui_window_t;
+typedef struct window window_t;
 
 /**
  * @struct   main_app_table
@@ -77,43 +77,43 @@ typedef struct cogui_window cogui_window_t;
  * @details  This struct is for manage installed app of main window.
  */
 struct main_app_table {
-    cogui_widget_t *app_icon;
-    cogui_widget_t *app_title_box;
+    widget_t *app_icon;
+    widget_t *app_title_box;
     char *          title;
 };
 
-cogui_window_t *cogui_window_create(uint16_t style);
-void cogui_window_delete(cogui_window_t *win);
+window_t *cogui_window_create(uint16_t style);
+void cogui_window_delete(window_t *win);
 
-cogui_window_t *cogui_main_window_create(void);
+window_t *gui_main_window_create(void);
 
-cogui_widget_t *cogui_window_get_mouse_event_widget(cogui_window_t *top, uint16_t cx, uint16_t cy);
-StatusType cogui_window_update(cogui_window_t *top, cogui_widget_t *widget);
-StatusType cogui_window_refresh(cogui_window_t *top);
+widget_t *gui_window_get_mouse_event_widget(window_t *top, uint16_t cx, uint16_t cy);
+StatusType cogui_window_update(window_t *top, widget_t *widget);
+StatusType gui_window_refresh(window_t *top);
 
-cogui_window_t *cogui_get_main_window(void);
-cogui_window_t *cogui_get_current_window(void);
+window_t *cogui_get_main_window(void);
+window_t *cogui_get_current_window(void);
 
-int16_t cogui_main_page_app_install(char *title);
+int16_t gui_main_page_app_install(char *title);
 void cogui_main_page_app_uninstall(int16_t);
 
-StatusType cogui_window_close(cogui_window_t *win);
+StatusType gui_window_close(window_t *win);
 
-StatusType cogui_window_show(cogui_window_t *win);
-StatusType cogui_window_onshow(cogui_window_t *win);
+StatusType gui_window_show(window_t *win);
+StatusType cogui_window_onshow(window_t *win);
 
-StatusType cogui_window_hide(cogui_window_t *win);
-StatusType cogui_window_onhide(cogui_window_t *win);
+StatusType gui_window_hide(window_t *win);
+StatusType cogui_window_onhide(window_t *win);
 
-StatusType cogui_window_active(cogui_window_t *win);
-StatusType cogui_window_is_activated(cogui_window_t *win);
+StatusType cogui_window_active(window_t *win);
+StatusType cogui_window_is_activated(window_t *win);
 
-void cogui_window_set_onactivate(cogui_window_t *win, event_handler_ptr handler);
-void cogui_window_set_ondeactive(cogui_window_t *win, event_handler_ptr handler);
-void cogui_window_set_onkey(cogui_window_t *win, event_handler_ptr handler);
+void cogui_window_set_onactivate(window_t *win, event_handler_ptr handler);
+void cogui_window_set_ondeactive(window_t *win, event_handler_ptr handler);
+void cogui_window_set_onkey(window_t *win, event_handler_ptr handler);
 
-void cogui_window_set_title(cogui_window_t *win, const U8 *title);
-uint8_t *cogui_window_get_title(cogui_window_t *win);
+void cogui_window_set_title(window_t *win, const uint8_t *title);
+uint8_t *cogui_window_get_title(window_t *win);
 
 void cogui_assert_failed_page(const char* ex, uint16_t line, const char* func);
 

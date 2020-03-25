@@ -9,15 +9,15 @@
 
 #include <cogui.h>
 
-static cogui_graphic_driver_t _driver;
-static cogui_graphic_driver_t *_current_driver = &_driver;
+static graphic_driver_t _driver;
+static graphic_driver_t *_current_driver = &_driver;
 
-cogui_graphic_driver_t *cogui_graphic_driver_get_default()
+graphic_driver_t *gui_graphic_driver_get_default(void)
 {   
     return _current_driver;
 }
 
-void cogui_set_graphic_driver(cogui_graphic_driver_t *driver)
+void gui_set_graphic_driver(graphic_driver_t *driver)
 {
 	_current_driver = driver;
 }
