@@ -1,16 +1,13 @@
 /**
  *******************************************************************************
  * @file       widget.c
- * @version    V0.7.2
- * @date       2020.03.01
+ * @version    V0.7.3
+ * @date       2020.03.25
  * @brief      Some widget function for GUI engine's event.	
  *******************************************************************************
  */ 
 
 #include <cogui.h>
-
-const color_t default_foreground = GUI_RGB(0xff, 0xff, 0xff);;        /**< Set default foreground to white */
-const color_t default_background = GUI_RGB(0x00, 0x00, 0x00);;        /**< Set default background to black */
 
 extern font_t *default_font; 
 extern window_t *main_page;
@@ -25,8 +22,8 @@ static void _gui_widget_init(widget_t *widget)
     widget->flag = GUI_WIDGET_FLAG_INIT | GUI_WIDGET_TYPE_INIT;
 
     /* set default fore/background */
-	widget->gc.foreground = default_foreground;
-	widget->gc.background = default_background;
+	widget->gc.foreground = white;
+	widget->gc.background = black;
     widget->gc.font       = default_font;
 
     /* initial extent rectangle */
