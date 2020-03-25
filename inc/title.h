@@ -15,23 +15,23 @@ extern "C" {
 #endif
 
 /* button type */
-#define COGUI_WINTITLE_BTN_CLOSE      0x01
-#define COGUI_WINTITLE_BTN_MINI       0x02
-#define COGUI_WINTITLE_BTN_BORDER     0x04
+#define GUI_WINTITLE_BTN_CLOSE      0x01
+#define GUI_WINTITLE_BTN_HIDE       0x02
+#define GUI_WINTITLE_BTN_BORDER     0x04
 
-#define COGUI_WINTITLE_BORDER_SIZE          2
+#define GUI_WINTITLE_BORDER_SIZE          2
 
-#define COGUI_WINTITLE_HEIGHT               40          /**< Title height                   */
-#define COGUI_WINTITLE_BTN_HEIGHT           28          /**< Title button height            */
-#define COGUI_WINTITLE_BTN_INNER_HEIGHT     22          /**< Title button drawing height    */
+#define GUI_WINTITLE_HEIGHT               40          /**< Title height                   */
+#define GUI_WINTITLE_BTN_HEIGHT           28          /**< Title button height            */
+#define GUI_WINTITLE_BTN_INNER_HEIGHT     22          /**< Title button drawing height    */
 
 struct window;
 
-void cogui_title_create(struct window *win);
-void cogui_title_delete(struct window *win);
+void gui_title_create(struct window *win);
+void gui_title_delete(struct window *win);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __COGUI_TITLE_H__ */
+#endif /* __GUI_TITLE_H__ */

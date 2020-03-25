@@ -10,7 +10,7 @@
 #include <cogui.h>
 
 window_t *main_page       = Co_NULL;
-static StatusType app_event_handler(struct event *event);
+static StatusType app_event_handler(event_t *event);
 
 /**
  *******************************************************************************
@@ -22,7 +22,7 @@ static StatusType app_event_handler(struct event *event);
  */
 void _app_init(app_t *app)
 {
-    cogui_memset(app, 0, sizeof(app_t));     /* set all feild to zero first   */
+    gui_memset(app, 0, sizeof(app_t));     /* set all feild to zero first   */
 	app->handler = app_event_handler;        /* set app default event handler */
 }
 
@@ -42,7 +42,7 @@ app_t *gui_app_create(char *title)
     app_t *app;
     app_t *srv_app;
     OS_TID tid = CoGetCurTaskID();
-    struct event event;
+    event_t event;
 
     ASSERT(tid != 0);
 
@@ -89,7 +89,7 @@ void gui_app_delete(app_t *app)
     ASSERT(app->tid);
     ASSERT(app->mq);
 
-    struct event event;
+    event_t event;
 
     gui_free(app->name);        /* free application name buffer               */
     app->name = Co_NULL;
@@ -119,9 +119,9 @@ static void _app_event_loop(app_t *app)
 {
     StatusType  result;
     uint16_t current_ref;
-    struct event *event;
+    event_t *event;
 
-    event = (struct event *)app->event_buffer;  /* set event buffer for recv  */
+    event = (event_t *)app->event_buffer;  /* set event buffer for recv  */
 
     current_ref = ++app->ref_cnt;
     while (current_ref <= app->ref_cnt) {
@@ -185,7 +185,7 @@ void gui_app_exit(app_t *app, uint16_t code)
  */
 StatusType gui_app_close(app_t *app)
 {
-	struct event event;
+	event_t event;
 
     EVENT_INIT(&event, EVENT_APP_DELE);
     event.app = app;            /* post delete event to app                   */
@@ -239,7 +239,7 @@ app_t *gui_app_self(void)
  * @retval     GUI_E_ERROR      Occured some error while handle event.
  *******************************************************************************
  */
-static StatusType app_event_handler(struct event *event)
+static StatusType app_event_handler(event_t *event)
 {
 	ASSERT(event != Co_NULL);
 
@@ -278,10 +278,10 @@ static StatusType app_event_handler(struct event *event)
                 gui_widget_focus(ewgt); /* focus widget if mouse down         */
                 gui_mouse_show();       /* show cursor                        */
             } else if (last_ewgt == ewgt) { /* click event raise              */
-                if (ewgt->flag & COGUI_WIDGET_FLAG_TITLE) {
-                    if (ewgt->flag & COGUI_WIDGET_FLAG_CLOSE_BTN) {    
+                if (ewgt->flag & GUI_WIDGET_FLAG_TITLE) {
+                    if (ewgt->flag & GUI_WIDGET_FLAG_CLOSE_BTN) {    
                         gui_window_close(ewin);     /* close window           */
-                    } else if (ewgt->flag & COGUI_WIDGET_FLAG_MINI_BTN) { 
+                    } else if (ewgt->flag & GUI_WIDGET_FLAG_HIDE_BTN) { 
                         gui_window_hide(ewin);      /* hide  window           */
                     }
                 } else if (eapp->optional_handler != Co_NULL) {

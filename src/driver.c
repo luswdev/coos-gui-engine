@@ -9,8 +9,8 @@
 
 #include <cogui.h>
 
-static graphic_driver_t _driver;
-static graphic_driver_t *_current_driver = &_driver;
+graphic_driver_t _driver;
+graphic_driver_t *_current_driver = &_driver;
 
 graphic_driver_t *gui_graphic_driver_get_default(void)
 {   

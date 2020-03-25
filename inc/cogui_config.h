@@ -35,4 +35,4 @@ extern "C" {
 }
 #endif
 
-#endif /* __COGUI_CONFIG_H__ */
+#endif /* __GUI_CONFIG_H__ */

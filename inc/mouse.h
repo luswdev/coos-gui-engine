@@ -14,14 +14,14 @@
 extern "C" {
 #endif
 
-#define COGUI_MOUSE_SPEED_FAST      2
-#define COGUI_MOUSE_SPEED_MIDDLE    4
-#define COGUI_MOUSE_SPEED_SLOW      8
+#define GUI_MOUSE_SPEED_FAST      2
+#define GUI_MOUSE_SPEED_MIDDLE    4
+#define GUI_MOUSE_SPEED_SLOW      8
 
-#define COGUI_CHECK_CURSOR()    \
+#define GUI_CHECK_CURSOR()    \
 {                               \
     if (_cursor == Co_NULL) {   \
-        _cogui_mouse_init();    \
+        _gui_mouse_init();    \
     }                           \
 }                               \
 
@@ -35,21 +35,22 @@ struct cursor
     uint32_t frame_buffer;
     color_t save_picture[16][16]; 
 };
+typedef struct cursor cursor_t;
 
-void cogui_mouse_return_picture(void);
+void gui_mouse_return_picture(void);
 
-void cogui_mouse_set_position(uint16_t x, uint16_t y);
-void cogui_mouse_set_speed(uint8_t speed);
-void cogui_mouse_move_to(uint16_t x, uint16_t y);
-void cogui_mouse_move_delta(int32_t dx,int32_t dy);
+void gui_mouse_set_position(uint16_t x, uint16_t y);
+void gui_mouse_set_speed(uint8_t speed);
+void gui_mouse_move_to(uint16_t x, uint16_t y);
+void gui_mouse_move_delta(int32_t dx,int32_t dy);
 
 void gui_mouse_get_position(point_t *pt);
 
-void cogui_mouse_restore(void);
+void gui_mouse_restore(void);
 void gui_mouse_show(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __COGUI_MOUSE_H__ */
+#endif /* __GUI_MOUSE_H__ */

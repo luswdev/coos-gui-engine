@@ -64,6 +64,7 @@ struct event {
 
     char *title;
 };
+typedef struct event event_t;
 
 #define EVENT_INIT(e,t)                 \
 {                                       \
@@ -84,4 +85,4 @@ struct event {
 }
 #endif
 
-#endif /* __event_H__ */
+#endif /* __GUI_EVENT_H__ */

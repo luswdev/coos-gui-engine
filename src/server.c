@@ -14,10 +14,10 @@ OS_STK   server_Stk[512]={0};
 extern window_t *main_page;
 extern struct main_app_table main_app_table[9];
 
-void cogui_server_handler_mouse_button(struct event *event)
+void gui_server_handler_mouse_button(event_t *event)
 {
-    cogui_mouse_return_picture();
-    if (cogui_get_current_window() == cogui_get_main_window()) {
+    gui_mouse_return_picture();
+    if (gui_get_current_window() == gui_get_main_window()) {
         point_t cursor_pt;
         widget_t *event_wgt, *last_ewgt = main_page->last_mouse_event_widget;
         gui_mouse_get_position(&cursor_pt);
@@ -35,7 +35,7 @@ void cogui_server_handler_mouse_button(struct event *event)
         }
     } else {
         EVENT_INIT(event, EVENT_MOUSE_BUTTON);
-        event->app = cogui_get_current_window()->app;
+        event->app = gui_get_current_window()->app;
     }
 
     if (event->app != Co_NULL) {
@@ -45,33 +45,32 @@ void cogui_server_handler_mouse_button(struct event *event)
     }
 }
 
-void cogui_server_handler_mouse_motion(struct event *event)
+void gui_server_handler_mouse_motion(event_t *event)
 {
-    cogui_mouse_move_delta(event->dx, event->dy);
+    gui_mouse_move_delta(event->dx, event->dy);
 }
 
-void cogui_server_event_kbd(struct event *event)
+void gui_server_event_kbd(event_t *event)
 {
-    if (event->kbd_type == GUI_KEYDOWN) {
+    if (event->kbd_type == KBD_KEYDOWN) {
         gui_printf("[server] Keyboard event character: %c\r\n", event->ascii_code);
     } else {
         gui_printf("[server] Keyboard event key up.\r\n");
     }
 }
 
-StatusType cogui_server_event_handler(struct event *event)
+StatusType gui_server_event_handler(event_t *event)
 {
     ASSERT(event != Co_NULL);
 
     StatusType result = GUI_E_ERROR;
 
-    //gui_printf("[Server] Got a event no.%d\r\n", event->type);
 
     switch (event->type)
     {
 	case EVENT_APP_CREATE:
     case EVENT_APP_DELE:
-		result = cogui_ack(event, E_OK);
+		result = gui_ack(event, E_OK);
 		break;
 
     case EVENT_PAINT:
@@ -80,15 +79,15 @@ StatusType cogui_server_event_handler(struct event *event)
 		
     /* mouse and keyboard event */
     case EVENT_MOUSE_BUTTON:
-        cogui_server_handler_mouse_button(event);
+        gui_server_handler_mouse_button(event);
         break;
 
     case EVENT_MOUSE_MOTION:
-        cogui_server_handler_mouse_motion(event);
+        gui_server_handler_mouse_motion(event);
         break;
 
     case EVENT_KBD:
-        cogui_server_event_kbd(event);
+        gui_server_event_kbd(event);
         break;
 
     case EVENT_WINDOW_CLOSE:
@@ -104,7 +103,7 @@ StatusType cogui_server_event_handler(struct event *event)
 
     case EVENT_WINDOW_HIDE:
     {
-        if (COGUI_WINDOW_IS_ENABLE(event->win)) {
+        if (GUI_WINDOW_IS_ENABLE(event->win)) {
             result = GUI_E_ERROR;
         }
 
@@ -113,8 +112,6 @@ StatusType cogui_server_event_handler(struct event *event)
         break;
     }
         
-    
-
     default:
         break;
     }
@@ -122,14 +119,14 @@ StatusType cogui_server_event_handler(struct event *event)
     return result;
 }
 
-void cogui_server_entry(void *parameter)
+void gui_server_entry(void *parameter)
 {
     server_app = gui_app_create("Server");
     if(server_app == Co_NULL){
         return;
     }
 
-    server_app->handler = cogui_server_event_handler;
+    server_app->handler = gui_server_event_handler;
 
     gui_app_run(server_app);
     gui_app_delete(server_app);
@@ -138,7 +135,7 @@ void cogui_server_entry(void *parameter)
     CoExitTask();
 }
 
-StatusType cogui_server_post_event(struct event *event)
+StatusType gui_server_post_event(event_t *event)
 {
     StatusType result;
 
@@ -152,7 +149,7 @@ StatusType cogui_server_post_event(struct event *event)
     return result;
 }
 
-StatusType gui_server_post_event_sync(struct event *event)
+StatusType gui_server_post_event_sync(event_t *event)
 {
     StatusType result;
 
@@ -172,7 +169,7 @@ app_t *gui_get_server(void)
     return server_app;
 }
 
-void cogui_server_init(void)
+void gui_server_init(void)
 {
-    CoCreateTask(cogui_server_entry, (void *)0, 15,&server_Stk[511], 512);
+    CoCreateTask(gui_server_entry, (void *)0, 15,&server_Stk[511], 512);
 }

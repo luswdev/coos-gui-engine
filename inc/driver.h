@@ -83,4 +83,4 @@ void gui_set_graphic_driver(graphic_driver_t *driver);
 }
 #endif
 
-#endif /* __COGUI_DRIVER_H__ */
+#endif /* __GUI_DRIVER_H__ */

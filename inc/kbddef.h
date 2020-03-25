@@ -7,8 +7,8 @@
  *******************************************************************************
  */ 
 
-#ifndef __KBD_KBDDEF_H__
-#define __KBD_KBDDEF_H__
+#ifndef __GUI_KBDDEF_H__
+#define __GUI_KBDDEF_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -220,4 +220,4 @@ typedef enum {
 }
 #endif
 
-#endif /* __KBD_KBDDEF_H__ */
+#endif /* __GUI_KBDDEF_H__ */

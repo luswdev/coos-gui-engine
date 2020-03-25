@@ -17,43 +17,43 @@ extern "C" {
 typedef uint64_t color_t;   /**< color type belong to unsigned long integer */
 
 /** determine which color style used */
-#define COGUI_USING_RGB565
-//#define COGUI_USING_BGR565
-//#define COGUI_USING_RGB888
-//#define COGUI_USING_ARGB8888
-//#define COGUI_USING_RGBA8888
-//#define COGUI_USING_ABGR8888
+#define USING_RGB565
+//#define USING_BGR565
+//#define USING_RGB888
+//#define USING_ARGB8888
+//#define USING_RGBA8888
+//#define USING_ABGR8888
 
 /* RGB into integer by different style */
-#define COGUI_RGB565(r,g,b)     ((color_t)((((r)>>3)<<11)|(((g)>>2)<<5)|((b)>>3)))
-#define COGUI_BGR565(b,g,r)     ((color_t)((((b)>>3)<<11)|(((g)>>2)<<5)|((r)>>3)))
-#define COGUI_RGB888(r,g,b)     ((color_t)(((r)<<16)|((g)<<8)|(b)))
-#define COGUI_ARGB8888(a,r,g,b) ((color_t)(((a)<<24)|((r)<<16)|((g)<<8)|(b)))
-#define COGUI_RGBA8888(r,g,b,a) ((color_t)(((r)<<24)|((g)<<16)|((b)<<8)|(a)))
-#define COGUI_ABGR8888(a,b,g,r) ((color_t)(((a)<<24)|((b)<<16)|((g)<<8)|(r)))
+#define GUI_RGB565(r,g,b)     ((color_t)((((r)>>3)<<11)|(((g)>>2)<<5)|((b)>>3)))
+#define GUI_BGR565(b,g,r)     ((color_t)((((b)>>3)<<11)|(((g)>>2)<<5)|((r)>>3)))
+#define GUI_RGB888(r,g,b)     ((color_t)(((r)<<16)|((g)<<8)|(b)))
+#define GUI_ARGB8888(a,r,g,b) ((color_t)(((a)<<24)|((r)<<16)|((g)<<8)|(b)))
+#define GUI_RGBA8888(r,g,b,a) ((color_t)(((r)<<24)|((g)<<16)|((b)<<8)|(a)))
+#define GUI_ABGR8888(a,b,g,r) ((color_t)(((a)<<24)|((b)<<16)|((g)<<8)|(r)))
 
-#ifdef COGUI_USING_RGB565
-#define COGUI_RGB(r,g,b) COGUI_RGB565((r),(g),(b))
+#ifdef USING_RGB565
+#define GUI_RGB(r,g,b) GUI_RGB565((r),(g),(b))
 #endif
 
-#ifdef COGUI_USING_BGR565
-#define COGUI_RGB(r,g,b) COGUI_BGR565((b),(g),(r))
+#ifdef USING_BGR565
+#define GUI_RGB(r,g,b) GUI_BGR565((b),(g),(r))
 #endif
 
-#ifdef COGUI_USING_RGB888
-#define COGUI_RGB(r,g,b) COGUI_RGB565((r),(g),(b))
+#ifdef USING_RGB888
+#define GUI_RGB(r,g,b) GUI_RGB565((r),(g),(b))
 #endif
 
-#ifdef COGUI_USING_ARGB8888
-#define COGUI_RGB(r,g,b) COGUI_ARGB8888(255,(r),(g),(b))
+#ifdef USING_ARGB8888
+#define GUI_RGB(r,g,b) GUI_ARGB8888(255,(r),(g),(b))
 #endif
 
-#ifdef COGUI_USING_RGBA8888
-#define COGUI_RGB(r,g,b) COGUI_RGB565((r),(g),(b), 255)
+#ifdef USING_RGBA8888
+#define GUI_RGB(r,g,b) GUI_RGB565((r),(g),(b), 255)
 #endif
 
-#ifdef COGUI_USING_ABGR8888
-#define COGUI_RGB(r,g,b) COGUI_ABGR8888(255,(b),(g),(r))
+#ifdef USING_ABGR8888
+#define GUI_RGB(r,g,b) GUI_ABGR8888(255,(b),(g),(r))
 #endif
 
 /* extern from color.c */
@@ -75,4 +75,4 @@ extern const color_t black;
 }
 #endif
 
-#endif /* __COGUI_COLOR_H__ */
+#endif /* __GUI_COLOR_H__ */

@@ -9,32 +9,32 @@
 
 #include <cogui.h>
 
-struct cursor *_cursor=Co_NULL;
+cursor_t *_cursor=Co_NULL;
 extern window_t *main_page;
 bool_t first_show = 1;
 
-void _cogui_mouse_init()
+void _gui_mouse_init()
 {
-    _cursor = gui_malloc(sizeof(struct cursor));
+    _cursor = gui_malloc(sizeof(cursor_t));
     ASSERT(_cursor != Co_NULL);
 
-    cogui_memset(_cursor, 0, sizeof(struct cursor));
+    gui_memset(_cursor, 0, sizeof(cursor_t));
 
-    _cursor->cursor_widget = cogui_widget_create(main_page);
-	cogui_widget_set_rectangle(_cursor->cursor_widget, 0, 0, 240, 320);
-    cogui_widget_set_font(_cursor->cursor_widget, &tm_symbol_16x16);
+    _cursor->cursor_widget = gui_widget_create(main_page);
+	gui_widget_set_rectangle(_cursor->cursor_widget, 0, 0, 240, 320);
+    gui_widget_set_font(_cursor->cursor_widget, &tm_symbol_16x16);
 
     _cursor->frame_buffer = ((struct dc_hw_t *)(_cursor->cursor_widget->dc_engine))->hw_driver->frame_buffer;
 
     first_show = 1;
 
-    cogui_mouse_set_speed(COGUI_MOUSE_SPEED_MIDDLE);
-    cogui_mouse_set_position(105, 155);
+    gui_mouse_set_speed(GUI_MOUSE_SPEED_MIDDLE);
+    gui_mouse_set_position(105, 155);
 }
 
-void cogui_mouse_return_picture(void)
+void gui_mouse_return_picture(void)
 {
-    COGUI_CHECK_CURSOR();
+    GUI_CHECK_CURSOR();
     uint16_t i, j;
 
     for (i=0; i<16; i++) {
@@ -44,9 +44,9 @@ void cogui_mouse_return_picture(void)
     }
 }
 
-void cogui_mouse_set_position(uint16_t x, uint16_t y)
+void gui_mouse_set_position(uint16_t x, uint16_t y)
 {
-    COGUI_CHECK_CURSOR();
+    GUI_CHECK_CURSOR();
 
     _cursor->cx = x;
     _cursor->cy = y;
@@ -54,16 +54,16 @@ void cogui_mouse_set_position(uint16_t x, uint16_t y)
     gui_mouse_show();
 }
 
-void cogui_mouse_set_speed(uint8_t speed)
+void gui_mouse_set_speed(uint8_t speed)
 {
-    COGUI_CHECK_CURSOR();
+    GUI_CHECK_CURSOR();
 
     _cursor->speed = speed;
 }
 
-void cogui_mouse_move_to(uint16_t x,uint16_t y)
+void gui_mouse_move_to(uint16_t x,uint16_t y)
 {
-    COGUI_CHECK_CURSOR();
+    GUI_CHECK_CURSOR();
 
     if (x > 238) {
         x = 238;
@@ -77,15 +77,15 @@ void cogui_mouse_move_to(uint16_t x,uint16_t y)
     }
 
     if (!first_show) {
-        cogui_mouse_return_picture();
+        gui_mouse_return_picture();
     }
 
-    cogui_mouse_set_position(x, y);
+    gui_mouse_set_position(x, y);
 }
 
-void cogui_mouse_move_delta(int32_t dx,int32_t dy)
+void gui_mouse_move_delta(int32_t dx,int32_t dy)
 {
-    COGUI_CHECK_CURSOR();
+    GUI_CHECK_CURSOR();
     
     int32_t x = _cursor->cx + dx/_cursor->speed;
     int32_t y = _cursor->cy + dy/_cursor->speed;
@@ -97,7 +97,7 @@ void cogui_mouse_move_delta(int32_t dx,int32_t dy)
         y = 0;
     }
 
-    cogui_mouse_move_to(x, y);
+    gui_mouse_move_to(x, y);
 }
 
 void gui_mouse_get_position(point_t *pt)
@@ -106,9 +106,9 @@ void gui_mouse_get_position(point_t *pt)
     pt->y = _cursor->cy;
 }
 
-void cogui_mouse_restore(void)
+void gui_mouse_restore(void)
 {
-    COGUI_CHECK_CURSOR();
+    GUI_CHECK_CURSOR();
     uint32_t start_pt = _cursor->frame_buffer;
     uint16_t i, j;
     uint16_t buf;
@@ -126,12 +126,12 @@ void cogui_mouse_restore(void)
 
 void gui_mouse_show(void)
 {
-    COGUI_CHECK_CURSOR();
+    GUI_CHECK_CURSOR();
 
-    cogui_mouse_restore();
+    gui_mouse_restore();
 
     rect_t rect;
-    COGUI_SET_RECT(&rect, _cursor->cx, _cursor->cy, 16, 16);
+    GUI_SET_RECT(&rect, _cursor->cx, _cursor->cy, 16, 16);
 
 	_cursor->cursor_widget->gc.foreground = white;
     gui_dc_draw_text(_cursor->cursor_widget->dc_engine, &rect, "#");

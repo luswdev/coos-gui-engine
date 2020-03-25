@@ -146,8 +146,8 @@ void gui_dc_draw_text(dc_t *dc, rect_t *rect, char *str)
         tx = ty = 0;
     }
 
-    uint32_t text_width = cogui_get_text_width(str, GUI_DC_FONT(dc));
-    uint32_t rect_width = COGUI_RECT_WIDTH(rect);
+    uint32_t text_width = gui_get_text_width(str, GUI_DC_FONT(dc));
+    uint32_t rect_width = GUI_RECT_WIDTH(rect);
 
     /* if text is too long, it will no longer align */
     if (text_width > rect_width) {
@@ -166,8 +166,8 @@ void gui_dc_draw_text(dc_t *dc, rect_t *rect, char *str)
         tx = rect_width - text_width;
     }
 
-    uint32_t text_height = cogui_get_text_height(str, GUI_DC_FONT(dc), rect);
-    uint32_t rect_height = COGUI_RECT_HEIGHT(rect);
+    uint32_t text_height = gui_get_text_height(str, GUI_DC_FONT(dc), rect);
+    uint32_t rect_height = GUI_RECT_HEIGHT(rect);
 
     /* text overflow-y: hidden */
     if (text_height > rect_height) {
@@ -187,7 +187,7 @@ void gui_dc_draw_text(dc_t *dc, rect_t *rect, char *str)
     }
 
     /* put text in the right place */
-    cogui_lcd_puts(tx+rect->x1, ty+rect->y1, str, GUI_DC_FONT(dc), dc, rect);
+    gui_lcd_puts(tx+rect->x1, ty+rect->y1, str, GUI_DC_FONT(dc), dc, rect);
 }
 
 /**

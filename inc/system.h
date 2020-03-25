@@ -33,7 +33,7 @@ if(!(EX)){											    \
 }													    \
 
 /** initial a rectangle to zero */
-#define COGUI_INIT_RECR(r)              \
+#define GUI_INIT_RECT(r)              \
 {                                       \
     (r)->x1 = 0;                        \
     (r)->x2 = 0;                        \
@@ -42,7 +42,7 @@ if(!(EX)){											    \
 }    
 
 /** setting a rectangle */
-#define COGUI_SET_RECT(r, x, y, w, h)   \
+#define GUI_SET_RECT(r, x, y, w, h)   \
 {                                       \
     (r)->x1 = (x);                      \
     (r)->x2 = (x) + (w);                \
@@ -60,7 +60,7 @@ if(!(EX)){											    \
 }                                       \
 
 /** resize a rectangle with padding value */
-#define COGUI_RECT_PADDING(r, p)    \
+#define GUI_RECT_PADDING(r, p)    \
 {                                   \
     (r)->x1 += (p)>>8  & 0x0FF;     \
     (r)->x2 -= (p)     & 0x0FF;     \
@@ -69,15 +69,15 @@ if(!(EX)){											    \
 }                                   \
 
 /* rectangle width and height */
-#define COGUI_RECT_WIDTH(r)         ((r)->x2-(r)->x1)
-#define COGUI_RECT_HEIGHT(r)        ((r)->y2-(r)->y1)
+#define GUI_RECT_WIDTH(r)         ((r)->x2-(r)->x1)
+#define GUI_RECT_HEIGHT(r)        ((r)->y2-(r)->y1)
 
 /* list previous and next node */
 #define COGUI_LIST_PREV(l) ((l)->prev)
 #define COGUI_LIST_NEXT(l) ((l)->next)
 
 /** return a new result type */
-#define COGUI_RETURN_TYPE(r)    \
+#define GUI_RETURN_TYPE(r)    \
     if ((r) == E_OK)            \
         return GUI_E_OK;        \
     else                        \
@@ -132,42 +132,41 @@ struct event;
 struct app;
 typedef struct app app_t;
 
-void cogui_system_init(void);
+void gui_system_init(void);
 
 /* memory manange from CoOS */
 void *gui_malloc(uint32_t size);
 void gui_free(void* ptr);
 
 /* sync function from CoOS */
-StatusType cogui_ack(struct event *event, StatusType status);
+StatusType gui_ack(struct event *event, StatusType status);
 StatusType gui_send(app_t *app, struct event *event);
 StatusType gui_send_sync(app_t *app, struct event *event);
 StatusType gui_recv(OS_EventID mq, struct event *event, int32_t timeout);
 
 /* math function for cogui */
-uint64_t cogui_pow(int32_t base, int32_t exp);
-void cogui_itoa(int16_t n, char* ss);
+uint64_t gui_pow(int32_t base, int32_t exp);
+void gui_itoa(int16_t n, char* ss);
 
 /* mem function for cogui */
-void *cogui_memset(void *buf, int val, uint64_t size);
-void *cogui_memcpy(void *dest, const void *src, uint64_t size);
-void *cogui_memmove(void *dest, const void *src, uint64_t size);
-int32_t cogui_memcmp(const void *str1, const void *str2, uint64_t size);
+void *gui_memset(void *buf, int val, uint64_t size);
+void *gui_memcpy(void *dest, const void *src, uint64_t size);
+void *gui_memmove(void *dest, const void *src, uint64_t size);
+int32_t gui_memcmp(const void *str1, const void *str2, uint64_t size);
 
 /* string function for cogui */
 char *gui_strdup(const char *str);
-uint64_t cogui_strlen(const char *str);
-uint64_t cogui_strnlen(const char *str, uint64_t maxlen);
-int32_t cogui_strncmp(const char *str1, const char *str2, uint64_t size);
-int32_t cogui_strcmp(const char *str1, const char *str2);
+uint64_t gui_strlen(const char *str);
+uint64_t gui_strnlen(const char *str, uint64_t maxlen);
+int32_t gui_strncmp(const char *str1, const char *str2, uint64_t size);
+int32_t gui_strcmp(const char *str1, const char *str2);
 
 /* debug function */
 int gui_printf(const char *fmt, ...);
-int cogui_sprintf(char *buf, const char *fmt, ...);
 void assert_handler(const char *ex_string, const char *func, uint32_t line);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __COGUI_SYSTEM_H__ */
+#endif /* __GUI_SYSTEM_H__ */

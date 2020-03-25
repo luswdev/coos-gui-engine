@@ -42,4 +42,4 @@ extern "C" {
 }
 #endif
 
-#endif /* __COGUI_H__ */
+#endif /* __GUI_H__ */

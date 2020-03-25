@@ -18,9 +18,9 @@
  * @retval     None
  *******************************************************************************
  */
-void cogui_system_init(void)
+void gui_system_init(void)
 {
-    cogui_server_init();
+    gui_server_init();
 }
 
 /**
@@ -67,7 +67,7 @@ void gui_free(void* ptr)
  * @retval     GUI_E_OK     Always return GUI_E_OK .  
  *******************************************************************************
  */
-StatusType cogui_ack(struct event *event, StatusType status)
+StatusType gui_ack(event_t *event, StatusType status)
 {
     ASSERT(event != Co_NULL);
     ASSERT(event->ack);
@@ -88,7 +88,7 @@ StatusType cogui_ack(struct event *event, StatusType status)
  * @retval     GUI_E_ERROR      If some error occurred.          
  *******************************************************************************
  */
-StatusType gui_send(app_t *app, struct event *event)
+StatusType gui_send(app_t *app, event_t *event)
 {
     StatusType result;
 
@@ -99,7 +99,7 @@ StatusType gui_send(app_t *app, struct event *event)
     result = CoPostMail(app->mq, event);
 
     /* return result to GUI status type */
-    COGUI_RETURN_TYPE(result);
+    GUI_RETURN_TYPE(result);
 }
 
 /**
@@ -112,7 +112,7 @@ StatusType gui_send(app_t *app, struct event *event)
  * @retval     GUI_E_ERROR      If some error occurred.          
  *******************************************************************************
  */
-StatusType gui_send_sync(app_t *app, struct event *event)
+StatusType gui_send_sync(app_t *app, event_t *event)
 {
     StatusType result;
 
@@ -129,7 +129,7 @@ StatusType gui_send_sync(app_t *app, struct event *event)
     /* if send event failed, return */
     if (result != E_OK){
         CoDelMbox(mq, OPT_DEL_ANYWAY);
-        COGUI_RETURN_TYPE(result);
+        GUI_RETURN_TYPE(result);
     }
 
     /* wait forever for server ack */
@@ -139,7 +139,7 @@ StatusType gui_send_sync(app_t *app, struct event *event)
     CoDelMbox(mq, OPT_DEL_ANYWAY);
 
     /* return result to GUI status type */
-    COGUI_RETURN_TYPE(result);
+    GUI_RETURN_TYPE(result);
 }
 
 /**
@@ -152,11 +152,11 @@ StatusType gui_send_sync(app_t *app, struct event *event)
  * @retval     GUI_E_ERROR      Something wrong when receiveing a event
  *******************************************************************************
  */
-StatusType gui_recv(OS_EventID mq, struct event *event, int32_t timeout)
+StatusType gui_recv(OS_EventID mq, event_t *event, int32_t timeout)
 {
     StatusType result;
     app_t *app;
-    struct event* buf;
+    event_t* buf;
 
     ASSERT(event!=Co_NULL);
 
@@ -167,11 +167,11 @@ StatusType gui_recv(OS_EventID mq, struct event *event, int32_t timeout)
     }
 
     /* receive a event and copy to event pointer */
-    buf = (struct event *)CoPendMail(mq, timeout, &result);
-    cogui_memcpy(event, buf, sizeof(struct event));
+    buf = (event_t *)CoPendMail(mq, timeout, &result);
+    gui_memcpy(event, buf, sizeof(event_t));
 
     /* return result to GUI status type */
-    COGUI_RETURN_TYPE(result);
+    GUI_RETURN_TYPE(result);
 }
 
 /**
@@ -184,7 +184,7 @@ StatusType gui_recv(OS_EventID mq, struct event *event, int32_t timeout)
  * @retval     *buf             Result after setting.
  *******************************************************************************
  */
-void *cogui_memset(void *buf, int val, uint64_t size)
+void *gui_memset(void *buf, int val, uint64_t size)
 {
     char *tmp = (char *)buf;
 
@@ -205,7 +205,7 @@ void *cogui_memset(void *buf, int val, uint64_t size)
  * @retval     *dest            Result after pasting.
  *******************************************************************************
  */
-void *cogui_memcpy(void *dest, const void *src, uint64_t size)
+void *gui_memcpy(void *dest, const void *src, uint64_t size)
 {
     char *tar = (char *)dest;
     char *tmp = (char *)src;
@@ -227,7 +227,7 @@ void *cogui_memcpy(void *dest, const void *src, uint64_t size)
  * @retval     *dest            Result after moving.
  *******************************************************************************
  */
-void *cogui_memmove(void *dest, const void *src, uint64_t size)
+void *gui_memmove(void *dest, const void *src, uint64_t size)
 {
     char *ds = (char *)dest;
     char *ss = (char *)src;
@@ -263,7 +263,7 @@ void *cogui_memmove(void *dest, const void *src, uint64_t size)
  * @retval     res              Value of first different slot.
  *******************************************************************************
  */
-int32_t cogui_memcmp(const void *buf1, const void *buf2, uint64_t size)
+int32_t gui_memcmp(const void *buf1, const void *buf2, uint64_t size)
 {
     const unsigned char *s1, *s2;
     int res = 0;
@@ -294,18 +294,18 @@ char *cogui_strstr(const char *src, const char *tar)
     int ls, lt;
 
     /* if target is NULL, just return the start point of source */
-    lt = cogui_strlen(src);
+    lt = gui_strlen(src);
     if (!lt) {
         return (char *)src;
     }
 
     /* only if target's length is shorten then source's length should search */
-    ls = cogui_strlen(tar);
+    ls = gui_strlen(tar);
     while (ls >= lt) {
         --ls;
 
         /* if we found one, return occurred point */
-        if (!cogui_memcmp(src, tar, lt)) {
+        if (!gui_memcmp(src, tar, lt)) {
             return (char *)src;
         }
 
@@ -324,7 +324,7 @@ char *cogui_strstr(const char *src, const char *tar)
  * @retval     length    Result of string length. 
  *******************************************************************************
  */
-uint64_t cogui_strnlen(const char *str, uint64_t maxlen)
+uint64_t gui_strnlen(const char *str, uint64_t maxlen)
 {
     const char *s;
 
@@ -345,7 +345,7 @@ uint64_t cogui_strnlen(const char *str, uint64_t maxlen)
  * @retval     length    Result of string length. 
  *******************************************************************************
  */
-uint64_t cogui_strlen(const char *str)
+uint64_t gui_strlen(const char *str)
 {
     const char *s;
 
@@ -369,7 +369,7 @@ uint64_t cogui_strlen(const char *str)
 char *gui_strdup(const char *str)
 {   
     /* allocate a memory for duplicate */
-    uint64_t len = cogui_strlen(str) + 1; /* need to plus one for '/0' */
+    uint64_t len = gui_strlen(str) + 1; /* need to plus one for '/0' */
     char *tmp =  (char *)gui_malloc(len);
 
     /* if allocate failed, return Co_NULL */
@@ -377,8 +377,8 @@ char *gui_strdup(const char *str)
         return tmp;
     }
 
-    /* using cogui_memmove to finish the work */
-    cogui_memmove(tmp, str, len);
+    /* using gui_memmove to finish the work */
+    gui_memmove(tmp, str, len);
 
     return tmp;
 }
@@ -394,7 +394,7 @@ char *gui_strdup(const char *str)
  * @retval     0          Return 0 if two strings are equal.
  *******************************************************************************
  */
-int32_t cogui_strncmp(const char *str1, const char *str2, uint64_t len)
+int32_t gui_strncmp(const char *str1, const char *str2, uint64_t len)
 {
     /* if two strings value are different or out of range, will break this loop */
     for (; *str1 && *str1 == *str2 && len; ++str1, ++str2, --len) {
@@ -415,7 +415,7 @@ int32_t cogui_strncmp(const char *str1, const char *str2, uint64_t len)
  * @retval     0          Return 0 if two strings are equal.
  *******************************************************************************
  */
-int32_t cogui_strcmp(const char *str1, const char *str2)
+int32_t gui_strcmp(const char *str1, const char *str2)
 {
     /* if two strings value are different, will break this loop */
     for (; *str1 && *str1 == *str2; ++str1, ++str2) {
@@ -435,7 +435,7 @@ int32_t cogui_strcmp(const char *str1, const char *str2)
  * @retval     sum      Result of x power by y. 
  *******************************************************************************
  */
-uint64_t cogui_pow(int32_t base, int32_t exp)
+uint64_t gui_pow(int32_t base, int32_t exp)
 {
     uint64_t sum = 1;
 
@@ -454,7 +454,7 @@ uint64_t cogui_pow(int32_t base, int32_t exp)
  * @retval     None
  *******************************************************************************
  */
-void cogui_itoa(int16_t n, char *ss)
+void gui_itoa(int16_t n, char *ss)
 {
     int i, j, sign, k;
     char s[10];
@@ -538,8 +538,8 @@ int gui_printf(const char *str,...)
 						res += count;
                         r_val = val; 
                         while (count) { 
-                            ch = r_val / cogui_pow(10,count - 1);
-							r_val %= cogui_pow(10, count - 1);
+                            ch = r_val / gui_pow(10,count - 1);
+							r_val %= gui_pow(10, count - 1);
 							cogui_putchar(ch + '0');
 							count--;
 						}
@@ -567,8 +567,8 @@ int gui_printf(const char *str,...)
                         res += count;
                         r_val = val; 
                         while(count) { 
-                            ch = r_val / cogui_pow(16, count - 1);
-							r_val %= cogui_pow(16, count - 1);
+                            ch = r_val / gui_pow(16, count - 1);
+							r_val %= gui_pow(16, count - 1);
 							if (ch <= 9)
                                 cogui_putchar(ch + '0');
                             else
@@ -582,7 +582,7 @@ int gui_printf(const char *str,...)
 						s = va_arg(ap, char *);
                         
                         if (space) {
-                            int len = cogui_strlen(s);
+                            int len = gui_strlen(s);
                             while (len < space) {
                                 cogui_putchar(' ');
                                 space --;
@@ -590,7 +590,7 @@ int gui_printf(const char *str,...)
                         }
 
 						cogui_putstr(s);
-                        res += cogui_strlen(s);
+                        res += gui_strlen(s);
 						break;
 					
                     /* handle character var */
@@ -647,7 +647,7 @@ int gui_printf(const char *str,...){
 void assert_handler(const char *ex_string, const char *func, uint32_t line)
 {
     /* output message to screen */
-    cogui_assert_failed_page(ex_string, line, func);
+    gui_assert_failed_page(ex_string, line, func);
 
 	volatile char dummy = 0;
 
