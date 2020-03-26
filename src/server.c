@@ -53,10 +53,14 @@ void gui_server_handler_mouse_motion(event_t *event)
 void gui_server_event_kbd(event_t *event)
 {
     if (event->kbd_type == KBD_KEYDOWN) {
-        gui_printf("[server] Keyboard event character: %c\r\n", event->ascii_code);
+        gui_printf("[server] Keyboard keydown\r\n");
     } else {
-        gui_printf("[server] Keyboard event key up.\r\n");
+        gui_printf("[server] Keyboard keyup\r\n");
     }
+
+    gui_printf("[server] key: %d\r\n", event->key);
+    gui_printf("[server] mod: %d\r\n", event->mod);
+    gui_printf("[server] val: %c\r\n", event->ascii_code);
 }
 
 StatusType gui_server_event_handler(event_t *event)

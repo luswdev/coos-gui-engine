@@ -76,6 +76,8 @@ if(!(EX)){											    \
 #define COGUI_LIST_PREV(l) ((l)->prev)
 #define COGUI_LIST_NEXT(l) ((l)->next)
 
+#define GUI_TOGGLE_BOOL(b) (b=~b)
+
 /** return a new result type */
 #define GUI_RETURN_TYPE(r)    \
     if ((r) == E_OK)            \

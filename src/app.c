@@ -55,8 +55,8 @@ app_t *gui_app_create(char *title)
 
     app->tid = tid;         /* filled meta data                               */
     app->name = gui_strdup((char *)title);   /* record application name       */
-    app->mq = CoCreateMbox(EVENT_SORT_TYPE_FIFO); /* create a mailbox 
-                                                                    for event */
+    app->mq = CoCreateMbox(EVENT_SORT_TYPE_FIFO); /* create a mailbox for event */
+    
     srv_app = gui_get_server();     /* check if server created or not         */
     if (srv_app == Co_NULL) {
         TCBTbl[tid].userData = app;     /* put app pointer to TCBTbl userData */

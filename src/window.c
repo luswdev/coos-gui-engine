@@ -10,13 +10,11 @@
 #include <cogui.h>
 
 extern window_t *main_page;
-
 window_t *current_window;
 int16_t current_app_install_cnt = 0;
-
 struct main_app_table main_app_table[9];
 
-StatusType gui_window_event_handler(window_t * win, event_t *event);
+static StatusType gui_window_event_handler(window_t * win, event_t *event);
 
 static void _gui_window_init(window_t *win)
 {
@@ -440,7 +438,7 @@ window_t *gui_get_current_window(void)
     return current_window;
 }
 
-StatusType gui_window_event_handler(window_t *win, event_t *event)
+static StatusType gui_window_event_handler(window_t *win, event_t *event)
 {
     ASSERT(win != Co_NULL);
     ASSERT(event != Co_NULL);

@@ -86,13 +86,13 @@ void gui_dc_fill_rect_forecolor(dc_t *dc, rect_t *rect)
 	
     /* Since the fill_rect interface will filled with background color, so we
      * should save the old background color and change background into current
-     * foreground color                                                       */
+     * foreground color */
 	save_color    = GUI_DC_BC(dc);
 	GUI_DC_BC(dc) = GUI_DC_FC(dc);
 	
 	dc->engine->fill_rect(dc, rect);    /* call de engine                     */
 	
-	GUI_DC_BC(dc) = save_color;   /* restore background color               */
+	GUI_DC_BC(dc) = save_color;     /* restore background color               */
 }
 
 void gui_dc_draw_shaded_rect(dc_t *dc, rect_t *rect, color_t c1, color_t c2)

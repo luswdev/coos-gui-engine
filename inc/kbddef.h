@@ -24,6 +24,7 @@ typedef enum {
     KBD_KEY_TAB             = 9,        /* ^I */
     KBD_KEY_ENTER           = 10,       /* ^J */
     KBD_KEY_CLEAR           = 12,       /* ^K */
+    KBD_KEY_ESC             = 27,       /* ^[ */
 
     /* symbol part. 1 */
     KBD_KEY_SPACE           = 32,       /*   */
