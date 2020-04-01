@@ -108,7 +108,7 @@ widget_t *gui_widget_list_init(struct window *top)
     gui_widget_set_rectangle(widget, 0, 0, COGUI_SCREEN_WIDTH, COGUI_SCREEN_HEIGHT);
 
     /* this node should be filled by background */
-    widget->gc.foreground = default_background;
+    widget->gc.foreground = white;
     widget->flag |= GUI_WIDGET_FLAG_FILLED;
 
 	return widget;
