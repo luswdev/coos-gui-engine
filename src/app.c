@@ -299,6 +299,25 @@ static StatusType app_event_handler(event_t *event)
         break;
     }
 
+    case EVENT_KBD: {
+        app_t *eapp = gui_app_self();
+        window_t *ewin = eapp->win;
+
+        if (KBD_IS_CTRL(event)) {
+            if (event->key == KBD_KEY_LOWER_Q || event->key == KBD_KEY_UPPER_Q) {
+                gui_window_close(ewin);     /* CTRL + Q = close window         */
+            } else if (event->key == KBD_KEY_LOWER_W || event->key == KBD_KEY_UPPER_W) {
+                gui_window_hide(ewin);      /* CTRL + W = hide window         */
+            }
+        } else if (gui_app_self()->optional_handler != Co_NULL) {
+            result = gui_app_self()->optional_handler(event);   
+        } else {
+            result = GUI_E_ERROR;
+        }
+        gui_mouse_show();               /* show cursor                        */
+        break;
+    }
+
 	default:
 		result = GUI_E_ERROR;	/* set result to error                        */
 	}

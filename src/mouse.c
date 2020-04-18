@@ -125,8 +125,10 @@ void gui_mouse_restore(void)
 }
 
 void gui_mouse_show(void)
-{
-    GUI_CHECK_CURSOR();
+{     
+    if (_cursor == Co_NULL) {
+        return;
+    }  
 
     gui_mouse_restore();
 

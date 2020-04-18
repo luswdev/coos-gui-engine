@@ -81,6 +81,13 @@ typedef struct event event_t;
 #define MOUSE_BUTTON_DOWN         0x10
 #define MOUSE_BUTTON_UP           0x20
 
+#define KBD_IS_SHIFT(e)           ((e)->mod & (KBD_MOD_LSHIFT | KBD_MOD_RSHIFT))           
+#define KBD_IS_CTRL(e)            ((e)->mod & (KBD_MOD_LCTRL  | KBD_MOD_RCTRL))           
+#define KBD_IS_ALT(e)             ((e)->mod & (KBD_MOD_LALT   | KBD_MOD_RALT))  
+#define KBD_IS_SUPER(e)           ((e)->mod & (KBD_MOD_LSUPER | KBD_MOD_RSUPER))
+#define KBD_IS_KP(e)              ((e)->mod & KBD_MOD_NUM)
+#define KBD_IS_CAPS_LOCK(e)       ((e)->mod & KBD_MOD_CAPS)
+
 #ifdef __cplusplus
 }
 #endif

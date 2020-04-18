@@ -130,9 +130,9 @@ typedef enum {
     KBD_KEY_LOWER_Z         = 122,      /* z */
 
     /* symbol part. 4 */
-    KBD_KEY_LCBARCKET       = 123,      /* { */
+    KBD_KEY_LCBRACKET       = 123,      /* { */
     KBD_KEY_PIPE            = 124,      /* | */
-    KBD_KEY_RCBARCKET       = 125,      /* } */
+    KBD_KEY_RCBRACKET       = 125,      /* } */
     KBD_KEY_TILDE           = 126,      /* ~ */
 
     /* last control key */

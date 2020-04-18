@@ -52,15 +52,48 @@ void gui_server_handler_mouse_motion(event_t *event)
 
 void gui_server_event_kbd(event_t *event)
 {
-    if (event->kbd_type == KBD_KEYDOWN) {
-        gui_printf("[server] Keyboard keydown\r\n");
-    } else {
-        gui_printf("[server] Keyboard keyup\r\n");
+    event->ascii_code = 0;      /* initial event ascii code */
+    if (event->kbd_type == KBD_KEYDOWN) { /* parse ascii code if need  */
+        if (event->key >= KBD_KEY_SPACE && event->key <= KBD_KEY_TILDE) {
+            event->ascii_code = event->key;
+            if (KBD_IS_CAPS_LOCK(event)) {
+                if (event->key >= KBD_KEY_LOWER_A && event->key <= KBD_KEY_LOWER_Z) {
+                    event->ascii_code = event->key - 32;
+                } else if (event->key >= KBD_KEY_UPPER_A && event->key <= KBD_KEY_UPPER_Z) {
+                    event->ascii_code = event->key + 32;
+                }
+            }
+        } else if (event->key == KBD_KEY_ENTER || event->key == KBD_KEY_TAB) {
+            event->ascii_code = event->key;
+        } else if (event->key >= KBD_KEY_NUM_0 && event->key <= KBD_KEY_NUM_ENTER) {
+            if (KBD_IS_KP(event)) {
+                const int8_t kp_keys[] = "0123456789./*-+\n";
+                event->ascii_code = kp_keys[event->key - KBD_KEY_NUM_0];
+            }
+        }
     }
 
-    gui_printf("[server] key: %d\r\n", event->key);
-    gui_printf("[server] mod: %d\r\n", event->mod);
-    gui_printf("[server] val: %c\r\n", event->ascii_code);
+    if (gui_get_current_window() == gui_get_main_window()) {
+        /* also handle some shortcuts */
+        if (event->ascii_code >= '1' && event->ascii_code <= '9') {
+            widget_t *event_wgt = main_app_table[event->ascii_code - '1'].app_icon;    
+            app_t *eapp = (app_t *)event_wgt->user_data;
+            if (eapp) {
+                EVENT_INIT(event, EVENT_PAINT);
+                event->app = eapp;
+            }
+        } else {
+            event->app = Co_NULL;
+        }
+    } else {
+        EVENT_INIT(event, EVENT_KBD);
+        event->app = gui_get_current_window()->app;
+    }
+
+          
+    if (event->app != Co_NULL) {
+        gui_send(event->app, event);
+    }  
 }
 
 StatusType gui_server_event_handler(event_t *event)
